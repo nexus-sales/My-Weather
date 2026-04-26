@@ -1,0 +1,20 @@
+{
+  "Index": {
+    "title": "MyWeather",
+    "description": "La aplicación meteorológica más avanzada jamás construida con tecnología web."
+  },
+  "Dashboard": {
+    "title": "PANEL",
+    "current_weather": "TIEMPO ACTUAL",
+    "feels_like": "Sensación",
+    "humidity": "HUMEDAD",
+    "pressure": "PRESIÓN",
+    "wind": "VIENTO",
+    "gusts": "RÁFAGAS",
+    "uv_index": "ÍNDICE UV",
+    "precipitation": "PRECIPITACIÓN",
+    "sunrise": "Amanecer",
+    "sunset": "Ocaso",
+    "forecast_7_days": "PREVISIÓN 7 DÍAS"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "Index": {
+    "title": "MyWeather",
+    "description": "The most advanced weather app ever built with web technology."
+  },
+  "Dashboard": {
+    "title": "DASHBOARD",
+    "current_weather": "CURRENT WEATHER",
+    "feels_like": "Feels like",
+    "humidity": "HUMIDITY",
+    "pressure": "PRESSURE",
+    "wind": "WIND",
+    "gusts": "GUSTS",
+    "uv_index": "UV INDEX",
+    "precipitation": "PRECIPITATION",
+    "sunrise": "Sunrise",
+    "sunset": "Sunset",
+    "forecast_7_days": "7-DAY FORECAST"
+  }
+}

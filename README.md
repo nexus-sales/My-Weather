@@ -1,36 +1,102 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# MyWeather / METEORIX PRO
 
-## Getting Started
+Aplicacion meteorologica avanzada construida con Next.js, datos en tiempo real, radar interactivo, graficas profesionales y una arquitectura preparada para IA meteorologica.
 
-First, run the development server:
+El proyecto nacio como prototipo monolitico en `Meteorix pro.jsx` y ahora esta migrando hacia una app modular de produccion con App Router, TypeScript y servicios separados.
+
+## Estado actual
+
+### Completado
+
+- Base en **Next.js App Router**.
+- **React 19** y **TypeScript**.
+- **Tailwind CSS v4** para estilos globales.
+- Internacionalizacion con **next-intl**.
+- Estado global ligero con **Zustand**.
+- Fetching/cache con **TanStack Query**.
+- Servicios separados para Open-Meteo y Nominatim.
+- Componentes iniciales para busqueda, forecast, grafica horaria, radar y cambio de idioma.
+
+### En progreso
+
+- Migracion del dashboard completo desde `Meteorix pro.jsx`.
+- Modulos de radar, estaciones PWS, historico y analisis avanzado.
+- AETHER AI como briefing y chat meteorologico.
+- Alertas inteligentes y fuentes oficiales como AEMET/Meteoalarm.
+
+## Stack
+
+- **Next.js App Router**
+- **React**
+- **TypeScript**
+- **Tailwind CSS**
+- **Recharts**
+- **Zustand** para estado global ligero
+- **TanStack Query** para llamadas meteorologicas y cache
+- **next-intl** para internacionalizacion
+- **Supabase** mas adelante para favoritos, usuarios, historial y alertas persistentes
+- **PWA** con `next-pwa` o configuracion propia
+
+## Fuentes de datos previstas
+
+- **Open-Meteo**: condiciones actuales, prevision, historico, calidad del aire y datos marinos.
+- **OpenStreetMap Nominatim**: busqueda de ciudades y geocodificacion inversa.
+- **Windy**: radar, satelite y capas meteorologicas.
+- **Weather Underground / Netatmo**: estaciones personales PWS.
+- **AEMET OpenData**: avisos y estaciones oficiales en Espana.
+- **Meteoalarm**: alertas oficiales europeas.
+- **Anthropic Claude**: IA AETHER para analisis meteorologico y briefing.
+
+## Instalacion
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Abrir `http://localhost:3000`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Scripts
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run dev      # servidor de desarrollo
+npm run build    # build de produccion
+npm run start    # servir build
+npm run lint     # lint
+```
 
-## Learn More
+## Estructura
 
-To learn more about Next.js, take a look at the following resources:
+```txt
+src/
+  app/[locale]/        # rutas localizadas
+  components/          # UI, radar y componentes meteorologicos
+  hooks/               # hooks de datos
+  i18n/                # configuracion next-intl
+  lib/                 # utilidades meteorologicas
+  providers/           # providers globales
+  services/            # APIs externas
+  store/               # Zustand stores
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Documentos del proyecto
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- `Readme · MD`: documentacion larga del concepto original y roadmap extendido.
+- `sugerencias.MD`: lista viva de ideas y mejoras.
+- `ideas.MD`: valoracion inicial y propuestas de producto.
+- `Meteorix pro.jsx`: prototipo original monolitico.
 
-## Deploy on Vercel
+## Roadmap corto
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- Completar el dashboard modular.
+- Integrar AETHER como briefing diario inteligente.
+- Anadir favoritos multi-ciudad con `localStorage`.
+- Anadir alertas inteligentes por lluvia, viento, UV y cambios bruscos.
+- Integrar AEMET/Meteoalarm para avisos oficiales.
+- Preparar PWA y cache offline.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Creditos
+
+Desarrollado por Salvador Munoz Portillo con apoyo de Claude y Codex.
+
+Repositorio previsto: `https://github.com/nexus-sales/My-Weather.git`

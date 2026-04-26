@@ -1,0 +1,559 @@
+# ⚡ MyWeather v5.0
+
+> La aplicación meteorológica más avanzada jamás construida con tecnología web.  
+> Datos en tiempo real · IA meteoróloga · Red de estaciones PWS · Radar interactivo · Análisis profesional
+
+---
+
+## 📋 Índice
+
+- [Características](#-características)
+- [Fuentes de datos](#-fuentes-de-datos)
+- [Instalación](#-instalación)
+- [API Keys](#-api-keys)
+- [Módulos](#-módulos)
+- [Tecnologías](#-tecnologías)
+- [Arquitectura](#-arquitectura)
+- [Roadmap](#-roadmap)
+
+---
+
+## ✨ Características
+
+| Módulo | Descripción |
+|--------|-------------|
+| 🌍 **Panel principal** | Condiciones actuales, previsión 7 días, gráficas horarias |
+| 🛰️ **Radar & Satélite** | Mapa Windy interactivo con 5 capas (precipitación, viento, temperatura, nubes, satélite) |
+| 🤖 **IA AETHER** | Análisis meteorológico al nivel ECMWF con chat interactivo |
+| 📊 **Análisis** | 8 gráficas profesionales con datos horarios y semanales |
+| 📅 **Histórico** | Últimos 7 días con estadísticas y comparativas |
+| 📡 **Estaciones PWS** | Red Weather Underground + Netatmo weathermap + modo demo |
+
+---
+
+## 🏗️ Estado de la Migración (JSX → Next.js Modular)
+
+Actualmente el proyecto se encuentra en plena transición desde un prototipo monolítico (`Meteorix pro.jsx`) hacia una arquitectura de producción escalable.
+
+### ✅ Completado (Fase 1: Estructura Base)
+- [x] **Arquitectura Next.js 15**: Configuración de App Router en la raíz del proyecto.
+- [x] **TypeScript & Tailwind v4**: Sistema de tipos estricto y diseño basado en tokens CSS.
+- [x] **Internacionalización (i18n)**: Implementación de `next-intl` (Español/Inglés).
+- [x] **Sistema de Diseño "Mission Control"**: Migración de estética, animaciones y fuentes.
+
+### ✅ Completado (Fase 2: Servicios y Fetching)
+- [x] **Global Store (Zustand)**: Gestión de ubicación, unidades y persistencia.
+- [x] **Weather Service**: Integración con Open-Meteo API (Modelo ECMWF).
+- [x] **Geo Service**: Buscador de ciudades con Nominatim y autocompletado.
+- [x] **Geolocalización**: Detección de ubicación del usuario en tiempo real.
+
+### ⏳ En progreso (Fase 3: Refactor de Componentes)
+- [ ] **Dashboard Modular**: Extracción de Previsión 7 días, Gráficas y Métricas.
+- [ ] **Módulo de Radar**: Integración de Windy como componente interactivo.
+- [ ] **AETHER AI**: Chat interactivo con análisis sinóptico profesional.
+
+---
+
+## 🌐 Fuentes de datos
+
+### Datos meteorológicos principales
+- **[Open-Meteo](https://open-meteo.com/)** — API gratuita, sin registro, sin límite de uso
+  - Modelo numérico: **ECMWF IFS** (Centro Europeo de Previsión Meteorológica)
+  - Resolución temporal: horaria (hasta 16 días) + histórico (últimos 7 días)
+  - Variables: temperatura, humedad, presión, viento, precipitación, UV, código meteorológico
+
+### Radar y mapas interactivos
+- **[Windy.com](https://windy.com/)** — Mapa meteorológico interactivo de alta resolución
+  - Capas disponibles: Precipitación · Viento · Temperatura · Nubes · Satélite
+  - Modelos: ECMWF, GFS (NOAA), ICON (DWD)
+  - Pronóstico hasta 15 días con actualización cada 6 horas
+
+### Red de estaciones personales (PWS)
+- **[Weather Underground](https://www.wunderground.com/)** — Red global de estaciones personales
+  - +250.000 estaciones activas en todo el mundo
+  - Datos cada 1-5 minutos: temperatura, humedad, presión, viento, lluvia, UV, radiación solar
+  - Requiere API key gratuita (ver sección [API Keys](#-api-keys))
+- **[Netatmo WeatherMap](https://weathermap.netatmo.com/)** — Sin registro
+  - +300.000 estaciones públicas
+  - Variables: temperatura, humedad, CO₂, ruido
+
+### Geocodificación
+- **[OpenStreetMap Nominatim](https://nominatim.openstreetmap.org/)** — Gratuito, sin registro
+  - Búsqueda de ciudades por nombre
+  - Geocodificación inversa (coordenadas → nombre de ciudad)
+
+### Inteligencia artificial
+- **[Anthropic Claude Sonnet](https://www.anthropic.com/)** — Modelo `claude-sonnet-4-20250514`
+  - Análisis sinóptico profesional
+  - Cálculo de índices de inestabilidad (CAPE estimado, LI, Índice K)
+  - Chat meteorológico interactivo en español
+
+---
+
+## 🚀 Instalación
+
+### Prerrequisitos
+- Node.js 18+
+- npm o yarn
+
+### Uso como artefacto React (Claude.ai)
+El archivo `.jsx` está listo para usarse directamente como artefacto en Claude.ai — no requiere instalación.
+
+### Uso en proyecto React local
+
+```bash
+# 1. Crea un proyecto React
+npx create-react-app meteorix-pro
+cd meteorix-pro
+
+# 2. Instala dependencias
+npm install recharts
+
+# 3. Copia el archivo
+cp meteorix-pro.jsx src/App.jsx
+
+# 4. Inicia el servidor de desarrollo
+npm start
+```
+
+### Uso con Vite (recomendado)
+
+```bash
+npm create vite@latest meteorix-pro -- --template react
+cd meteorix-pro
+npm install
+npm install recharts
+# Copia meteorix-pro.jsx como src/App.jsx
+npm run dev
+```
+
+---
+
+## 🔑 API Keys
+
+### Weather Underground (opcional, para red PWS)
+
+La API de Weather Underground es **gratuita** en el plan Developer.
+
+1. Crea una cuenta en [wunderground.com](https://www.wunderground.com/)
+2. Ve a **Member → API Keys** (o visita [wunderground.com/member/api-keys](https://www.wunderground.com/member/api-keys))
+3. Genera una clave nueva (plan **Developer**: 500 llamadas/día gratuitas)
+4. Introduce la clave en la pestaña **📡 ESTACIONES → Weather Underground**
+
+**Endpoints utilizados:**
+```
+# Estaciones cercanas (hasta 20 resultados)
+GET https://api.weather.com/v2/pws/observations/nearby
+    ?geocode={lat},{lon}&limit=20&format=json&units=m&apiKey={KEY}
+
+# Estación específica por ID
+GET https://api.weather.com/v2/pws/observations/current
+    ?stationId={ID}&format=json&units=m&apiKey={KEY}
+```
+
+> **Nota CORS:** La app usa `corsproxy.io` como proxy de fallback si el navegador bloquea la llamada directa a `api.weather.com`.
+
+### Anthropic Claude (requerida para IA AETHER)
+
+- Se usa automáticamente si se ejecuta como artefacto en **Claude.ai** (sin configuración adicional)
+- Para uso en proyecto propio, añade tu API key como variable de entorno:
+
+```env
+VITE_ANTHROPIC_API_KEY=sk-ant-xxxxx
+```
+
+Y modifica las cabeceras de la llamada fetch en `runAI()`:
+```js
+headers: {
+  "Content-Type": "application/json",
+  "x-api-key": import.meta.env.VITE_ANTHROPIC_API_KEY,
+  "anthropic-version": "2023-06-01",
+}
+```
+
+> ⚠️ **Nunca expongas tu API key en código frontend de producción.** Usa un backend/proxy propio.
+
+---
+
+## 📦 Módulos
+
+### 🌍 Panel Principal (`tab: dashboard`)
+
+- **Hero meteorológico:** temperatura actual con animación pulsante, icono WMO, sensación térmica
+- **6 métricas en tiempo real:** humedad, presión, viento, ráfagas, UV, precipitación
+- **Previsión 7 días:** tarjetas interactivas con máx/mín, icono WMO, probabilidad y acumulado
+- **Gráfica temperatura horaria** (24h): temperatura real + sensación térmica superpuestas
+- **Gráfica precipitación** (24h): probabilidad por barras
+- **Gráfica viento** (24h): velocidad horaria en área rellena
+
+### 🛰️ Radar & Satélite (`tab: radar`)
+
+5 capas seleccionables sobre mapa interactivo Windy:
+- 🌧️ **Precipitación** — intensidad en mm/h
+- 💨 **Viento** — velocidad y dirección en superficie
+- 🌡️ **Temperatura** — distribución espacial
+- ☁️ **Nubes** — cobertura nubosa total
+- 🛰️ **Satélite** — imagen en tiempo real
+
+### 🤖 IA AETHER (`tab: ai`)
+
+**Dr. AETHER** (Artificial Engine for Thermodynamic, Hydrological & Environmental Research):
+
+- Análisis automático al cargar datos, incluyendo:
+  - Situación sinóptica y patrón de circulación
+  - Análisis de masas de aire y frentes
+  - Índices de inestabilidad: CAPE estimado, Lifted Index, Índice K
+  - Previsión horaria 24h y tendencia 7 días
+  - Avisos activos y niveles de alerta
+  - Recomendaciones por sectores (agricultura, transporte, deporte, salud)
+- **Chat interactivo** con historial completo de conversación
+- **6 preguntas rápidas** predefinidas
+- Respuestas en español con terminología técnica meteorológica
+
+### 📊 Análisis (`tab: charts`)
+
+8 gráficas profesionales con Recharts:
+
+| Gráfica | Tipo | Período |
+|---------|------|---------|
+| Temperatura máx/mín + precipitación | ComposedChart | 7 días |
+| Presión atmosférica | LineChart | 24h |
+| Humedad relativa | AreaChart | 24h |
+| Índice UV máximo | BarChart | 7 días |
+| Precipitación + probabilidad | ComposedChart | 7 días |
+| Viento máximo | AreaChart | 7 días |
+
+### 📅 Histórico (`tab: history`)
+
+- **7 días anteriores** de datos reales (Open-Meteo `past_days=7`)
+- Tarjetas diarias con condición, máx/mín y precipitación
+- Estadísticas semanales automáticas: media máxima/mínima, total precipitación, días con lluvia, extremos
+- Gráfica histórica temperatura + precipitación
+- Gráfica precipitación diaria
+
+### 📡 Estaciones PWS (`tab: stations`)
+
+**Tres modos de operación:**
+
+#### Netatmo WeatherMap (sin registro)
+- Iframe de `weathermap.netatmo.com`
+- Clic en cualquier estación para ver sus datos
+- Variables: temperatura, humedad, CO₂, ruido
+
+#### Weather Underground (con API key gratuita)
+- Búsqueda automática de estaciones cercanas (hasta 20, ordenadas por distancia)
+- Búsqueda directa por ID de estación (ej: `IMADRIDS123`)
+- Auto-refresh configurable cada 5 minutos
+- Por cada estación: temperatura, humedad, viento, ráfagas, presión, precipitación, UV, radiación solar
+- Indicador de frescura del dato (< 1 min / 5 min / > 15 min)
+- Control de calidad QC integrado
+- **Comparación PWS vs modelo ECMWF** con diferencial codificado por color
+
+#### Modo Demo (siempre disponible)
+- 6 estaciones simuladas alrededor de la ubicación actual
+- Datos calculados con variaciones micro-climáticas realistas sobre Open-Meteo
+- Estaciones: Centro Urbano, Parque Norte, Aeropuerto, Zona Rural, Sierra Alta, Litoral Sur
+- Hardware simulado real: Davis Vantage Pro2, Vaisala AWS310, Campbell Scientific CR300, Netatmo Smart
+
+---
+
+## 🛠️ Tecnologías — Artefacto actual (Claude.ai)
+
+Stack mínimo para funcionar como artefacto embebido sin build step.
+
+| Librería | Versión | Uso |
+|----------|---------|-----|
+| React | 18+ | Framework UI |
+| Recharts | 2.x | Gráficas meteorológicas |
+| Open-Meteo API | — | Datos meteorológicos (ECMWF) |
+| Windy Embed API | 2 | Radar y mapas interactivos |
+| Anthropic Claude API | claude-sonnet-4 | IA meteorológica AETHER |
+| Weather Underground API | v2 | Red de estaciones PWS |
+| Netatmo WeatherMap | — | Mapa público de estaciones |
+| OpenStreetMap Nominatim | — | Geocodificación |
+| Google Fonts | — | Orbitron + Exo 2 |
+
+**Sin dependencias de backend.** Todo corre en el navegador.
+
+---
+
+## 🏭 Stack de producción recomendado
+
+Stack para migrar METEORIX PRO a una aplicación web real, mantenible y escalable.
+
+### Framework y lenguaje
+
+```
+Next.js (App Router)  +  TypeScript
+```
+
+- **Next.js App Router** — Server Components para el fetch inicial de datos meteorológicos sin exponer API keys al cliente; Route Handlers como proxy ligero para APIs con CORS restringido (Weather Underground, AEMET); generación estática de páginas de ciudades populares con ISR.
+- **TypeScript** — tipado estricto para las respuestas de Open-Meteo, WU y Claude, que tienen estructuras complejas y cambian entre versiones de API. Elimina toda una clase de bugs silenciosos en el parsing de datos meteorológicos.
+
+### Estilos
+
+```
+Tailwind CSS  +  clsx / tailwind-merge
+```
+
+- Reemplaza los objetos de estilo inline del JSX actual, que a estas alturas suman varios cientos de líneas.
+- El tema oscuro "Mission Control" se define una vez en `tailwind.config` con custom colors (`meteorix-blue`, `meteorix-glow`, etc.) y se reutiliza en todos los componentes.
+- `clsx` + `tailwind-merge` para clases condicionales limpias sin colisiones (especialmente en las tarjetas PWS con estados hover/selected/live).
+
+### Gráficas
+
+```
+Recharts  (sin cambios)
+```
+
+- Se mantiene. Funciona bien con React 18, es ligero y cubre todos los tipos de chart que usa METEORIX. No hay razón para cambiar.
+- Migrar a `"use client"` components dado que Recharts necesita DOM.
+
+### Estado global
+
+```
+Zustand  o  Jotai
+```
+
+| | Zustand | Jotai |
+|---|---|---|
+| Modelo | Store centralizado por slice | Átomos atómicos y derivados |
+| Curva de aprendizaje | Muy baja | Baja |
+| Mejor para | Estado de app (ciudad activa, favoritos, tema, tab) | Estado derivado de datos meteorológicos |
+| Recomendación | ✅ Primera opción | Para el scorer de actividades y métricas derivadas |
+
+**Propuesta de stores con Zustand:**
+
+```ts
+// store/location.ts  — ciudad activa, favoritos, historial de búsqueda
+// store/ui.ts        — tab activa, modo radar, preferencias de unidades
+// store/pws.ts       — estaciones WU seleccionadas, API key, auto-refresh
+// store/alerts.ts    — alertas activas, preferencias de notificación
+```
+
+### Fetching y caché
+
+```
+TanStack Query (React Query v5)
+```
+
+Esta es la pieza más importante de la migración. Los datos meteorológicos tienen ciclos de vida muy distintos y TanStack Query los gestiona de forma declarativa:
+
+```ts
+// Datos actuales — revalidar cada 10 minutos
+useQuery({ queryKey: ['current', lat, lon], staleTime: 10 * 60 * 1000 })
+
+// Previsión 7 días — revalidar cada hora
+useQuery({ queryKey: ['forecast', lat, lon], staleTime: 60 * 60 * 1000 })
+
+// Estaciones PWS — revalidar cada 5 minutos
+useQuery({ queryKey: ['pws', lat, lon, apiKey], staleTime: 5 * 60 * 1000 })
+
+// Histórico — datos inmutables, cachear indefinidamente
+useQuery({ queryKey: ['history', lat, lon], staleTime: Infinity })
+
+// Alertas Meteoalarm — revalidar cada 30 minutos
+useQuery({ queryKey: ['alerts', countryCode], staleTime: 30 * 60 * 1000 })
+```
+
+Ventajas directas para METEORIX:
+- Sin useEffect manual para fetching
+- Deduplicación automática si dos componentes piden la misma ciudad
+- Datos en background sin bloquear UI
+- Offline fallback con los últimos datos cacheados
+- DevTools para inspeccionar el estado de cada query
+
+### Base de datos y auth
+
+```
+Supabase  (fase 2)
+```
+
+Añadir cuando se necesite persistencia real, no antes.
+
+```
+supabase/
+├── tables/
+│   ├── favorite_locations   — ciudades guardadas por usuario
+│   ├── weather_history      — caché histórica para reducir llamadas a Open-Meteo
+│   ├── user_alerts          — configuración de alertas personalizadas
+│   └── activity_scores      — historial de scores "día perfecto" por ubicación
+├── edge_functions/
+│   ├── wu-proxy             — proxy para Weather Underground (ocultar API key)
+│   ├── aemet-proxy          — proxy para AEMET OpenData
+│   └── meteoalarm-feed      — parseo RSS de Meteoalarm
+└── realtime/
+    └── pws_updates          — push de nuevas lecturas de estaciones favoritas
+```
+
+### PWA
+
+```
+next-pwa  o  configuración propia con next.config
+```
+
+Configuración mínima para METEORIX:
+
+```js
+// next.config.js
+const withPWA = require('next-pwa')({
+  dest: 'public',
+  runtimeCaching: [
+    {
+      urlPattern: /^https:\/\/api\.open-meteo\.com/,
+      handler: 'StaleWhileRevalidate',    // datos meteoro: sirve caché, actualiza en fondo
+    },
+    {
+      urlPattern: /^https:\/\/embed\.windy\.com/,
+      handler: 'CacheFirst',              // mapa: rara vez cambia el iframe base
+    },
+    {
+      urlPattern: /^https:\/\/api\.weather\.com/,
+      handler: 'NetworkFirst',            // PWS: siempre intentar red primero
+    },
+  ],
+})
+```
+
+Esto da a METEORIX funcionamiento offline con los últimos datos descargados — la app se abre aunque no haya conexión.
+
+### Estructura de proyecto sugerida
+
+```
+meteorix-pro/
+├── app/
+│   ├── layout.tsx                  — fuentes, providers globales, metadata
+│   ├── page.tsx                    — dashboard principal (SSR con datos iniciales)
+│   ├── [city]/
+│   │   └── page.tsx                — rutas de ciudades (/madrid, /barcelona)
+│   └── api/
+│       ├── wu/route.ts             — proxy Weather Underground
+│       ├── aemet/route.ts          — proxy AEMET OpenData
+│       └── meteoalarm/route.ts     — parseo RSS Meteoalarm
+├── components/
+│   ├── ui/                         — Card, SectionTitle, Badge, Spinner
+│   ├── weather/                    — CurrentWeather, ForecastCard, HourlyChart
+│   ├── radar/                      — WindyMap, RadarControls
+│   ├── pws/                        — StationGrid, StationCard, StationDetail, ComparisonTable
+│   ├── ai/                         — AetherChat, BriefingCard, ActivityScorer
+│   └── charts/                     — PressureChart, HumidityChart, UVChart
+├── hooks/
+│   ├── useWeather.ts               — TanStack Query wrapper Open-Meteo
+│   ├── usePWS.ts                   — TanStack Query wrapper Weather Underground
+│   ├── useGeolocation.ts           — geoloc con fallback
+│   ├── useAlerts.ts                — Meteoalarm via Route Handler
+│   └── useActivityScore.ts         — cálculo scorer "día perfecto"
+├── services/
+│   ├── openmeteo.ts                — tipos TypeScript + fetch functions
+│   ├── weatherunderground.ts       — tipos + fetch functions
+│   ├── nominatim.ts                — geocodificación
+│   └── anthropic.ts                — llamada AETHER
+├── store/
+│   ├── location.ts                 — Zustand: ciudad activa, favoritos
+│   ├── ui.ts                       — Zustand: tab, radar mode, unidades
+│   └── pws.ts                      — Zustand: API key WU, estaciones favoritas
+├── types/
+│   ├── openmeteo.d.ts
+│   ├── weatherunderground.d.ts
+│   └── meteoalarm.d.ts
+└── lib/
+    ├── wmo.ts                      — códigos WMO → descripción + emoji
+    ├── wind.ts                     — dirección viento, escala Beaufort
+    ├── haversine.ts                — distancia entre coordenadas
+    └── activityScore.ts            — lógica scorer actividades
+```
+
+### Comparativa artefacto actual vs stack de producción
+
+| Aspecto | Artefacto JSX actual | Next.js + TS + Stack completo |
+|---------|---------------------|-------------------------------|
+| API keys | En cliente (solo demo) | En servidor via Route Handlers |
+| Caché | Ninguna | TanStack Query por query key |
+| Offline | No | PWA con Workbox |
+| Tipado | Sin tipos | TypeScript estricto |
+| Estado | useState local | Zustand por dominio |
+| Mantenibilidad | 1 archivo ~1200 líneas | Módulos por responsabilidad |
+| SEO | No aplica | SSR + metadata por ciudad |
+| Persistencia | No | Supabase (fase 2) |
+| Time to first data | Fetch en cliente | SSR, datos al primer render |
+
+---
+
+## 🏗️ Arquitectura
+
+```
+MeteorixPro (componente principal)
+│
+├── Estado global
+│   ├── coords (lat/lon) — geolocalización o búsqueda
+│   ├── wx — datos Open-Meteo (current + hourly + daily)
+│   ├── aiMsgs — historial chat AETHER
+│   └── pwsStations / pwsSelected — red de estaciones
+│
+├── Efectos
+│   ├── Reloj (1s interval)
+│   ├── Geolocalización al montar
+│   ├── fetchWx() al cambiar coords
+│   ├── runAI() automático al cargar datos
+│   └── Auto-refresh PWS (5 min, opcional)
+│
+├── Funciones de datos
+│   ├── fetchWx() → Open-Meteo + Nominatim
+│   ├── searchCity() → Nominatim geocoding
+│   ├── runAI() → Anthropic Claude API
+│   ├── fetchWuNearby() → WU observations/nearby
+│   ├── fetchWuById() → WU observations/current
+│   └── hdist() → fórmula de Haversine
+│
+├── Datos derivados (useMemo)
+│   ├── hourlyData — próximas 24h formateadas
+│   ├── forecastData — 7 días futuros
+│   ├── historyData — 7 días pasados
+│   └── demoStations — estaciones simuladas
+│
+└── Tabs de UI
+    ├── dashboard — panel principal
+    ├── radar — mapa Windy
+    ├── ai — chat Dr. AETHER
+    ├── charts — gráficas analíticas
+    ├── history — datos históricos
+    └── stations — red PWS
+```
+
+---
+
+## 🗺️ Roadmap
+
+### Próximas mejoras planificadas
+
+- [ ] **Supabase** — historial persistente, alertas personalizadas, favoritos de ciudades
+- [ ] **Alertas push** — notificaciones de cambios bruscos de tiempo
+- [ ] **AEMET OpenData** — red oficial de estaciones meteorológicas de España
+- [ ] **Comparador de ciudades** — análisis simultáneo de múltiples ubicaciones
+- [ ] **Modelo ML local** — downscaling de temperatura para mayor resolución local
+- [ ] **Exportación de datos** — CSV/JSON de series históricas
+- [ ] **Webcams meteorológicas** — integración con redes de cámaras AEMET/NOAA
+- [ ] **Modo offline** — caché de últimos datos con Service Worker
+- [ ] **Temas visuales** — modo claro, modo daltonismo
+- [ ] **Widget embebible** — componente reutilizable con parámetros configurables
+
+---
+
+## 📄 Licencia
+
+MIT — Uso libre para proyectos personales y comerciales.  
+Consulta los términos de uso individuales de cada API externa antes de desplegar en producción.
+
+---
+
+## 👤 Créditos
+
+Desarrollado por **Salvador Muñoz Portillo** ([admin@nexus-sales.eu](mailto:admin@nexus-sales.eu)) con apoyo de **Claude (Anthropic)**.
+Repositorio: [github.com/nexus-sales/My-Weather](https://github.com/nexus-sales/My-Weather.git)
+
+Diseño: NASA Mission Control aesthetic  
+Datos meteorológicos: Open-Meteo (ECMWF) · Radar: Windy.com · Estaciones: Weather Underground · Netatmo
+
+---
+
+*⚡ MyWeather — El tiempo, a nivel de ingeniería.*

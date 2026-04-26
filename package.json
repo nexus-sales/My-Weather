@@ -1,6 +1,11 @@
 {
-  "name": "temp-next-app",
-  "version": "0.1.0",
+  "name": "myweather",
+  "version": "5.0.0",
+  "author": "Salvador Muñoz Portillo <admin@nexus-sales.eu>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nexus-sales/My-Weather.git"
+  },
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -9,9 +14,16 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@tanstack/react-query": "^5.100.5",
+    "clsx": "^2.1.1",
+    "lucide-react": "^1.11.0",
     "next": "16.2.4",
+    "next-intl": "^4.9.1",
     "react": "19.2.4",
-    "react-dom": "19.2.4"
+    "react-dom": "19.2.4",
+    "recharts": "^3.8.1",
+    "tailwind-merge": "^3.5.0",
+    "zustand": "^5.0.12"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
