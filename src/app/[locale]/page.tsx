@@ -5,6 +5,7 @@ import LocaleSwitcher from '@/components/ui/LocaleSwitcher';
 import SearchBar from '@/components/ui/SearchBar';
 import Forecast7Days from '@/components/weather/Forecast7Days';
 import HourlyChart from '@/components/weather/HourlyChart';
+import IntelligenceStrip from '@/components/weather/IntelligenceStrip';
 import RadarView from '@/components/radar/RadarView';
 import { useWeather } from '@/hooks/useWeather';
 import { useLocationStore } from '@/store/useLocationStore';
@@ -96,6 +97,8 @@ export default function HomePage() {
             <>
               {activeTab === 'dashboard' && (
                 <div className="space-y-8">
+                  <IntelligenceStrip />
+
                   <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-8">
                     {/* Main Weather Card */}
                     <div className="relative group bg-meteorix-card border border-meteorix-border p-5 sm:p-6 md:p-8 rounded-2xl md:rounded-3xl backdrop-blur-2xl transition-all">

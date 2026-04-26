@@ -67,6 +67,7 @@ Siguiendo el "Stack de produccion" definido en el README:
   - Extraer componentes de UI (Hero, Cards, Charts) del monolitico.
   - Implementar Dashboard principal modularizado.
   - Integrar Windy como componente cliente dedicado.
+  - Mostrar datos de las nuevas APIs en una banda de inteligencia del dashboard.
 
 - [ ] **Fase 4: Nuevas Features (Post-migracion)**
   - Implementar Multi-ciudad y Favoritos.

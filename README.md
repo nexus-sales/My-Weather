@@ -37,6 +37,7 @@ El proyecto nacio como prototipo monolitico en `Meteorix pro.jsx` y esta migrand
 
 - `RadarView` con Windy embed y 5 capas seleccionables.
 - `Forecast7Days`, `HourlyChart`, `SearchBar`, `LocaleSwitcher` extraidos.
+- `IntelligenceStrip` visible en dashboard para avisos, tormentas, calidad del aire, mar y confianza.
 - Base responsive para movil/tablet/desktop con navegacion inferior en pantallas pequenas.
 - PWA inicial: `manifest`, iconos SVG, `theme-color` y service worker propio.
 - Pendiente: modulos AETHER AI, Analisis, Historico y Estaciones PWS.
