@@ -42,10 +42,12 @@ Actualmente el proyecto se encuentra en plena transición desde un prototipo mon
 - [x] **Sistema de Diseño "Mission Control"**: Migración de estética, animaciones y fuentes.
 
 ### ✅ Completado (Fase 2: Servicios y Fetching)
-- [x] **Global Store (Zustand)**: Gestión de ubicación, unidades y persistencia.
-- [x] **Weather Service**: Integración con Open-Meteo API (Modelo ECMWF).
-- [x] **Geo Service**: Buscador de ciudades con Nominatim y autocompletado.
-- [x] **Geolocalización**: Detección de ubicación del usuario en tiempo real.
+- [x] **Global Store (Zustand)**: `useLocationStore` (coords, favoritos, historial) + `useUIStore` (tab, capa radar) + `usePWSStore` (API key WU, estaciones favoritas, auto-refresh).
+- [x] **Weather Service**: Integración con Open-Meteo API (Modelo ECMWF). Tipos estrictos. Incluye `fetchWeatherHistory` con `past_days=7`.
+- [x] **Geo Service**: Buscador de ciudades con Nominatim y geocodificación inversa.
+- [x] **Geolocalización**: `useGeolocation` hook con `navigator.geolocation`, fallback a Madrid y geocodificación inversa automática.
+- [x] **Hooks TanStack Query**: `useWeather` (10 min), `useWeatherHistory` (inmutable), `usePWSNearby` + `usePWSStation` (5 min), `useAlerts` (30 min).
+- [x] **Route Handlers (proxies)**: `/api/wu` (Weather Underground), `/api/aemet` (AEMET OpenData), `/api/meteoalarm` (RSS Atom con parser integrado). API keys en servidor — nunca expuestas al cliente.
 
 ### ⏳ En progreso (Fase 3: Refactor de Componentes)
 - [ ] **Dashboard Modular**: Extracción de Previsión 7 días, Gráficas y Métricas.

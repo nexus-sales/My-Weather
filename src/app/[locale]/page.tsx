@@ -11,6 +11,7 @@ import { useLocationStore } from '@/store/useLocationStore';
 import { getWeatherCondition } from '@/lib/weatherUtils';
 import { MapPin, LayoutDashboard, Map as MapIcon, BrainCircuit, BarChart3, History, Satellite } from 'lucide-react';
 import { useUIStore } from '@/store/useUIStore';
+import { useGeolocation } from '@/hooks/useGeolocation';
 
 export default function HomePage() {
   const t = useTranslations('Index');
@@ -18,6 +19,7 @@ export default function HomePage() {
   const { cityName } = useLocationStore();
   const { activeTab, setActiveTab } = useUIStore();
   const { data: weather, isLoading, error } = useWeather();
+  useGeolocation();
 
   const TABS = [
     { id: 'dashboard', label: 'DASHBOARD', icon: LayoutDashboard },

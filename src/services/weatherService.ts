@@ -1,3 +1,39 @@
+export interface WeatherHistory {
+  daily: {
+    time: string[];
+    tempMax: number[];
+    tempMin: number[];
+    weatherCode: number[];
+    precipSum: number[];
+    windMax: number[];
+  };
+}
+
+export const fetchWeatherHistory = async (lat: number, lon: number): Promise<WeatherHistory> => {
+  const url = new URL('https://api.open-meteo.com/v1/forecast');
+  url.searchParams.append('latitude', lat.toString());
+  url.searchParams.append('longitude', lon.toString());
+  url.searchParams.append('daily', 'weather_code,temperature_2m_max,temperature_2m_min,precipitation_sum,wind_speed_10m_max');
+  url.searchParams.append('past_days', '7');
+  url.searchParams.append('forecast_days', '0');
+  url.searchParams.append('timezone', 'auto');
+
+  const res = await fetch(url.toString());
+  if (!res.ok) throw new Error('Failed to fetch weather history');
+
+  const data = await res.json();
+  return {
+    daily: {
+      time: data.daily.time,
+      tempMax: data.daily.temperature_2m_max,
+      tempMin: data.daily.temperature_2m_min,
+      weatherCode: data.daily.weather_code,
+      precipSum: data.daily.precipitation_sum,
+      windMax: data.daily.wind_speed_10m_max,
+    },
+  };
+};
+
 export interface WeatherData {
   current: {
     temp: number;
