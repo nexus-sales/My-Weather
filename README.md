@@ -14,7 +14,7 @@ El proyecto nacio como prototipo monolitico en `Meteorix pro.jsx` y esta migrand
 
 ### Fase 2 — Servicios y fetching (Completada)
 
-- **Zustand stores**: `useLocationStore` (coords, favoritos, historial), `useUIStore` (tab activa, capa radar), `usePWSStore` (API key WU, estaciones, auto-refresh).
+- **Zustand stores**: `useLocationStore` (coords, favoritos, historial), `useUIStore` (tab activa, capa radar), `usePWSStore` (estaciones favoritas, seleccion, auto-refresh).
 - **Servicios tipados**: `weatherService` (Open-Meteo ECMWF + historico 7 dias), `geoService` (Nominatim busqueda + geocodificacion inversa).
 - **Hooks TanStack Query**: `useWeather` (10 min), `useWeatherHistory` (inmutable), `usePWSNearby` + `usePWSStation` (5 min), `useAlerts` (30 min).
 - **Geolocalizacion automatica**: `useGeolocation` con `navigator.geolocation`, geocodificacion inversa y fallback a Madrid.
@@ -37,6 +37,8 @@ El proyecto nacio como prototipo monolitico en `Meteorix pro.jsx` y esta migrand
 
 - `RadarView` con Windy embed y 5 capas seleccionables.
 - `Forecast7Days`, `HourlyChart`, `SearchBar`, `LocaleSwitcher` extraidos.
+- Base responsive para movil/tablet/desktop con navegacion inferior en pantallas pequenas.
+- PWA inicial: `manifest`, iconos SVG, `theme-color` y service worker propio.
 - Pendiente: modulos AETHER AI, Analisis, Historico y Estaciones PWS.
 
 ## Stack
@@ -49,6 +51,7 @@ El proyecto nacio como prototipo monolitico en `Meteorix pro.jsx` y esta migrand
 - **TanStack Query v5** para fetching y cache declarativos
 - **next-intl** para internacionalizacion
 - **Supabase** — fase futura (favoritos, historial, alertas persistentes)
+- **PWA nativa** sin dependencia externa inicial: `manifest.ts`, service worker y cache basica
 
 ## Fuentes de datos activas
 
@@ -120,7 +123,9 @@ src/
 - [ ] AETHER AI — briefing diario automatico + chat interactivo con Claude.
 - [ ] Multi-ciudad y favoritos — UI sobre `useLocationStore`.
 - [ ] Alertas inteligentes — lluvia cercana, viento fuerte, UV alto, presion cayendo.
-- [ ] PWA — manifest, service worker y cache offline.
+- [x] PWA base — manifest, iconos, theme color, service worker y cache inicial.
+- [ ] PWA avanzada — instalacion guiada, pantalla offline propia, cache por estrategia y pruebas Lighthouse.
+- [ ] Responsive avanzado — optimizar tablet/desktop con layouts especificos por modulo.
 - [ ] Supabase — favoritos sincronizados, historial y alertas persistentes.
 
 ## Documentos del proyecto

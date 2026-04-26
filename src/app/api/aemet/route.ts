@@ -4,7 +4,7 @@ const AEMET_BASE = 'https://opendata.aemet.es/opendata/api';
 
 export async function GET(request: NextRequest) {
   const { searchParams } = request.nextUrl;
-  const path = searchParams.get('path') ?? 'avisos_cap/ultimosvisosconivmaestros';
+  const path = searchParams.get('path') ?? 'avisos_cap/ultimoelaborado/area/esp';
   const apiKey = process.env.AEMET_API_KEY;
 
   if (!apiKey) {

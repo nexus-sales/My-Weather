@@ -54,24 +54,24 @@ const fetchPWSById = async (stationId: string): Promise<PWSObservation | null> =
 
 export const usePWSNearby = (limit = 15) => {
   const { coords } = useLocationStore();
-  const { apiKey, autoRefresh, refreshIntervalMin } = usePWSStore();
+  const { autoRefresh, refreshIntervalMin } = usePWSStore();
 
   return useQuery({
     queryKey: ['pws-nearby', coords.lat, coords.lon, limit],
     queryFn: () => fetchPWSNearby(coords.lat, coords.lon, limit),
-    enabled: !!apiKey && !!coords.lat && !!coords.lon,
+    enabled: !!coords.lat && !!coords.lon,
     staleTime: 5 * 60 * 1000,
     refetchInterval: autoRefresh ? refreshIntervalMin * 60 * 1000 : false,
   });
 };
 
 export const usePWSStation = (stationId: string | null) => {
-  const { apiKey, autoRefresh, refreshIntervalMin } = usePWSStore();
+  const { autoRefresh, refreshIntervalMin } = usePWSStore();
 
   return useQuery({
     queryKey: ['pws-station', stationId],
     queryFn: () => fetchPWSById(stationId!),
-    enabled: !!apiKey && !!stationId,
+    enabled: !!stationId,
     staleTime: 5 * 60 * 1000,
     refetchInterval: autoRefresh ? refreshIntervalMin * 60 * 1000 : false,
   });

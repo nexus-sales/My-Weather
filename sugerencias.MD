@@ -4,6 +4,7 @@ Archivo vivo para ir anotando, ordenar y priorizar ideas nuevas.
 
 ## Prioridad alta
 
+- PWA instalable y responsive real: tratar movil como experiencia principal, tablet como panel intermedio y desktop como centro de control meteorologico.
 - Indice de tormentas en tiempo real: integrar Blitzortung u otra fuente de rayos para mostrar actividad electrica en el mapa.
 - Rosa de los vientos animada: componente visual que gire segun la direccion real del viento y muestre velocidad/rachas.
 - Multi-ciudad y favoritos: guardar 5-10 ubicaciones en localStorage para cambiar rapidamente sin usar Supabase al principio.
@@ -17,7 +18,7 @@ Archivo vivo para ir anotando, ordenar y priorizar ideas nuevas.
 - Datos astronomicos ampliados: fase lunar, posicion solar, elevacion, azimut y calidad de seeing.
 - Oleaje para ubicaciones costeras: usar Open-Meteo Marine para altura, periodo y direccion de olas.
 - Calidad del aire: PM2.5, PM10, NO2, O3 y AQI con Open-Meteo Air Quality.
-- PWA completa: manifest, service worker, instalacion movil y cache de ultimos datos.
+- PWA completa: mejorar la base actual con prompt de instalacion, pantalla offline, cache por tipo de dato y validacion Lighthouse.
 - Trayectoria de sistemas: capa de presion/isobaras para lectura sinoptica visual.
 - AEMET OpenData: avisos oficiales, estaciones cercanas y comparacion con Open-Meteo en Espana.
 - Sistema de confianza del pronostico: indicar si la prevision es alta, media o baja segun estabilidad y acuerdo entre modelos.
@@ -70,7 +71,7 @@ Siguiendo el "Stack de produccion" definido en el README:
 - [ ] **Fase 4: Nuevas Features (Post-migracion)**
   - Implementar Multi-ciudad y Favoritos.
   - Integrar AETHER con el nuevo sistema de estados.
-  - Activar PWA y modo offline.
+  - Completar PWA avanzada y modo offline.
 
 - Que fuente conviene para rayos en produccion y que limites tiene?
 - Meteoalarm permite integracion estable via RSS/API para el alcance deseado?

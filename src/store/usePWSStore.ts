@@ -2,13 +2,11 @@ import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 
 interface PWSState {
-  apiKey: string;
   selectedStationId: string | null;
   autoRefresh: boolean;
   refreshIntervalMin: number;
   favoriteStations: string[];
 
-  setApiKey: (key: string) => void;
   setSelectedStation: (id: string | null) => void;
   setAutoRefresh: (enabled: boolean) => void;
   setRefreshInterval: (minutes: number) => void;
@@ -19,13 +17,11 @@ interface PWSState {
 export const usePWSStore = create<PWSState>()(
   persist(
     (set) => ({
-      apiKey: '',
       selectedStationId: null,
       autoRefresh: false,
       refreshIntervalMin: 5,
       favoriteStations: [],
 
-      setApiKey: (apiKey) => set({ apiKey }),
       setSelectedStation: (selectedStationId) => set({ selectedStationId }),
       setAutoRefresh: (autoRefresh) => set({ autoRefresh }),
       setRefreshInterval: (refreshIntervalMin) => set({ refreshIntervalMin }),
