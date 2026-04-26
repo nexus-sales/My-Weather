@@ -58,16 +58,16 @@ Siguiendo el "Stack de produccion" definido en el README:
   - Configurar Layout global (Mission Control CSS tokens).
   - Implementar Store global con Zustand (Ubicacion, Preferencias).
 
-- [ ] **Fase 2: Servicios y Fetching**
+- [x] **Fase 2: Servicios y Fetching**
   - Migrar funciones de fetch a TanStack Query (Open-Meteo, Nominatim).
   - Crear Route Handlers para proxies (WU, Meteoalarm).
   - Tipado estricto de todas las respuestas de API.
 
 - [ ] **Fase 3: Refactor de Componentes**
-  - Extraer componentes de UI (Hero, Cards, Charts) del monolitico.
-  - Implementar Dashboard principal modularizado.
-  - Integrar Windy como componente cliente dedicado.
-  - Mostrar datos de las nuevas APIs en una banda de inteligencia del dashboard.
+  - [x] Extraer componentes de UI (Hero, Cards, Charts) del monolitico.
+  - [x] Implementar Dashboard principal modularizado (`DashboardView`, `CurrentWeatherCard`, graficas y prevision).
+  - [x] Integrar Windy como componente cliente dedicado.
+  - [x] Mostrar datos de las nuevas APIs en una banda de inteligencia del dashboard con paneles de detalle.
 
 - [ ] **Fase 4: Nuevas Features (Post-migracion)**
   - Implementar Multi-ciudad y Favoritos.

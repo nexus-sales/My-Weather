@@ -50,9 +50,10 @@ Actualmente el proyecto se encuentra en plena transición desde un prototipo mon
 - [x] **Route Handlers (proxies)**: `/api/wu` (Weather Underground), `/api/aemet` (AEMET OpenData), `/api/meteoalarm` (RSS Atom con parser integrado). API keys en servidor — nunca expuestas al cliente.
 
 ### ⏳ En progreso (Fase 3: Refactor de Componentes)
-- [ ] **Dashboard Modular**: Extracción de Previsión 7 días, Gráficas y Métricas.
-- [ ] **Módulo de Radar**: Integración de Windy como componente interactivo.
-- [ ] **AETHER AI**: Chat interactivo con análisis sinóptico profesional.
+- [x] **Dashboard Modular**: Implementado `DashboardView` y `CurrentWeatherCard`.
+- [x] **Banda de Inteligencia**: Nueva `IntelligenceStrip` interactiva con datos derivados (Riesgo tormenta, Aire, Mar).
+- [x] **Módulo de Radar**: Integración de Windy como componente interactivo.
+- [ ] **AETHER AI**: Chat interactivo con análisis sinóptico profesional (último paso Fase 3).
 
 ---
 
