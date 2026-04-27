@@ -1,20 +1,167 @@
 {
   "Index": {
     "title": "MyWeather",
-    "description": "La aplicación meteorológica más avanzada jamás construida con tecnología web."
+    "description": "La aplicacion meteorologica mas avanzada construida con tecnologia web.",
+    "controlCenter": "Centro de control v5.0",
+    "loading": "Sincronizando datos satelitales...",
+    "connectionError": "Error de conexion. Reenlazando con satelites ECMWF...",
+    "moduleOffline": "Modulo {module} offline",
+    "moduleMigrating": "En fase de migracion tecnica",
+    "footer": "Meteorologia a nivel de ingenieria",
+    "tabs": {
+      "dashboard": "Panel",
+      "radar": "Radar",
+      "ai": "AETHER AI",
+      "charts": "Analisis",
+      "history": "Historico",
+      "stations": "Estaciones"
+    }
+  },
+  "Search": {
+    "placeholder": "Buscar ciudad...",
+    "useLocation": "Usar mi ubicacion"
+  },
+  "Radar": {
+    "modes": {
+      "rain": "Precipitacion",
+      "wind": "Viento",
+      "temp": "Temperatura",
+      "clouds": "Nubes",
+      "satellite": "Satelite"
+    },
+    "expand": "Expandir",
+    "satelliteLink": "Enlace satelital activo",
+    "coordinates": "Coordenadas",
+    "provider": "Proveedor"
   },
   "Dashboard": {
-    "title": "PANEL",
-    "current_weather": "TIEMPO ACTUAL",
-    "feels_like": "Sensación",
-    "humidity": "HUMEDAD",
-    "pressure": "PRESIÓN",
-    "wind": "VIENTO",
-    "gusts": "RÁFAGAS",
-    "uv_index": "ÍNDICE UV",
-    "precipitation": "PRECIPITACIÓN",
+    "title": "Panel",
+    "current_weather": "Tiempo actual",
+    "feels_like": "Sensacion",
+    "humidity": "Humedad",
+    "pressure": "Presion",
+    "wind": "Viento",
+    "gusts": "Rafagas",
+    "uv_index": "Indice UV",
+    "precipitation": "Precipitacion",
     "sunrise": "Amanecer",
     "sunset": "Ocaso",
-    "forecast_7_days": "PREVISIÓN 7 DÍAS"
+    "forecast_7_days": "Prevision 7 dias",
+    "addFavorite": "Anadir a favoritos",
+    "savedFavorite": "Guardado en favoritos",
+    "favorites": "Favoritos",
+    "removeFavorite": "Eliminar de favoritos",
+    "satelliteStable": "Enlace satelital: estable",
+    "model": "Modelo: ECMWF IFS 0.1°",
+    "lastSync": "Ultima sincronizacion: {time}",
+    "thermalEvolution": "Evolucion termica (24h)",
+    "temperature": "Temperatura",
+    "rainProbability": "Prob. lluvia",
+    "rain": "Lluvia"
+  },
+  "Intelligence": {
+    "cards": {
+      "alerts": "Avisos",
+      "storms": "Tormentas",
+      "air": "Aire",
+      "marine": "Mar/Costa",
+      "lunar": "Luna",
+      "aemet": "AEMET+",
+      "metEireann": "Met Eireann",
+      "confidence": "Confianza"
+    },
+    "values": {
+      "activeAlerts": "{count} activos",
+      "noRisk": "Sin riesgo",
+      "stormRisk": "{risk}% riesgo",
+      "aqi": "AQI {aqi}",
+      "waveTrend": "{wave}m / {trend}",
+      "moonLight": "{illumination}% luz",
+      "extraLayers": "Capas extra",
+      "officialForecast": "Fuente oficial",
+      "highConfidence": "{score}% alta",
+      "rising": "Sube",
+      "falling": "Baja",
+      "steady": "Estable"
+    },
+    "alertsTitle": "Avisos oficiales (AEMET / MeteoAlarm)",
+    "noAlerts": "No hay avisos meteorologicos en vigor.",
+    "metrics": {
+      "cape": "Indice CAPE",
+      "lifted": "Lifted Index",
+      "convective": "Estado convectivo",
+      "maxGusts": "Rachas max.",
+      "globalAqi": "AQI global",
+      "quality": "Calidad",
+      "waveHeight": "Altura ola",
+      "period": "Periodo",
+      "seaTemp": "Temperatura mar",
+      "tideLevel": "Nivel marea",
+      "trend": "Tendencia",
+      "nextTide": "Proxima marea",
+      "phase": "Fase",
+      "illumination": "Iluminacion",
+      "moonAge": "Edad lunar",
+      "fullMoon": "Luna llena",
+      "newMoon": "Luna nueva"
+    },
+    "metEireann": {
+      "title": "Met Eireann oficial",
+      "current": "Prediccion puntual oficial para Irlanda.",
+      "unavailable": "Met Eireann solo se activa para coordenadas dentro de Irlanda.",
+      "temp": "Temperatura",
+      "wind": "Viento",
+      "rain": "Precipitacion",
+      "humidity": "Humedad",
+      "pressure": "Presion",
+      "cloud": "Nubosidad",
+      "updated": "Actualizado"
+    },
+    "tides": {
+      "high": "Alta",
+      "low": "Baja",
+      "noData": "Sin dato",
+      "note": "Fuente: {source}. El nivel del mar incluye marea modelizada y no sustituye tablas nauticas oficiales."
+    },
+    "aemet": {
+      "title": "AEMET OpenData disponible",
+      "capabilities": {
+        "alerts": "Avisos CAP oficiales",
+        "forecast": "Prediccion municipal y costera",
+        "stations": "Observacion de estaciones",
+        "radar": "Radar e imagenes",
+        "models": "Mapas y productos de modelo"
+      },
+      "note": "La ruta /api/aemet ya funciona como proxy generico por path. Siguiente paso: crear capas concretas para radar, prediccion costera, estaciones y productos de modelo sin exponer la API key al cliente."
+    },
+    "confidence": {
+      "title": "Analisis de calidad de prevision",
+      "body": "Basado en el acuerdo entre los modelos ECMWF, GFS e ICON. Actualmente hay un consenso del {score}% en la trayectoria de sistemas.",
+      "trustScore": "Trust score",
+      "source": "Fuente",
+      "consistency": "Consistencia"
+    },
+    "lunarPhases": {
+      "new": "Luna nueva",
+      "waxingCrescent": "Creciente inicial",
+      "firstQuarter": "Cuarto creciente",
+      "waxingGibbous": "Gibosa creciente",
+      "full": "Luna llena",
+      "waningGibbous": "Gibosa menguante",
+      "lastQuarter": "Cuarto menguante",
+      "waningCrescent": "Menguante final"
+    }
+  },
+  "Aether": {
+    "greeting": "Sincronizacion establecida. Soy AETHER. Analizando la situacion atmosferica en **{cityName}**. ¿En que puedo ayudarte hoy con el analisis meteorologico?",
+    "error": "Error de enlace satelital. Reintentando conexion...",
+    "status": "Motor cognitivo activo",
+    "tags": {
+      "synoptic": "Sinoptico",
+      "risks": "Riesgos",
+      "advice": "Consejos"
+    },
+    "placeholder": "Pregunta sobre la situacion sinoptica...",
+    "powered": "Desarrollado con Claude 3.5 Sonnet para analisis meteorologico"
   }
 }

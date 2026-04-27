@@ -1,0 +1,32 @@
+import { NextRequest, NextResponse } from 'next/server';
+
+const BASE = 'http://openaccess.pf.api.met.ie/metno-wdb2ts/locationforecast';
+
+export async function GET(request: NextRequest) {
+  const { searchParams } = request.nextUrl;
+  const lat = searchParams.get('lat');
+  const lon = searchParams.get('lon');
+
+  if (!lat || !lon) {
+    return NextResponse.json({ error: 'lat and lon are required' }, { status: 400 });
+  }
+
+  const url = `${BASE}?lat=${encodeURIComponent(lat)};long=${encodeURIComponent(lon)}`;
+
+  try {
+    const res = await fetch(url, { next: { revalidate: 1800 } });
+    if (!res.ok) {
+      return NextResponse.json({ error: 'Met Eireann API error', status: res.status }, { status: res.status });
+    }
+
+    const xml = await res.text();
+    return new NextResponse(xml, {
+      headers: {
+        'content-type': 'application/xml; charset=utf-8',
+        'cache-control': 'public, s-maxage=1800, stale-while-revalidate=1800',
+      },
+    });
+  } catch {
+    return NextResponse.json({ error: 'Failed to fetch Met Eireann data' }, { status: 502 });
+  }
+}

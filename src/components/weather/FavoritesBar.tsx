@@ -2,8 +2,10 @@
 
 import { Star, X, MapPin } from 'lucide-react';
 import { useLocationStore } from '@/store/useLocationStore';
+import { useTranslations } from 'next-intl';
 
 export default function FavoritesBar() {
+  const t = useTranslations('Dashboard');
   const { favorites, removeFavorite, setCoords, setCityName } = useLocationStore();
 
   if (favorites.length === 0) return null;
@@ -12,7 +14,7 @@ export default function FavoritesBar() {
     <div className="flex items-center gap-3 w-full overflow-x-auto no-scrollbar pb-2 animate-fadein">
       <div className="flex items-center gap-2 text-[8px] font-bold tracking-[0.2em] text-white/20 uppercase whitespace-nowrap">
         <Star size={10} className="text-meteorix-blue/40" />
-        Favoritos:
+        {t('favorites')}:
       </div>
       
       {favorites.map((fav) => (
@@ -33,7 +35,7 @@ export default function FavoritesBar() {
           <button
             onClick={() => removeFavorite(fav.id)}
             className="p-1.5 rounded-full hover:bg-red-500/10 text-white/10 hover:text-red-400 transition-all opacity-0 group-hover:opacity-100"
-            title="Eliminar de favoritos"
+            title={t('removeFavorite')}
           >
             <X size={10} />
           </button>

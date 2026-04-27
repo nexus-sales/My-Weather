@@ -8,6 +8,12 @@ import { Metadata, Viewport } from 'next';
 import QueryProvider from '@/providers/QueryProvider';
 import ServiceWorkerRegister from '@/components/pwa/ServiceWorkerRegister';
 
+type Locale = (typeof routing.locales)[number];
+
+function isLocale(locale: string): locale is Locale {
+  return routing.locales.includes(locale as Locale);
+}
+
 export const metadata: Metadata = {
   title: 'MyWeather',
   description: 'The most advanced weather app ever built with web technology. Created by Salvador Munoz Portillo.',
@@ -54,7 +60,7 @@ export default async function LocaleLayout({
 }) {
   const { locale } = await params;
 
-  if (!routing.locales.includes(locale as any)) {
+  if (!isLocale(locale)) {
     notFound();
   }
 

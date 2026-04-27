@@ -7,6 +7,16 @@ export interface AemetAviso {
   provincia: string;
 }
 
+interface AemetAvisoApiItem {
+  id?: string;
+  nivel?: AemetAviso['nivel'];
+  descripcion?: string;
+  texto?: string;
+  comienzo?: string;
+  fin?: string;
+  provincia?: string;
+}
+
 export const fetchAemetAlerts = async (): Promise<AemetAviso[]> => {
   try {
     const res = await fetch('/api/aemet?path=avisos_cap/ultimoelaborado/area/esp');
@@ -20,7 +30,7 @@ export const fetchAemetAlerts = async (): Promise<AemetAviso[]> => {
     
     if (!Array.isArray(data)) return [];
 
-    return data.map((item: any) => ({
+    return (data as AemetAvisoApiItem[]).map((item) => ({
       id: item.id || Math.random().toString(),
       nivel: item.nivel || 'amarillo',
       descripcion: item.descripcion || item.texto || 'Aviso meteorológico',

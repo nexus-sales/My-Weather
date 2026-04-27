@@ -1,6 +1,6 @@
 'use client';
 
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import { MapPin, Star } from 'lucide-react';
 import { WeatherData } from '@/services/weatherService';
 import { getWeatherCondition } from '@/lib/weatherUtils';
@@ -13,6 +13,7 @@ interface CurrentWeatherCardProps {
 
 export default function CurrentWeatherCard({ weather, cityName }: CurrentWeatherCardProps) {
   const d = useTranslations('Dashboard');
+  const locale = useLocale();
   const { coords, favorites, addFavorite, removeFavorite } = useLocationStore();
   
   const isFavorite = favorites.some(f => f.name === cityName);
@@ -30,7 +31,7 @@ export default function CurrentWeatherCard({ weather, cityName }: CurrentWeather
     }
   };
 
-  const condition = getWeatherCondition(weather.weatherCode);
+  const condition = getWeatherCondition(weather.weatherCode, locale);
 
   return (
     <div className="relative group bg-meteorix-card border border-meteorix-border p-8 rounded-3xl backdrop-blur-2xl transition-all hover:border-meteorix-blue/40 h-full">
@@ -62,7 +63,7 @@ export default function CurrentWeatherCard({ weather, cityName }: CurrentWeather
         >
           <Star size={10} fill={isFavorite ? 'currentColor' : 'none'} />
           <span className="text-[8px] tracking-widest font-bold uppercase">
-            {isFavorite ? 'GUARDADO EN FAVORITOS' : 'AÑADIR A FAVORITOS'}
+            {isFavorite ? d('savedFavorite') : d('addFavorite')}
           </span>
         </button>
       </div>

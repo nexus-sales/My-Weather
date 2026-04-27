@@ -6,7 +6,7 @@ const DEFAULT_HOURLY = [
   'wave_height', 'wave_direction', 'wave_period',
   'wind_wave_height', 'wind_wave_direction', 'wind_wave_period',
   'swell_wave_height', 'swell_wave_direction', 'swell_wave_period',
-  'sea_surface_temperature',
+  'sea_surface_temperature', 'sea_level_height_msl',
 ].join(',');
 
 const DEFAULT_DAILY = [

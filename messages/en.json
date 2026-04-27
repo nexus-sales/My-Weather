@@ -1,20 +1,167 @@
 {
   "Index": {
     "title": "MyWeather",
-    "description": "The most advanced weather app ever built with web technology."
+    "description": "The most advanced weather app ever built with web technology.",
+    "controlCenter": "Control Center v5.0",
+    "loading": "Syncing satellite data...",
+    "connectionError": "Connection error. Re-linking to ECMWF satellites...",
+    "moduleOffline": "{module} module offline",
+    "moduleMigrating": "In technical migration phase",
+    "footer": "Engineering-grade meteorology",
+    "tabs": {
+      "dashboard": "Dashboard",
+      "radar": "Radar",
+      "ai": "AETHER AI",
+      "charts": "Analysis",
+      "history": "History",
+      "stations": "Stations"
+    }
+  },
+  "Search": {
+    "placeholder": "Search city...",
+    "useLocation": "Use my location"
+  },
+  "Radar": {
+    "modes": {
+      "rain": "Precipitation",
+      "wind": "Wind",
+      "temp": "Temperature",
+      "clouds": "Clouds",
+      "satellite": "Satellite"
+    },
+    "expand": "Expand",
+    "satelliteLink": "Satellite link active",
+    "coordinates": "Coordinates",
+    "provider": "Provider"
   },
   "Dashboard": {
-    "title": "DASHBOARD",
-    "current_weather": "CURRENT WEATHER",
+    "title": "Dashboard",
+    "current_weather": "Current weather",
     "feels_like": "Feels like",
-    "humidity": "HUMIDITY",
-    "pressure": "PRESSURE",
-    "wind": "WIND",
-    "gusts": "GUSTS",
-    "uv_index": "UV INDEX",
-    "precipitation": "PRECIPITATION",
+    "humidity": "Humidity",
+    "pressure": "Pressure",
+    "wind": "Wind",
+    "gusts": "Gusts",
+    "uv_index": "UV index",
+    "precipitation": "Precipitation",
     "sunrise": "Sunrise",
     "sunset": "Sunset",
-    "forecast_7_days": "7-DAY FORECAST"
+    "forecast_7_days": "7-day forecast",
+    "addFavorite": "Add to favorites",
+    "savedFavorite": "Saved to favorites",
+    "favorites": "Favorites",
+    "removeFavorite": "Remove from favorites",
+    "satelliteStable": "Satellite link: stable",
+    "model": "Model: ECMWF IFS 0.1°",
+    "lastSync": "Last sync: {time}",
+    "thermalEvolution": "Thermal evolution (24h)",
+    "temperature": "Temperature",
+    "rainProbability": "Rain chance",
+    "rain": "Rain"
+  },
+  "Intelligence": {
+    "cards": {
+      "alerts": "Alerts",
+      "storms": "Storms",
+      "air": "Air",
+      "marine": "Sea/Coast",
+      "lunar": "Moon",
+      "aemet": "AEMET+",
+      "metEireann": "Met Eireann",
+      "confidence": "Confidence"
+    },
+    "values": {
+      "activeAlerts": "{count} active",
+      "noRisk": "No risk",
+      "stormRisk": "{risk}% risk",
+      "aqi": "AQI {aqi}",
+      "waveTrend": "{wave}m / {trend}",
+      "moonLight": "{illumination}% light",
+      "extraLayers": "Extra layers",
+      "officialForecast": "Official source",
+      "highConfidence": "{score}% high",
+      "rising": "Rising",
+      "falling": "Falling",
+      "steady": "Steady"
+    },
+    "alertsTitle": "Official alerts (AEMET / MeteoAlarm)",
+    "noAlerts": "No active weather alerts.",
+    "metrics": {
+      "cape": "CAPE index",
+      "lifted": "Lifted Index",
+      "convective": "Convective state",
+      "maxGusts": "Max gusts",
+      "globalAqi": "Global AQI",
+      "quality": "Quality",
+      "waveHeight": "Wave height",
+      "period": "Period",
+      "seaTemp": "Sea temperature",
+      "tideLevel": "Tide level",
+      "trend": "Trend",
+      "nextTide": "Next tide",
+      "phase": "Phase",
+      "illumination": "Illumination",
+      "moonAge": "Moon age",
+      "fullMoon": "Full moon",
+      "newMoon": "New moon"
+    },
+    "metEireann": {
+      "title": "Official Met Eireann",
+      "current": "Official point forecast for Ireland.",
+      "unavailable": "Met Eireann only activates for coordinates inside Ireland.",
+      "temp": "Temperature",
+      "wind": "Wind",
+      "rain": "Precipitation",
+      "humidity": "Humidity",
+      "pressure": "Pressure",
+      "cloud": "Cloudiness",
+      "updated": "Updated"
+    },
+    "tides": {
+      "high": "High",
+      "low": "Low",
+      "noData": "No data",
+      "note": "Source: {source}. Sea level includes modelled tide and does not replace official nautical tide tables."
+    },
+    "aemet": {
+      "title": "AEMET OpenData available",
+      "capabilities": {
+        "alerts": "Official CAP alerts",
+        "forecast": "Municipal and coastal forecast",
+        "stations": "Station observations",
+        "radar": "Radar and imagery",
+        "models": "Model maps and products"
+      },
+      "note": "The /api/aemet route already works as a generic path proxy. Next step: create specific layers for radar, coastal forecast, stations and model products without exposing the API key to the client."
+    },
+    "confidence": {
+      "title": "Forecast quality analysis",
+      "body": "Based on agreement between ECMWF, GFS and ICON models. Current consensus is {score}% for system tracks.",
+      "trustScore": "Trust score",
+      "source": "Source",
+      "consistency": "Consistency"
+    },
+    "lunarPhases": {
+      "new": "New moon",
+      "waxingCrescent": "Waxing crescent",
+      "firstQuarter": "First quarter",
+      "waxingGibbous": "Waxing gibbous",
+      "full": "Full moon",
+      "waningGibbous": "Waning gibbous",
+      "lastQuarter": "Last quarter",
+      "waningCrescent": "Waning crescent"
+    }
+  },
+  "Aether": {
+    "greeting": "Synchronization established. I am AETHER. Analyzing the atmospheric situation in **{cityName}**. How can I help with the meteorological analysis today?",
+    "error": "Satellite link error. Retrying connection...",
+    "status": "Cognitive engine active",
+    "tags": {
+      "synoptic": "Synoptic",
+      "risks": "Risks",
+      "advice": "Advice"
+    },
+    "placeholder": "Ask about the synoptic situation...",
+    "powered": "Powered by Claude 3.5 Sonnet for meteorological analysis"
   }
 }

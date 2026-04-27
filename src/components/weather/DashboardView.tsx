@@ -7,6 +7,7 @@ import Forecast7Days from './Forecast7Days';
 import IntelligenceStrip from './IntelligenceStrip';
 import FavoritesBar from './FavoritesBar';
 import { useIntelligence } from '@/hooks/useIntelligence';
+import { useTranslations } from 'next-intl';
 
 interface DashboardViewProps {
   weather: WeatherData;
@@ -14,6 +15,7 @@ interface DashboardViewProps {
 }
 
 export default function DashboardView({ weather, cityName }: DashboardViewProps) {
+  const t = useTranslations('Dashboard');
   const intelligence = useIntelligence(weather);
 
   return (
@@ -41,14 +43,14 @@ export default function DashboardView({ weather, cityName }: DashboardViewProps)
       <div className="pt-8 border-t border-white/5 flex flex-wrap gap-x-8 gap-y-4 justify-center md:justify-start">
         <div className="flex items-center gap-2">
           <div className="w-1.5 h-1.5 rounded-full bg-meteorix-green animate-pulse" />
-          <span className="text-[8px] font-orbitron tracking-[0.2em] text-white/30 uppercase">Satellite Link: STABLE</span>
+          <span className="text-[8px] font-orbitron tracking-[0.2em] text-white/30 uppercase">{t('satelliteStable')}</span>
         </div>
         <div className="flex items-center gap-2">
           <div className="w-1.5 h-1.5 rounded-full bg-meteorix-blue" />
-          <span className="text-[8px] font-orbitron tracking-[0.2em] text-white/30 uppercase">Model: ECMWF IFS 0.1°</span>
+          <span className="text-[8px] font-orbitron tracking-[0.2em] text-white/30 uppercase">{t('model')}</span>
         </div>
         <div className="flex items-center gap-2">
-          <span className="text-[8px] font-orbitron tracking-[0.2em] text-white/30 uppercase">Last Sync: {new Date(weather.current.time).toLocaleTimeString()}</span>
+          <span className="text-[8px] font-orbitron tracking-[0.2em] text-white/30 uppercase">{t('lastSync', { time: new Date(weather.current.time).toLocaleTimeString() })}</span>
         </div>
       </div>
     </div>

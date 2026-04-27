@@ -1,35 +1,51 @@
-export const WMO_MAP: Record<number, { label: string; icon: string }> = {
-  0: { label: "Despejado", icon: "☀️" },
-  1: { label: "Casi despejado", icon: "🌤️" },
-  2: { label: "Parcialmente nublado", icon: "⛅" },
-  3: { label: "Cubierto", icon: "☁️" },
-  45: { label: "Niebla", icon: "🌫️" },
-  48: { label: "Niebla escarchada", icon: "🌫️" },
-  51: { label: "Llovizna débil", icon: "🌦️" },
-  53: { label: "Llovizna moderada", icon: "🌦️" },
-  55: { label: "Llovizna densa", icon: "🌧️" },
-  61: { label: "Lluvia débil", icon: "🌧️" },
-  63: { label: "Lluvia moderada", icon: "🌧️" },
-  65: { label: "Lluvia intensa", icon: "🌧️" },
-  71: { label: "Nevada débil", icon: "🌨️" },
-  73: { label: "Nevada moderada", icon: "❄️" },
-  75: { label: "Nevada intensa", icon: "❄️" },
-  77: { label: "Granizo", icon: "🌨️" },
-  80: { label: "Chubascos débiles", icon: "🌦️" },
-  81: { label: "Chubascos moderados", icon: "🌧️" },
-  82: { label: "Chubascos violentos", icon: "⛈️" },
-  85: { label: "Nieve en chubascos", icon: "🌨️" },
-  86: { label: "Nieve intensa", icon: "❄️" },
-  95: { label: "Tormenta", icon: "⛈️" },
-  96: { label: "Tormenta c/ granizo", icon: "⛈️" },
-  99: { label: "Tormenta severa", icon: "🌪️" }
+type WeatherCondition = {
+  label: {
+    es: string;
+    en: string;
+  };
+  icon: string;
 };
 
-export const getWeatherCondition = (code: number) => {
-  return WMO_MAP[code] || { label: "Variable", icon: "🌡️" };
+export const WMO_MAP: Record<number, WeatherCondition> = {
+  0: { label: { es: 'Despejado', en: 'Clear sky' }, icon: '☀️' },
+  1: { label: { es: 'Casi despejado', en: 'Mainly clear' }, icon: '🌤️' },
+  2: { label: { es: 'Parcialmente nublado', en: 'Partly cloudy' }, icon: '⛅' },
+  3: { label: { es: 'Cubierto', en: 'Overcast' }, icon: '☁️' },
+  45: { label: { es: 'Niebla', en: 'Fog' }, icon: '🌫️' },
+  48: { label: { es: 'Niebla escarchada', en: 'Depositing rime fog' }, icon: '🌫️' },
+  51: { label: { es: 'Llovizna debil', en: 'Light drizzle' }, icon: '🌦️' },
+  53: { label: { es: 'Llovizna moderada', en: 'Moderate drizzle' }, icon: '🌦️' },
+  55: { label: { es: 'Llovizna densa', en: 'Dense drizzle' }, icon: '🌧️' },
+  61: { label: { es: 'Lluvia debil', en: 'Slight rain' }, icon: '🌧️' },
+  63: { label: { es: 'Lluvia moderada', en: 'Moderate rain' }, icon: '🌧️' },
+  65: { label: { es: 'Lluvia intensa', en: 'Heavy rain' }, icon: '🌧️' },
+  71: { label: { es: 'Nevada debil', en: 'Slight snow' }, icon: '🌨️' },
+  73: { label: { es: 'Nevada moderada', en: 'Moderate snow' }, icon: '❄️' },
+  75: { label: { es: 'Nevada intensa', en: 'Heavy snow' }, icon: '❄️' },
+  77: { label: { es: 'Granizo', en: 'Snow grains' }, icon: '🌨️' },
+  80: { label: { es: 'Chubascos debiles', en: 'Slight rain showers' }, icon: '🌦️' },
+  81: { label: { es: 'Chubascos moderados', en: 'Moderate rain showers' }, icon: '🌧️' },
+  82: { label: { es: 'Chubascos violentos', en: 'Violent rain showers' }, icon: '⛈️' },
+  85: { label: { es: 'Nieve en chubascos', en: 'Snow showers' }, icon: '🌨️' },
+  86: { label: { es: 'Nieve intensa', en: 'Heavy snow showers' }, icon: '❄️' },
+  95: { label: { es: 'Tormenta', en: 'Thunderstorm' }, icon: '⛈️' },
+  96: { label: { es: 'Tormenta con granizo', en: 'Thunderstorm with hail' }, icon: '⛈️' },
+  99: { label: { es: 'Tormenta severa', en: 'Severe thunderstorm' }, icon: '🌪️' },
+};
+
+export const getWeatherCondition = (code: number, locale = 'es') => {
+  const condition = WMO_MAP[code] ?? {
+    label: { es: 'Variable', en: 'Variable' },
+    icon: '🌡️',
+  };
+
+  return {
+    label: locale === 'en' ? condition.label.en : condition.label.es,
+    icon: condition.icon,
+  };
 };
 
 export const getWindDirection = (degree: number) => {
-  const directions = ["N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSO", "SO", "OSO", "O", "ONO", "NO", "NNO"];
+  const directions = ['N', 'NNE', 'NE', 'ENE', 'E', 'ESE', 'SE', 'SSE', 'S', 'SSO', 'SO', 'OSO', 'O', 'ONO', 'NO', 'NNO'];
   return directions[Math.round(degree / 22.5) % 16];
 };

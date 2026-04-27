@@ -34,7 +34,7 @@ export default function Forecast7Days({ data }: Forecast7DaysProps) {
 
       <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3">
         {data.time.map((time, i) => {
-          const condition = getWeatherCondition(data.weatherCode[i]);
+          const condition = getWeatherCondition(data.weatherCode[i], locale);
           const isToday = i === 0;
 
           return (

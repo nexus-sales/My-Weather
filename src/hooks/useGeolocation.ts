@@ -12,16 +12,15 @@ interface GeolocationState {
 
 export function useGeolocation(): GeolocationState {
   const { setCoords, setCityName } = useLocationStore();
+  const supported = typeof navigator !== 'undefined' && 'geolocation' in navigator;
   const [state, setState] = useState<GeolocationState>({
-    loading: false,
+    loading: supported,
     error: null,
-    supported: typeof navigator !== 'undefined' && 'geolocation' in navigator,
+    supported,
   });
 
   useEffect(() => {
     if (!state.supported) return;
-
-    setState((s) => ({ ...s, loading: true }));
 
     navigator.geolocation.getCurrentPosition(
       async ({ coords: { latitude: lat, longitude: lon } }) => {

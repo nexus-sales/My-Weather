@@ -7,7 +7,7 @@ import { useLocationStore } from '@/store/useLocationStore';
 import { useTranslations } from 'next-intl';
 
 export default function SearchBar() {
-  const t = useTranslations('Index');
+  const t = useTranslations('Search');
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<CityResult[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -83,7 +83,7 @@ export default function SearchBar() {
           type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="Buscar ciudad..."
+          placeholder={t('placeholder')}
           className="w-full bg-[#001941]/60 border border-white/10 rounded-xl py-2 pl-10 pr-10 text-sm font-exo2 focus:outline-none focus:border-meteorix-blue/40 transition-all placeholder:text-white/20"
         />
         {isLoading ? (
@@ -96,7 +96,7 @@ export default function SearchBar() {
         <button 
           onClick={handleGeoLocation}
           className="absolute right-3 p-1 hover:bg-white/5 rounded-md transition-colors group"
-          title="Usar mi ubicación"
+          title={t('useLocation')}
         >
           <MapPin className="w-4 h-4 text-meteorix-blue/60 group-hover:text-meteorix-blue" />
         </button>
