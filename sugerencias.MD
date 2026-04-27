@@ -7,7 +7,7 @@ Archivo vivo para ir anotando, ordenar y priorizar ideas nuevas.
 - PWA instalable y responsive real: tratar movil como experiencia principal, tablet como panel intermedio y desktop como centro de control meteorologico.
 - Indice de tormentas en tiempo real: integrar Blitzortung u otra fuente de rayos para mostrar actividad electrica en el mapa.
 - Rosa de los vientos animada: componente visual que gire segun la direccion real del viento y muestre velocidad/rachas.
-- Multi-ciudad y favoritos: guardar 5-10 ubicaciones en localStorage para cambiar rapidamente sin usar Supabase al principio.
+- [x] Multi-ciudad y favoritos: guardar hasta 10 ubicaciones en localStorage para cambiar rápidamente.
 - Alertas oficiales europeas: integrar Meteoalarm para avisos meteorologicos relevantes en Espana y Europa.
 - Briefing diario inteligente: resumen tipo "lo importante de hoy" con riesgos, cambios respecto a ayer, mejor franja horaria y recomendacion practica.
 - Alertas inteligentes personalizadas: lluvia cercana, viento fuerte, UV alto, bajada/subida brusca de temperatura, presion cayendo rapido.
@@ -20,7 +20,7 @@ Archivo vivo para ir anotando, ordenar y priorizar ideas nuevas.
 - Calidad del aire: PM2.5, PM10, NO2, O3 y AQI con Open-Meteo Air Quality.
 - PWA completa: mejorar la base actual con prompt de instalacion, pantalla offline, cache por tipo de dato y validacion Lighthouse.
 - Trayectoria de sistemas: capa de presion/isobaras para lectura sinoptica visual.
-- AEMET OpenData: avisos oficiales, estaciones cercanas y comparacion con Open-Meteo en Espana.
+- AEMET OpenData: [IN PROGRESS] Avisos oficiales integrados en la banda de inteligencia. Pendiente: estaciones cercanas y comparacion con Open-Meteo.
 - Sistema de confianza del pronostico: indicar si la prevision es alta, media o baja segun estabilidad y acuerdo entre modelos.
 - Nowcasting hiperlocal: mostrar la diferencia entre el modelo global ECMWF y el regional DWD ICON-D2 (resolucion 1km) para la siguiente hora. Feature unico que ningun servicio generalista expone.
 - Niebla y visibilidad: Open-Meteo ya devuelve la variable `visibility` pero casi nadie la muestra bien. Indicador tipo "Visibilidad: 200 m — niebla densa" con icono y nivel de riesgo.
@@ -53,6 +53,7 @@ Archivo vivo para ir anotando, ordenar y priorizar ideas nuevas.
 
 Siguiendo el "Stack de produccion" definido en el README:
 
+- [x] **AETHER AI**: Chat interactivo con análisis sinóptico profesional (Fase 3 completada).
 - [ ] **Fase 1: Estructura Base**
   - Inicializar proyecto Next.js (App Router) + TypeScript + Tailwind.
   - Configurar Layout global (Mission Control CSS tokens).
@@ -63,15 +64,15 @@ Siguiendo el "Stack de produccion" definido en el README:
   - Crear Route Handlers para proxies (WU, Meteoalarm).
   - Tipado estricto de todas las respuestas de API.
 
-- [ ] **Fase 3: Refactor de Componentes**
+- [x] **Fase 3: Refactor de Componentes**
   - [x] Extraer componentes de UI (Hero, Cards, Charts) del monolitico.
   - [x] Implementar Dashboard principal modularizado (`DashboardView`, `CurrentWeatherCard`, graficas y prevision).
   - [x] Integrar Windy como componente cliente dedicado.
   - [x] Mostrar datos de las nuevas APIs en una banda de inteligencia del dashboard con paneles de detalle.
 
-- [ ] **Fase 4: Nuevas Features (Post-migracion)**
-  - Implementar Multi-ciudad y Favoritos.
-  - Integrar AETHER con el nuevo sistema de estados.
+- [x] **Fase 4: Nuevas Features (Post-migracion)**
+  - [x] Implementar Multi-ciudad y Favoritos.
+  - [x] Integrar AETHER con el nuevo sistema de estados.
   - Completar PWA avanzada y modo offline.
 
 - Que fuente conviene para rayos en produccion y que limites tiene?

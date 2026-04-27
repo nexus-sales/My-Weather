@@ -48,10 +48,16 @@ export default function IntelligenceStrip({ data }: IntelligenceStripProps) {
       {/* Detail Panel */}
       {activeCard && (
         <div className="bg-meteorix-card/60 border border-meteorix-border rounded-2xl p-6 backdrop-blur-xl animate-fadein border-t-meteorix-blue/30">
-          {activeCard === 'alerts' && (
+          {data.isLoading && (
+            <div className="flex items-center justify-center py-8">
+              <div className="w-4 h-4 border-2 border-meteorix-blue/30 border-t-meteorix-blue rounded-full animate-spin" />
+            </div>
+          )}
+          
+          {activeCard === 'alerts' && !data.isLoading && (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <h4 className="text-[10px] tracking-widest text-meteorix-orange font-bold mb-4 uppercase">Alertas Activas (MeteoAlarm)</h4>
+                <h4 className="text-[10px] tracking-widest text-meteorix-orange font-bold mb-4 uppercase">Avisos Oficiales (AEMET / MeteoAlarm)</h4>
                 <div className="space-y-2">
                   {data.alerts.details.length > 0 ? data.alerts.details.map((d, i) => (
                     <div key={i} className="text-xs text-white/60 bg-white/5 p-3 rounded-lg border border-white/5 flex items-center gap-2">
@@ -63,7 +69,7 @@ export default function IntelligenceStrip({ data }: IntelligenceStripProps) {
               </div>
             </div>
           )}
-          {activeCard === 'storms' && (
+          {activeCard === 'storms' && !data.isLoading && (
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
               <div className="space-y-1">
                 <div className="text-[8px] tracking-widest text-white/30 uppercase">CAPE Index</div>
@@ -83,7 +89,7 @@ export default function IntelligenceStrip({ data }: IntelligenceStripProps) {
               </div>
             </div>
           )}
-          {activeCard === 'air' && (
+          {activeCard === 'air' && !data.isLoading && (
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
               <div className="space-y-1">
                 <div className="text-[8px] tracking-widest text-white/30 uppercase">AQI Global</div>
@@ -103,7 +109,7 @@ export default function IntelligenceStrip({ data }: IntelligenceStripProps) {
               </div>
             </div>
           )}
-          {activeCard === 'marine' && (
+          {activeCard === 'marine' && !data.isLoading && (
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
               <div className="space-y-1">
                 <div className="text-[8px] tracking-widest text-white/30 uppercase">Altura Ola</div>
@@ -123,7 +129,7 @@ export default function IntelligenceStrip({ data }: IntelligenceStripProps) {
               </div>
             </div>
           )}
-          {activeCard === 'confidence' && (
+          {activeCard === 'confidence' && !data.isLoading && (
             <div className="flex flex-col gap-4">
               <div className="flex items-center gap-4">
                 <div className="flex-1">

@@ -49,11 +49,15 @@ Actualmente el proyecto se encuentra en plena transición desde un prototipo mon
 - [x] **Hooks TanStack Query**: `useWeather` (10 min), `useWeatherHistory` (inmutable), `usePWSNearby` + `usePWSStation` (5 min), `useAlerts` (30 min).
 - [x] **Route Handlers (proxies)**: `/api/wu` (Weather Underground), `/api/aemet` (AEMET OpenData), `/api/meteoalarm` (RSS Atom con parser integrado). API keys en servidor — nunca expuestas al cliente.
 
-### ⏳ En progreso (Fase 3: Refactor de Componentes)
+### ✅ Completado (Fase 3: Refactor de Componentes)
 - [x] **Dashboard Modular**: Implementado `DashboardView` y `CurrentWeatherCard`.
-- [x] **Banda de Inteligencia**: Nueva `IntelligenceStrip` interactiva con datos derivados (Riesgo tormenta, Aire, Mar).
+- [x] **Banda de Inteligencia**: Nueva `IntelligenceStrip` interactiva con datos de **AEMET OpenData** (avisos oficiales) y heurística avanzada.
 - [x] **Módulo de Radar**: Integración de Windy como componente interactivo.
-- [ ] **AETHER AI**: Chat interactivo con análisis sinóptico profesional (último paso Fase 3).
+- [x] **AETHER AI**: Chat interactivo con análisis sinóptico profesional (Claude 3.5 Sonnet).
+
+### ⏳ En progreso (Fase 4: Nuevas Features)
+- [x] **Multi-ciudad y Favoritos**: Sistema de persistencia en `localStorage` con barra de acceso rápido.
+- [ ] **PWA Avanzada**: Prompt de instalación y modo offline completo.
 
 ---
 

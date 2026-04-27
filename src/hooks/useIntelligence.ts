@@ -1,5 +1,7 @@
 import { useMemo } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { WeatherData } from '@/services/weatherService';
+import { fetchAemetAlerts } from '@/services/aemetService';
 
 export interface IntelligenceData {
   alerts: {
@@ -9,8 +11,8 @@ export interface IntelligenceData {
   };
   storms: {
     risk: number; // 0-100
-    cape: number; // Simulated
-    liftedIndex: number; // Simulated
+    cape: number;
+    liftedIndex: number;
     rifts: string;
   };
   air: {
@@ -29,9 +31,17 @@ export interface IntelligenceData {
     source: string;
     consistency: string;
   };
+  isLoading?: boolean;
 }
 
 export const useIntelligence = (weather: WeatherData | undefined): IntelligenceData => {
+  const { data: aemetAlerts, isLoading: isLoadingAemet } = useQuery({
+    queryKey: ['aemet-alerts'],
+    queryFn: fetchAemetAlerts,
+    refetchInterval: 1000 * 60 * 30, // 30 minutes
+    enabled: !!weather,
+  });
+
   return useMemo(() => {
     if (!weather) {
       return {
@@ -40,25 +50,42 @@ export const useIntelligence = (weather: WeatherData | undefined): IntelligenceD
         air: { aqi: 0, pm10: 0, pm25: 0, status: 'Cargando' },
         marine: { waveHeight: 0, period: 0, temp: 0 },
         confidence: { score: 0, source: 'N/A', consistency: 'N/A' },
+        isLoading: true,
       };
     }
 
-    // Heuristics for simulated intelligence (until we integrate specialized APIs)
+    // Heuristics for simulated intelligence
     const isRainy = weather.current.precip > 0.5;
     const isWindy = weather.current.windSpeed > 30;
     const humidity = weather.current.humidity;
 
-    const alertsCount = (isRainy ? 1 : 0) + (isWindy ? 1 : 0);
-    const alertLevel = alertsCount > 1 ? 'orange' : alertsCount > 0 ? 'yellow' : 'none';
+    // Merge AEMET Alerts if available
+    const officialAlerts = aemetAlerts || [];
+    const alertsCount = officialAlerts.length > 0 ? officialAlerts.length : (isRainy ? 1 : 0) + (isWindy ? 1 : 0);
+    
+    // Determine max level
+    let alertLevel: 'none' | 'yellow' | 'orange' | 'red' = 'none';
+    if (officialAlerts.length > 0) {
+      const levels = officialAlerts.map(a => a.nivel);
+      if (levels.includes('rojo')) alertLevel = 'red';
+      else if (levels.includes('naranja')) alertLevel = 'orange';
+      else if (levels.includes('amarillo')) alertLevel = 'yellow';
+    } else {
+      alertLevel = alertsCount > 1 ? 'orange' : alertsCount > 0 ? 'yellow' : 'none';
+    }
+
+    const alertDetails = officialAlerts.length > 0 
+      ? officialAlerts.map(a => `${a.provincia}: ${a.descripcion}`)
+      : [
+          ...(isRainy ? ['Riesgo de precipitaciones intensas (Heurística)'] : []),
+          ...(isWindy ? ['Rachas de viento superiores a 30km/h (Heurística)'] : []),
+        ];
 
     return {
       alerts: {
         count: alertsCount,
         level: alertLevel,
-        details: [
-          ...(isRainy ? ['Riesgo de precipitaciones intensas'] : []),
-          ...(isWindy ? ['Rachas de viento superiores a 30km/h'] : []),
-        ],
+        details: alertDetails,
       },
       storms: {
         risk: isRainy ? 65 : 12,
@@ -82,6 +109,7 @@ export const useIntelligence = (weather: WeatherData | undefined): IntelligenceD
         source: 'ECMWF / IFS 0.1°',
         consistency: 'Alta (Gale Force Agreement)',
       },
+      isLoading: isLoadingAemet,
     };
-  }, [weather]);
+  }, [weather, aemetAlerts, isLoadingAemet]);
 };

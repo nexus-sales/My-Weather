@@ -1,9 +1,10 @@
 'use client';
 
 import { useTranslations } from 'next-intl';
-import { MapPin } from 'lucide-react';
+import { MapPin, Star } from 'lucide-react';
 import { WeatherData } from '@/services/weatherService';
 import { getWeatherCondition } from '@/lib/weatherUtils';
+import { useLocationStore } from '@/store/useLocationStore';
 
 interface CurrentWeatherCardProps {
   weather: WeatherData['current'];
@@ -12,6 +13,23 @@ interface CurrentWeatherCardProps {
 
 export default function CurrentWeatherCard({ weather, cityName }: CurrentWeatherCardProps) {
   const d = useTranslations('Dashboard');
+  const { coords, favorites, addFavorite, removeFavorite } = useLocationStore();
+  
+  const isFavorite = favorites.some(f => f.name === cityName);
+  
+  const toggleFavorite = () => {
+    if (isFavorite) {
+      const fav = favorites.find(f => f.name === cityName);
+      if (fav) removeFavorite(fav.id);
+    } else {
+      addFavorite({
+        id: `${coords.lat}-${coords.lon}`,
+        name: cityName,
+        coords
+      });
+    }
+  };
+
   const condition = getWeatherCondition(weather.weatherCode);
 
   return (
@@ -29,9 +47,24 @@ export default function CurrentWeatherCard({ weather, cityName }: CurrentWeather
         {Math.round(weather.temp)}°
       </div>
       
-      <div className="text-[10px] font-bold tracking-[0.3em] text-white/40 uppercase mb-8 flex items-center gap-2">
-        <MapPin size={10} className="text-meteorix-blue" />
-        {cityName}
+      <div className="flex flex-col gap-1 mb-8">
+        <div className="text-[10px] font-bold tracking-[0.3em] text-white/40 uppercase flex items-center gap-2">
+          <MapPin size={10} className="text-meteorix-blue" />
+          {cityName}
+        </div>
+        <button 
+          onClick={toggleFavorite}
+          className={`flex items-center gap-2 mt-2 w-fit px-3 py-1.5 rounded-lg border transition-all ${
+            isFavorite 
+              ? 'bg-meteorix-blue/10 border-meteorix-blue/40 text-meteorix-blue' 
+              : 'bg-white/5 border-white/5 text-white/20 hover:text-white/40 hover:border-white/10'
+          }`}
+        >
+          <Star size={10} fill={isFavorite ? 'currentColor' : 'none'} />
+          <span className="text-[8px] tracking-widest font-bold uppercase">
+            {isFavorite ? 'GUARDADO EN FAVORITOS' : 'AÑADIR A FAVORITOS'}
+          </span>
+        </button>
       </div>
       
       <div className="grid grid-cols-2 gap-y-6 gap-x-4 pt-8 border-t border-white/5">

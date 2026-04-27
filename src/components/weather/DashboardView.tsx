@@ -5,6 +5,7 @@ import CurrentWeatherCard from './CurrentWeatherCard';
 import HourlyChart from './HourlyChart';
 import Forecast7Days from './Forecast7Days';
 import IntelligenceStrip from './IntelligenceStrip';
+import FavoritesBar from './FavoritesBar';
 import { useIntelligence } from '@/hooks/useIntelligence';
 
 interface DashboardViewProps {
@@ -17,6 +18,9 @@ export default function DashboardView({ weather, cityName }: DashboardViewProps)
 
   return (
     <div className="space-y-8 animate-fadein">
+      {/* Quick Access Favorites */}
+      <FavoritesBar />
+
       {/* Intelligence Strip */}
       <IntelligenceStrip data={intelligence} />
 

@@ -5,6 +5,7 @@ import LocaleSwitcher from '@/components/ui/LocaleSwitcher';
 import SearchBar from '@/components/ui/SearchBar';
 import DashboardView from '@/components/weather/DashboardView';
 import RadarView from '@/components/radar/RadarView';
+import AetherChat from '@/components/ai/AetherChat';
 import { useWeather } from '@/hooks/useWeather';
 import { useLocationStore } from '@/store/useLocationStore';
 import { LayoutDashboard, Map as MapIcon, BrainCircuit, BarChart3, History, Satellite } from 'lucide-react';
@@ -97,7 +98,11 @@ export default function HomePage() {
                 <RadarView />
               )}
 
-              {activeTab !== 'dashboard' && activeTab !== 'radar' && (
+              {activeTab === 'ai' && (
+                <AetherChat weather={weather} cityName={cityName} />
+              )}
+
+              {activeTab !== 'dashboard' && activeTab !== 'radar' && activeTab !== 'ai' && (
                 <div className="flex flex-col items-center justify-center py-32 border border-dashed border-white/10 rounded-3xl bg-white/5">
                   <div className="text-[10px] tracking-[0.4em] font-bold text-white/30 uppercase mb-4 animate-pulse">
                     Módulo {activeTab.toUpperCase()} Offline
