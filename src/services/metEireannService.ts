@@ -16,7 +16,7 @@ export interface MetEireannForecast {
 }
 
 export const isIrelandCoords = (lat: number, lon: number) =>
-  lat >= 51.2 && lat <= 55.8 && lon >= -10.9 && lon <= -5.2;
+  lat >= 51.0 && lat <= 56.0 && lon >= -11.0 && lon <= -5.0;
 
 const readNumber = (node: Element | null, attr: string) => {
   const raw = node?.getAttribute(attr);
@@ -25,18 +25,31 @@ const readNumber = (node: Element | null, attr: string) => {
   return Number.isFinite(value) ? value : undefined;
 };
 
-const findCurrentForecastNode = (doc: Document) => {
-  const times = Array.from(doc.querySelectorAll('product > time'));
+const findTargetTime = (doc: Document) => {
+  const times = Array.from(doc.getElementsByTagName('time'));
   const now = Date.now();
 
-  return times.find((time) => {
-    const from = Date.parse(time.getAttribute('from') ?? '');
-    const to = Date.parse(time.getAttribute('to') ?? '');
+  // Find the closest "from" time that is currently valid or in the near future
+  const current = times.find((time) => {
+    const fromStr = time.getAttribute('from');
+    const animatedTo = time.getAttribute('to');
+    if (!fromStr || !animatedTo) return false;
+    
+    const from = Date.parse(fromStr);
+    const to = Date.parse(animatedTo);
     return Number.isFinite(from) && Number.isFinite(to) && from <= now && to >= now;
-  }) ?? times.find((time) => {
-    const from = Date.parse(time.getAttribute('from') ?? '');
+  });
+
+  if (current) return current.getAttribute('from');
+
+  const future = times.find((time) => {
+    const fromStr = time.getAttribute('from');
+    if (!fromStr) return false;
+    const from = Date.parse(fromStr);
     return Number.isFinite(from) && from > now;
   });
+
+  return future?.getAttribute('from');
 };
 
 export const fetchMetEireannForecast = async (lat: number, lon: number): Promise<MetEireannForecast> => {
@@ -49,40 +62,67 @@ export const fetchMetEireannForecast = async (lat: number, lon: number): Promise
     lon: lon.toString(),
   });
 
-  const res = await fetch(`/api/met-eireann?${params.toString()}`);
-  if (!res.ok) {
+  try {
+    const res = await fetch(`/api/met-eireann?${params.toString()}`);
+    if (!res.ok) return { isAvailable: false, source: 'Met Eireann' };
+
+    const xml = await res.text();
+    const doc = new DOMParser().parseFromString(xml, 'application/xml');
+    
+    if (doc.getElementsByTagName('parsererror').length > 0) {
+      return { isAvailable: false, source: 'Met Eireann' };
+    }
+
+    const targetFrom = findTargetTime(doc);
+    if (!targetFrom) return { isAvailable: false, source: 'Met Eireann' };
+
+    // Collect all nodes for this target "from" time
+    const allTimes = Array.from(doc.getElementsByTagName('time'));
+    const nodes = allTimes.filter(t => t.getAttribute('from') === targetFrom);
+    const data: any = {};
+
+    nodes.forEach((node) => {
+      const location = node.getElementsByTagName('location')[0];
+      if (!location) return;
+
+      const temp = location.getElementsByTagName('temperature')[0];
+      if (temp) data.temp = readNumber(temp, 'value');
+
+      const windSpeed = location.getElementsByTagName('windSpeed')[0];
+      if (windSpeed) data.windSpeed = readNumber(windSpeed, 'mps');
+
+      const windDir = location.getElementsByTagName('windDirection')[0];
+      if (windDir) data.windDirection = readNumber(windDir, 'deg');
+
+      const precip = location.getElementsByTagName('precipitation')[0];
+      if (precip) data.precipitation = readNumber(precip, 'value');
+
+      const hum = location.getElementsByTagName('humidity')[0];
+      if (hum) data.humidity = readNumber(hum, 'value');
+
+      const press = location.getElementsByTagName('pressure')[0];
+      if (press) data.pressure = readNumber(press, 'value');
+
+      const cloud = location.getElementsByTagName('cloudiness')[0];
+      if (cloud) data.cloudiness = readNumber(cloud, 'percent');
+
+      const sym = location.getElementsByTagName('symbol')[0];
+      if (sym) data.symbol = sym.getAttribute('id');
+    });
+
+    if (Object.keys(data).length === 0) return { isAvailable: false, source: 'Met Eireann' };
+
+    return {
+      isAvailable: true,
+      source: 'Met Eireann',
+      updated: doc.getElementsByTagName('updated')[0]?.textContent ?? undefined,
+      nextHour: {
+        time: targetFrom,
+        ...data,
+      },
+    };
+  } catch (err) {
+    console.error('Met Eireann fetch error:', err);
     return { isAvailable: false, source: 'Met Eireann' };
   }
-
-  const xml = await res.text();
-  const doc = new DOMParser().parseFromString(xml, 'application/xml');
-  const parserError = doc.querySelector('parsererror');
-
-  if (parserError) {
-    return { isAvailable: false, source: 'Met Eireann' };
-  }
-
-  const time = findCurrentForecastNode(doc);
-  const location = time?.querySelector('location') ?? null;
-
-  if (!time || !location) {
-    return { isAvailable: false, source: 'Met Eireann' };
-  }
-
-  return {
-    isAvailable: true,
-    source: 'Met Eireann',
-    updated: doc.querySelector('meta > updated')?.textContent ?? undefined,
-    nextHour: {
-      time: time.getAttribute('from') ?? '',
-      temp: readNumber(location.querySelector('temperature'), 'value'),
-      windSpeed: readNumber(location.querySelector('windSpeed'), 'mps'),
-      windDirection: readNumber(location.querySelector('windDirection'), 'deg'),
-      precipitation: readNumber(location.querySelector('precipitation'), 'value'),
-      humidity: readNumber(location.querySelector('humidity'), 'value'),
-      pressure: readNumber(location.querySelector('pressure'), 'value'),
-      cloudiness: readNumber(location.querySelector('cloudiness'), 'percent'),
-      symbol: location.querySelector('symbol')?.getAttribute('id') ?? undefined,
-    },
-  };
 };

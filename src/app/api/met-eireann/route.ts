@@ -14,7 +14,13 @@ export async function GET(request: NextRequest) {
   const url = `${BASE}?lat=${encodeURIComponent(lat)};long=${encodeURIComponent(lon)}`;
 
   try {
-    const res = await fetch(url, { next: { revalidate: 1800 } });
+    const res = await fetch(url, {
+      headers: {
+        'User-Agent': 'MyWeather/1.0 (Engineering-grade weather app)',
+      },
+      next: { revalidate: 1800 }
+    });
+    
     if (!res.ok) {
       return NextResponse.json({ error: 'Met Eireann API error', status: res.status }, { status: res.status });
     }
@@ -26,7 +32,8 @@ export async function GET(request: NextRequest) {
         'cache-control': 'public, s-maxage=1800, stale-while-revalidate=1800',
       },
     });
-  } catch {
+  } catch (err) {
+    console.error('Met Eireann Proxy error:', err);
     return NextResponse.json({ error: 'Failed to fetch Met Eireann data' }, { status: 502 });
   }
 }

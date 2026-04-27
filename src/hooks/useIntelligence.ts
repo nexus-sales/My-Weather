@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { useLocale } from 'next-intl';
 import { useQuery } from '@tanstack/react-query';
 import { WeatherData } from '@/services/weatherService';
-import { fetchAemetAlerts } from '@/services/aemetService';
+import { fetchAemetAlerts, fetchAemetCoastalForecast, fetchAemetRadar, fetchAemetStations } from '@/services/aemetService';
 import { getLunarData, LunarData } from '@/services/astroService';
 import { fetchMarineData } from '@/services/marineService';
 import { fetchMetEireannForecast, isIrelandCoords, MetEireannForecast } from '@/services/metEireannService';
@@ -42,6 +42,10 @@ export interface IntelligenceData {
   lunar: LunarData;
   aemet: {
     capabilities: string[];
+    radar?: any[];
+    stations?: any[];
+    nearestStation?: any;
+    coastal?: any;
   };
   metEireann: MetEireannForecast;
   confidence: {
@@ -57,11 +61,34 @@ export const useIntelligence = (weather: WeatherData | undefined): IntelligenceD
   const { coords } = useLocationStore();
   const isIreland = isIrelandCoords(coords.lat, coords.lon);
 
+  const isSpain = coords.lat >= 27 && coords.lat <= 44 && coords.lon >= -19 && coords.lon <= 5;
+
   const { data: aemetAlerts, isLoading: isLoadingAemet } = useQuery({
     queryKey: ['aemet-alerts'],
     queryFn: fetchAemetAlerts,
     refetchInterval: 1000 * 60 * 30,
-    enabled: !!weather,
+    enabled: !!weather && isSpain,
+  });
+
+  const { data: aemetRadar, isLoading: isLoadingRadar } = useQuery({
+    queryKey: ['aemet-radar'],
+    queryFn: fetchAemetRadar,
+    refetchInterval: 1000 * 60 * 15,
+    enabled: !!weather && isSpain,
+  });
+
+  const { data: aemetStations, isLoading: isLoadingStations } = useQuery({
+    queryKey: ['aemet-stations'],
+    queryFn: fetchAemetStations,
+    staleTime: 1000 * 60 * 60,
+    enabled: !!weather && isSpain,
+  });
+
+  const { data: aemetCoastal, isLoading: isLoadingCoastal } = useQuery({
+    queryKey: ['aemet-coastal', coords.lat, coords.lon],
+    queryFn: () => fetchAemetCoastalForecast('esp'),
+    staleTime: 1000 * 60 * 60,
+    enabled: !!weather && isSpain,
   });
 
   const { data: marineData, isLoading: isLoadingMarine } = useQuery({
@@ -79,6 +106,21 @@ export const useIntelligence = (weather: WeatherData | undefined): IntelligenceD
     refetchInterval: 1000 * 60 * 60,
     enabled: !!weather && isIreland,
   });
+
+  const nearestStation = useMemo(() => {
+    if (!aemetStations || aemetStations.length === 0) return undefined;
+    let nearest = aemetStations[0];
+    let minDistance = Number.MAX_VALUE;
+
+    aemetStations.forEach((station: any) => {
+      const d = Math.sqrt((station.lat - coords.lat) ** 2 + (station.lon - coords.lon) ** 2);
+      if (d < minDistance) {
+        minDistance = d;
+        nearest = station;
+      }
+    });
+    return nearest;
+  }, [aemetStations, coords.lat, coords.lon]);
 
   return useMemo(() => {
     const lunar = getLunarData(new Date(), locale);
@@ -152,6 +194,10 @@ export const useIntelligence = (weather: WeatherData | undefined): IntelligenceD
       lunar,
       aemet: {
         capabilities: ['alerts', 'forecast', 'stations', 'radar', 'models'],
+        radar: aemetRadar,
+        stations: aemetStations,
+        nearestStation,
+        coastal: aemetCoastal,
       },
       metEireann: metEireannData ?? { isAvailable: false, source: 'Met Eireann' },
       confidence: {
@@ -159,7 +205,7 @@ export const useIntelligence = (weather: WeatherData | undefined): IntelligenceD
         source: isIreland && metEireannData?.isAvailable ? 'Met Eireann / ECMWF' : 'ECMWF / IFS 0.1°',
         consistency: locale === 'en' ? 'High (Gale Force Agreement)' : 'Alta (Gale Force Agreement)',
       },
-      isLoading: isLoadingAemet || isLoadingMarine || isLoadingMetEireann,
+      isLoading: isLoadingAemet || isLoadingMarine || isLoadingMetEireann || isLoadingRadar || isLoadingStations || isLoadingCoastal,
     };
-  }, [weather, aemetAlerts, marineData, metEireannData, isIreland, isLoadingAemet, isLoadingMarine, isLoadingMetEireann, locale]);
+  }, [weather, aemetAlerts, aemetRadar, aemetStations, aemetCoastal, marineData, metEireannData, isIreland, isSpain, isLoadingAemet, isLoadingMarine, isLoadingMetEireann, isLoadingRadar, isLoadingStations, isLoadingCoastal, locale, coords.lat, coords.lon, nearestStation]);
 };

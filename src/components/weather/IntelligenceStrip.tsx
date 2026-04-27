@@ -125,18 +125,80 @@ export default function IntelligenceStrip({ data }: IntelligenceStripProps) {
           )}
 
           {activeCard === 'aemet' && !data.isLoading && (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div>
                 <h4 className="text-[10px] tracking-widest text-cyan-300 font-bold mb-4 uppercase">{t('aemet.title')}</h4>
+                
+                {data.aemet.nearestStation ? (
+                  <div className="bg-white/5 border border-white/5 rounded-xl p-4 mb-4">
+                    <div className="text-[8px] tracking-widest text-white/30 uppercase mb-2">Estación más cercana (AEMET)</div>
+                    <div className="text-sm font-bold text-white/90 mb-1">{data.aemet.nearestStation.ubi}</div>
+                    <div className="flex gap-6 mt-3">
+                      <div>
+                        <div className="text-[8px] text-white/20 uppercase mb-1">Temperatura</div>
+                        <div className="text-sm font-bold font-orbitron text-cyan-300">{data.aemet.nearestStation.ta}ºC</div>
+                      </div>
+                      {data.aemet.nearestStation.vvm !== undefined && (
+                        <div>
+                          <div className="text-[8px] text-white/20 uppercase mb-1">Viento</div>
+                          <div className="text-sm font-bold font-orbitron text-white/60">{Math.round(data.aemet.nearestStation.vvm * 3.6)} km/h</div>
+                        </div>
+                      )}
+                      {data.aemet.nearestStation.prec !== undefined && (
+                        <div>
+                          <div className="text-[8px] text-white/20 uppercase mb-1">Lluvia</div>
+                          <div className="text-sm font-bold font-orbitron text-meteorix-blue">{data.aemet.nearestStation.prec} mm</div>
+                        </div>
+                      )}
+                    </div>
+                    <div className="mt-3 pt-3 border-t border-white/5 text-[8px] text-white/20 uppercase">
+                      Obs: {new Date(data.aemet.nearestStation.fint).toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' })}
+                    </div>
+                  </div>
+                ) : (
+                  <div className="text-xs text-white/30 italic mb-4">No hay estaciones cercanas activas.</div>
+                )}
+                
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                   {data.aemet.capabilities.map((capability) => (
-                    <div key={capability} className="text-xs text-white/60 bg-white/5 p-3 rounded-lg border border-white/5">
+                    <div key={capability} className="text-[9px] text-white/50 bg-white/5 px-3 py-2 rounded-lg border border-white/5">
                       {t(`aemet.capabilities.${capability}`)}
                     </div>
                   ))}
                 </div>
               </div>
-              <p className="text-xs text-white/40 leading-relaxed">{t('aemet.note')}</p>
+              
+              <div className="space-y-4">
+                <h4 className="text-[10px] tracking-widest text-cyan-300 font-bold mb-4 uppercase">Radar Nacional (AEMET)</h4>
+                {data.aemet.radar && data.aemet.radar.length > 0 ? (
+                  <div className="relative group overflow-hidden rounded-xl border border-white/10">
+                    <img 
+                      src={data.aemet.radar[0].url} 
+                      alt="AEMET Radar" 
+                      className="w-full aspect-video object-cover hover:scale-110 transition-transform duration-700"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex flex-col justify-end p-4">
+                      <div className="text-[8px] font-bold text-white/90 uppercase tracking-widest">{data.aemet.radar[0].nombre}</div>
+                      <div className="text-[7px] text-white/40 uppercase mt-1">Sincronización satelital activa</div>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="bg-white/5 rounded-xl aspect-video flex flex-col items-center justify-center border border-white/5 gap-3">
+                    <div className="w-4 h-4 border-2 border-white/10 border-t-cyan-400 rounded-full animate-spin" />
+                    <div className="text-[8px] text-white/20 uppercase tracking-[0.2em]">Sincronizando radar...</div>
+                  </div>
+                )}
+                {data.aemet.coastal && (
+                  <div className="bg-blue-900/10 border border-blue-900/20 rounded-xl p-4">
+                    <div className="text-[8px] tracking-widest text-blue-400 uppercase mb-2">Predicción Marítima</div>
+                    <div className="text-[10px] font-bold text-white/80 mb-2">{data.aemet.coastal.nombre}</div>
+                    <p className="text-[9px] text-white/50 leading-relaxed line-clamp-3 hover:line-clamp-none transition-all cursor-pointer">
+                      {data.aemet.coastal.texto}
+                    </p>
+                  </div>
+                )}
+                <p className="text-[9px] text-white/30 leading-relaxed italic border-l-2 border-cyan-400/30 pl-3">{t('aemet.note')}</p>
+              </div>
             </div>
           )}
 
