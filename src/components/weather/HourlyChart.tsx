@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import {
   Area,
   AreaChart,
@@ -56,6 +57,12 @@ function CustomTooltip({ active, payload, label, temperatureLabel, rainLabel }: 
 
 export default function HourlyChart({ data }: HourlyChartProps) {
   const t = useTranslations('Dashboard');
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
   const chartData = data.time.slice(0, 24).map((time, i) => {
     const h = new Date(time).getHours();
     return {
@@ -69,6 +76,14 @@ export default function HourlyChart({ data }: HourlyChartProps) {
   const tempMin = Math.min(...temps) - 2;
   const tempMax = Math.max(...temps) + 2;
 
+  if (!isMounted) {
+    return (
+      <div className="w-full h-[320px] bg-meteorix-card border border-meteorix-border rounded-3xl p-6 flex items-center justify-center">
+        <div className="w-6 h-6 border-2 border-meteorix-blue/10 border-t-meteorix-blue rounded-full animate-spin" />
+      </div>
+    );
+  }
+
   return (
     <div className="w-full h-full bg-meteorix-card border border-meteorix-border rounded-3xl p-6 backdrop-blur-xl animate-fadein" style={{ animationDelay: '300ms' }}>
       <div className="flex items-center gap-2 mb-8">
@@ -79,7 +94,7 @@ export default function HourlyChart({ data }: HourlyChartProps) {
       </div>
 
       <div className="h-[220px] w-full relative">
-        <ResponsiveContainer width="100%" height="100%" minHeight={220}>
+        <ResponsiveContainer width="99.9%" height={220}>
           <AreaChart data={chartData} margin={{ top: 10, right: 30, left: -10, bottom: 0 }}>
             <defs>
               <linearGradient id="gradTemp" x1="0" y1="0" x2="0" y2="1">

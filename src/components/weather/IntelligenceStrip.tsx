@@ -1,9 +1,19 @@
 'use client';
 
 import { useState } from 'react';
+import dynamic from 'next/dynamic';
 import { useLocale, useTranslations } from 'next-intl';
 import { CheckCircle2, ChevronDown, ChevronUp, CloudSun, DatabaseZap, Moon, ShieldAlert, Waves, Wind, Zap } from 'lucide-react';
 import { IntelligenceData } from '@/hooks/useIntelligence';
+
+const RadarMap = dynamic(() => import('@/components/radar/RadarMap'), {
+  ssr: false,
+  loading: () => (
+    <div className="aspect-video rounded-xl border border-white/10 bg-[#00060f] flex items-center justify-center">
+      <div className="w-4 h-4 border-2 border-white/10 border-t-cyan-400 rounded-full animate-spin" />
+    </div>
+  ),
+});
 
 interface IntelligenceStripProps {
   data: IntelligenceData;
@@ -170,24 +180,9 @@ export default function IntelligenceStrip({ data }: IntelligenceStripProps) {
               
               <div className="space-y-4">
                 <h4 className="text-[10px] tracking-widest text-cyan-300 font-bold mb-4 uppercase">Radar Nacional (AEMET)</h4>
-                {data.aemet.radar && data.aemet.radar.length > 0 ? (
-                  <div className="relative group overflow-hidden rounded-xl border border-white/10">
-                    <img 
-                      src={data.aemet.radar[0].url} 
-                      alt="AEMET Radar" 
-                      className="w-full aspect-video object-cover hover:scale-110 transition-transform duration-700"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex flex-col justify-end p-4">
-                      <div className="text-[8px] font-bold text-white/90 uppercase tracking-widest">{data.aemet.radar[0].nombre}</div>
-                      <div className="text-[7px] text-white/40 uppercase mt-1">Sincronización satelital activa</div>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="bg-white/5 rounded-xl aspect-video flex flex-col items-center justify-center border border-white/5 gap-3">
-                    <div className="w-4 h-4 border-2 border-white/10 border-t-cyan-400 rounded-full animate-spin" />
-                    <div className="text-[8px] text-white/20 uppercase tracking-[0.2em]">Sincronizando radar...</div>
-                  </div>
-                )}
+                <div className="rounded-xl overflow-hidden border border-white/10">
+                  <RadarMap />
+                </div>
                 {data.aemet.coastal && (
                   <div className="bg-blue-900/10 border border-blue-900/20 rounded-xl p-4">
                     <div className="text-[8px] tracking-widest text-blue-400 uppercase mb-2">Predicción Marítima</div>

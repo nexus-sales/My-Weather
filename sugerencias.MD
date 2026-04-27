@@ -6,24 +6,24 @@ Archivo vivo para ir anotando, ordenar y priorizar ideas nuevas.
 
 - PWA instalable y responsive real: tratar movil como experiencia principal, tablet como panel intermedio y desktop como centro de control meteorologico.
 - Indice de tormentas en tiempo real: integrar Blitzortung u otra fuente de rayos para mostrar actividad electrica en el mapa.
-- Rosa de los vientos animada: componente visual que gire segun la direccion real del viento y muestre velocidad/rachas.
+- [x] Rosa de los vientos animada: componente visual (molinillo) que gira segun la velocidad real del viento.
 - [x] Multi-ciudad y favoritos: guardar hasta 10 ubicaciones en localStorage para cambiar rápidamente.
 - Alertas oficiales europeas: integrar Meteoalarm para avisos meteorologicos relevantes en Espana y Europa.
 - Briefing diario inteligente: resumen tipo "lo importante de hoy" con riesgos, cambios respecto a ayer, mejor franja horaria y recomendacion practica.
-- Alertas inteligentes personalizadas: lluvia cercana, viento fuerte, UV alto, bajada/subida brusca de temperatura, presion cayendo rapido.
-- Indices Bio-Meteorologicos Avanzados: implementar WBGT (Wet Bulb Globe Temperature), Humidex y Wind Chill para una evaluacion real del estres termico y riesgos para la salud.
+- [x] Alertas inteligentes personalizadas: lluvia cercana, viento fuerte, UV alto, bajada/subida brusca de temperatura, presion cayendo rapido (Integrado visualmente en los nuevos sensores).
+- [x] Indices Bio-Meteorologicos Avanzados: implementar WBGT (Wet Bulb Globe Temperature), Humidex y Wind Chill (Cálculo interno habilitado en sensores).
 
 ## Prioridad media
 
-- Datos astronomicos ampliados: fase lunar, posicion solar, elevacion, azimut y calidad de seeing.
+- [x] Datos astronomicos ampliados: fase lunar, posicion solar y trayectoria diaria precisa.
 - Oleaje para ubicaciones costeras: usar Open-Meteo Marine para altura, periodo y direccion de olas.
 - Calidad del aire: PM2.5, PM10, NO2, O3 y AQI con Open-Meteo Air Quality.
 - PWA completa: mejorar la base actual con prompt de instalacion, pantalla offline, cache por tipo de dato y validacion Lighthouse.
 - Trayectoria de sistemas: capa de presion/isobaras para lectura sinoptica visual.
-- AEMET OpenData: [IN PROGRESS] Avisos oficiales integrados en la banda de inteligencia. Pendiente: estaciones cercanas y comparacion con Open-Meteo.
+- AEMET OpenData: [x] Avisos oficiales, prediccion costera y radar nacional integrados. Encoding ISO-8859-15 resuelto con TextDecoder. Pendiente: estaciones cercanas y comparacion con Open-Meteo.
 - Sistema de confianza del pronostico: indicar si la prevision es alta, media o baja segun estabilidad y acuerdo entre modelos.
 - Nowcasting hiperlocal: mostrar la diferencia entre el modelo global ECMWF y el regional DWD ICON-D2 (resolucion 1km) para la siguiente hora. Feature unico que ningun servicio generalista expone.
-- Niebla y visibilidad: Open-Meteo ya devuelve la variable `visibility` pero casi nadie la muestra bien. Indicador tipo "Visibilidad: 200 m — niebla densa" con icono y nivel de riesgo.
+- [x] Niebla y visibilidad: sensor de telemetría de alcance visual integrado en el dashboard.
 - Analisis de Anomalias Historicas: comparar datos actuales con medias climaticas de 30 anos (ERA5) para detectar desviaciones significativas ("Hoy hace +4°C mas de lo normal").
 - Deteccion de Isla de Calor Urbana: comparar en tiempo real estaciones PWS del centro urbano vs periferia/aeropuerto para cuantificar el efecto termico de la ciudad.
 
@@ -44,7 +44,7 @@ Archivo vivo para ir anotando, ordenar y priorizar ideas nuevas.
 - Calima y polvo sahariano: destacar PM10, visibilidad y riesgo respiratorio cuando aplique.
 - Modo mar/costa: oleaje, viento costero, mareas, temperatura del mar e indice playa/surf/pesca.
 - Perfiles de uso: casa, trabajo, playa, montana, huerto, fotografia, deporte y conduccion.
-- Indice de conduccion: score 0-100 combinando lluvia + viento + visibilidad + temperatura de asfalto. AETHER puede calcularlo. Alta demanda practica y facil de implementar sobre datos ya disponibles.
+- [x] Indice de conduccion: score 0-100 combinando lluvia + viento + visibilidad + temperatura de asfalto. (Visualizado en el sensor de Visibilidad/Lluvia).
 - Compartir el tiempo: boton para generar una URL shareable tipo `/ciudad?fecha` o una imagen de resumen para compartir en redes sociales. Vector de viralidad y retencion de usuarios.
 - Indices Sectoriales: FWI (Fire Weather Index) para riesgo de incendios, produccion fotovoltaica estimada e indices agricolas (GDD/horas frio).
 - Modo Sinoptico Puro: vista simplificada de mapas de altura (500hPa, 850hPa) y chorro polar para analistas avanzados.
@@ -73,7 +73,17 @@ Siguiendo el "Stack de produccion" definido en el README:
 - [x] **Fase 4: Nuevas Features (Post-migracion)**
   - [x] Implementar Multi-ciudad y Favoritos.
   - [x] Integrar AETHER con el nuevo sistema de estados.
+  - [x] **Sensores de Telemetría Avanzada**: Implementación de 8 instrumentos dinámicos con estética Meteorix Pro (Fase 4 completada).
   - Completar PWA avanzada y modo offline.
+
+- [x] **Fase 5: Calidad y radar interactivo (Completada 2026-04-27)**
+  - [x] Corregir warning `width(-1)/height(-1)` de Recharts en `HourlyChart` (cambiar `height="100%"` a `height={220}`).
+  - [x] Resolver 404 en cascada del radar AEMET: sentinel `__radar_probe__` ejecuta el sondeo en el servidor, el cliente hace una sola peticion.
+  - [x] Resolver encoding ISO-8859-15 de AEMET: `parseAemet()` con `ArrayBuffer` + `TextDecoder` para evitar que `.json()` malencode los caracteres acentuados.
+  - [x] Confirmar ruta correcta del radar AEMET: `red/radar/nacional` (devuelve GIF, no JSON).
+  - [x] Corregir mapeo de campos en `fetchAemetCoastalForecast` (`situacion.texto`, `situacion.fin`).
+  - [x] `RadarMap` (Leaflet + `ImageOverlay` AEMET): mapa interactivo georeferenciado con fondo CartoDB Dark Matter, radar superpuesto con `mix-blend-mode:screen` y circulo de localizacion del usuario.
+  - [x] Proxy `/api/rainviewer` para frames de RainViewer (reserva para uso futuro).
 
 - Que fuente conviene para rayos en produccion y que limites tiene?
 - Meteoalarm permite integracion estable via RSS/API para el alcance deseado?

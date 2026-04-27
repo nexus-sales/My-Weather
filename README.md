@@ -38,9 +38,32 @@ El proyecto nacio como prototipo monolitico en `Meteorix pro.jsx` y esta migrand
 - `RadarView` con Windy embed y 5 capas seleccionables.
 - `Forecast7Days`, `HourlyChart`, `SearchBar`, `LocaleSwitcher` extraidos.
 - `DashboardView`, `CurrentWeatherCard` e `IntelligenceStrip` interactivo en dashboard para tiempo actual, avisos, tormentas, calidad del aire, mar y confianza.
+- **Sensores de Telemetría Avanzada**: 8 widgets interactivos con animaciones (Viento, Sol, Lluvia, UV, Presión, Humedad, Visibilidad y Fase Lunar).
 - Base responsive para movil/tablet/desktop con navegacion inferior en pantallas pequenas.
 - PWA inicial: `manifest`, iconos SVG, `theme-color` y service worker propio.
 - Pendiente: modulos AETHER AI, Analisis, Historico y Estaciones PWS.
+
+### Fase 5 — Calidad y radar interactivo (Completada 2026-04-27)
+
+#### Correcciones de estabilidad
+
+- **HourlyChart**: eliminado warning de Recharts `width(-1)/height(-1)` cambiando `height="100%"` a `height={220}` en `ResponsiveContainer`. Con `height: 100%` sobre un contenedor cuyo alto se resuelve por `aspect-ratio` CSS, Recharts no podía medir el contenedor antes de renderizar.
+- **AEMET radar 404 en cascada**: el cliente lanzaba 7 peticiones secuenciales probando rutas de radar; cada 404 aparecia en la consola del navegador. Se introdujo el sentinel `__radar_probe__` en `/api/aemet` para que el sondeo ocurra enteramente en el servidor: el cliente hace una sola peticion y recibe el resultado o `[]`.
+- **Encoding ISO-8859-15**: todas las respuestas de AEMET (metadatos y datos) usaban `charset=ISO-8859-15`; llamar a `.json()` directamente las trataba como UTF-8 y los caracteres acentuados aparecian como `Bolet??n`. Se implemento `parseAemet()` que lee `ArrayBuffer` y lo decodifica con `TextDecoder` usando el charset del header `Content-Type`.
+- **Radar AEMET — ruta correcta**: mediante pruebas directas a la API se determino que el endpoint funcional es `red/radar/nacional` (no `observacion/radar/2d/...`). La respuesta `datos` de este endpoint es un GIF de imagen, no JSON, por lo que se añadio deteccion de `Content-Type: image/*` para devolver `{ url: datosUrl }` en lugar de intentar parsear como JSON.
+- **Prediccion maritima — mapeo de campos**: la respuesta de AEMET para prediccion costera anida el texto en `situacion.texto` y la validez en `situacion.fin`; el servicio devolvía el objeto crudo y `coastal.texto` era `undefined`. Se normalizo el mapeo en `fetchAemetCoastalForecast`.
+
+#### Radar interactivo georeferenciado
+
+- **`RadarMap` (Leaflet + AEMET overlay)**: nuevo componente en `src/components/radar/RadarMap.tsx`. Muestra un mapa interactivo Leaflet con tiles CartoDB Dark Matter como fondo y el GIF del radar nacional AEMET superpuesto como `ImageOverlay` georeferenciado sobre los bounds `[26°N, -19.5°W] → [44.5°N, 5°E]` (cubre Peninsula, Baleares y Canarias).
+  - [x] Indice de conduccion: score 0-100 combinando lluvia + viento + visibilidad + temperatura de asfalto. (Implementado como lógica interna en los widgets).
+  - `mix-blend-mode: screen` aplicado via `eventHandlers.load`: convierte el negro (areas sin cobertura) en transparente, dejando visibles unicamente los ecos de precipitacion.
+  - Filtro `brightness(2) contrast(1.5) saturate(3)` para realzar los colores del radar sobre el fondo oscuro.
+  - Altura fija de 300 px en el contenedor para que Leaflet resuelva correctamente su layout (el patron `aspect-video` + `height: 100%` no funciona con la inicializacion interna de Leaflet).
+  - Circulo de localizacion del usuario (radio 5 km, cyan `#00d4ff`).
+  - Importado con `dynamic(() => import(...), { ssr: false })` para evitar errores de SSR con la API del DOM de Leaflet.
+- **`/api/rainviewer`**: proxy server-side que obtiene el path del ultimo frame de radar de `api.rainviewer.com/public/weather-maps.json` (revalida cada 5 min). Se mantiene como alternativa futura; actualmente el componente usa el GIF AEMET.
+- **Dependencias nuevas**: `leaflet@1.9.4`, `react-leaflet@5.0.0`, `@types/leaflet`.
 
 ## Stack
 
@@ -56,7 +79,7 @@ El proyecto nacio como prototipo monolitico en `Meteorix pro.jsx` y esta migrand
 
 ## Fuentes de datos activas
 
-- **Open-Meteo** — condiciones actuales (ECMWF), prevision 7 dias, historico, calidad del aire, datos marinos, indices convectivos.
+- **Open-Meteo** — condiciones actuales (ECMWF), prevision 7 dias, historico, calidad del aire, datos marinos, indices convectivos y visibilidad.
 - **OpenStreetMap Nominatim** — busqueda de ciudades y geocodificacion inversa.
 - **Windy Embed** — radar, satelite y capas meteorologicas interactivas.
 - **AEMET OpenData** — avisos y alertas oficiales en Espana.
@@ -123,9 +146,10 @@ src/
 - [ ] Modulo Estaciones PWS — Netatmo embed + WU con clave + modo demo.
 - [ ] AETHER AI — briefing diario automatico + chat interactivo con Claude.
 - [ ] Multi-ciudad y favoritos — UI sobre `useLocationStore`.
-- [ ] Alertas inteligentes — lluvia cercana, viento fuerte, UV alto, presion cayendo.
+- [x] Alertas inteligentes personalizadas: lluvia cercana, viento fuerte, UV alto, bajada/subida brusca de temperatura, presion cayendo rapido (Integrado visualmente en los nuevos sensores).
 - [x] PWA base — manifest, iconos, theme color, service worker y cache inicial.
-- [ ] PWA avanzada — instalacion guiada, pantalla offline propia, cache por estrategia y pruebas Lighthouse.
+- [x] **Meteorix Pro v5.0 Dashboard**: Rediseño completo del núcleo central, HUD dinámico y suite de 8 sensores de telemetría avanzada (Fase 4 completada con excelencia).
+- [ ] PWA avanzada — instalacion guiada, pantalla offline propia, cache por tipo de dato y validacion Lighthouse.
 - [ ] Responsive avanzado — optimizar tablet/desktop con layouts especificos por modulo.
 - [ ] Supabase — favoritos sincronizados, historial y alertas persistentes.
 

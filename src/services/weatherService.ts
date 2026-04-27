@@ -45,6 +45,7 @@ export interface WeatherData {
     gusts: number;
     uvIndex: number;
     precip: number;
+    visibility: number;
     weatherCode: number;
     time: string;
   };
@@ -71,7 +72,7 @@ export const fetchWeather = async (lat: number, lon: number, units: string = 'me
   const url = new URL('https://api.open-meteo.com/v1/forecast');
   url.searchParams.append('latitude', lat.toString());
   url.searchParams.append('longitude', lon.toString());
-  url.searchParams.append('current', 'temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,weather_code,pressure_msl,wind_speed_10m,wind_direction_10m,wind_gusts_10m,uv_index');
+  url.searchParams.append('current', 'temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,rain,showers,weather_code,pressure_msl,wind_speed_10m,wind_direction_10m,wind_gusts_10m,uv_index,visibility');
   url.searchParams.append('hourly', 'temperature_2m,precipitation_probability,weather_code');
   url.searchParams.append('daily', 'weather_code,temperature_2m_max,temperature_2m_min,precipitation_sum,precipitation_probability_max,sunrise,sunset,uv_index_max');
   url.searchParams.append('timezone', 'auto');
@@ -97,7 +98,8 @@ export const fetchWeather = async (lat: number, lon: number, units: string = 'me
       windDir: data.current.wind_direction_10m,
       gusts: data.current.wind_gusts_10m,
       uvIndex: data.current.uv_index,
-      precip: data.current.precipitation,
+      precip: Math.max(data.current.precipitation || 0, data.current.rain || 0, data.current.showers || 0),
+      visibility: data.current.visibility,
       weatherCode: data.current.weather_code,
       time: data.current.time,
     },

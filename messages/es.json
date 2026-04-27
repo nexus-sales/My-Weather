@@ -57,7 +57,9 @@
     "thermalEvolution": "Evolucion termica (24h)",
     "temperature": "Temperatura",
     "rainProbability": "Prob. lluvia",
-    "rain": "Lluvia"
+    "rain": "Lluvia",
+    "visibility": "Visibilidad",
+    "lunar": "Fase Lunar"
   },
   "Intelligence": {
     "cards": {

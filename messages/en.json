@@ -57,7 +57,9 @@
     "thermalEvolution": "Thermal evolution (24h)",
     "temperature": "Temperature",
     "rainProbability": "Rain chance",
-    "rain": "Rain"
+    "rain": "Rain",
+    "visibility": "Visibility",
+    "lunar": "Moon Phase"
   },
   "Intelligence": {
     "cards": {

@@ -43,6 +43,18 @@ export interface AemetCoastal {
   validez: string;
 }
 
+const dmsToDecimal = (dms: string): number => {
+  if (!dms) return 0;
+  // Format: DDMMSS[NSEW]
+  const match = dms.match(/(\d{2,3})(\d{2})(\d{2})([NSEW])/);
+  if (!match) return 0;
+  
+  const [_, d, m, s, dir] = match;
+  let dec = parseInt(d) + parseInt(m) / 60 + parseInt(s) / 3600;
+  if (dir === 'S' || dir === 'W') dec = -dec;
+  return dec;
+};
+
 export const fetchAemetAlerts = async (): Promise<AemetAviso[]> => {
   try {
     const res = await fetch('/api/aemet?path=avisos_cap/ultimoelaborado/area/esp');
@@ -66,29 +78,8 @@ export const fetchAemetAlerts = async (): Promise<AemetAviso[]> => {
 };
 
 export const fetchAemetRadar = async (): Promise<AemetRadar[]> => {
-  const paths = [
-    'observacion/radar/2d/nacional',
-    'observacion/radar/2d/comun/nacional',
-    'observacion/radar/nacional'
-  ];
-
-  for (const path of paths) {
-    try {
-      const res = await fetch(`/api/aemet?path=${path}`);
-      if (res.ok) {
-        const data = await res.json();
-        if (Array.isArray(data) && data.length > 0) return data;
-      }
-    } catch (e) {
-      console.warn(`Radar path ${path} failed`, e);
-    }
-  }
-  return [];
-};
-
-export const fetchAemetStations = async (): Promise<AemetStation[]> => {
   try {
-    const res = await fetch('/api/aemet?path=observacion/convencional/todas');
+    const res = await fetch('/api/aemet?path=__radar_probe__');
     if (!res.ok) return [];
     const data = await res.json();
     return Array.isArray(data) ? data : [];
@@ -97,8 +88,35 @@ export const fetchAemetStations = async (): Promise<AemetStation[]> => {
   }
 };
 
+export const fetchAemetStations = async (): Promise<AemetStation[]> => {
+  try {
+    const res = await fetch('/api/aemet?path=observacion/convencional/todas');
+    if (!res.ok) return [];
+    const rawData = await res.json();
+    if (!Array.isArray(rawData)) return [];
+
+    // Map and parse AEMET's weird coordinate format
+    return rawData.map((s: any) => ({
+      idema: s.idema,
+      lat: typeof s.lat === 'string' ? dmsToDecimal(s.lat) : s.lat,
+      lon: typeof s.lon === 'string' ? dmsToDecimal(s.lon) : s.lon,
+      alt: s.alt,
+      ubi: s.ubi,
+      ta: s.ta,
+      vvm: s.vvm,
+      dv: s.dv,
+      hr: s.hr,
+      pres: s.pres,
+      prec: s.prec,
+      fint: s.fint
+    }));
+  } catch {
+    return [];
+  }
+};
+
 export const fetchAemetCoastalForecast = async (lat: number, lon: number): Promise<AemetCoastal | null> => {
-  // AEMET coastal codes: 40: Galicia, 41: Cantabrico, 42: Cataluña, 43: Valencia/Murcia, 
+  // AEMET coastal codes: 40: Galicia, 41: Cantabrico, 42: Cataluña, 43: Valencia/Murcia,
   // 44: And. Or, 45: And. Occ, 46: Baleares, 47: Canarias
   let code = '42'; // default Cataluña
   if (lat > 42 && lon < -7) code = '40'; // Galicia
@@ -113,7 +131,13 @@ export const fetchAemetCoastalForecast = async (lat: number, lon: number): Promi
     const res = await fetch(`/api/aemet?path=prediccion/maritima/costera/costa/${code}`);
     if (!res.ok) return null;
     const data = await res.json();
-    return Array.isArray(data) ? data[0] : data;
+    const item = Array.isArray(data) ? data[0] : data;
+    if (!item) return null;
+    return {
+      nombre: item.nombre ?? item.situacion?.nombre ?? '',
+      texto: item.situacion?.texto ?? item.aviso?.texto ?? '',
+      validez: item.situacion?.fin ?? item.origen?.fin ?? '',
+    };
   } catch {
     return null;
   }

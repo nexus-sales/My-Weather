@@ -72,7 +72,7 @@ export default function HomePage() {
       </div>
 
       <main className="relative z-10 flex-1 flex flex-col items-center px-8 py-8 md:py-12 animate-fadein overflow-y-auto">
-        <div className="max-w-7xl w-full">
+        <div className="max-w-[1500px] w-full px-4 md:px-0">
           {isLoading ? (
             <div className="flex flex-col items-center gap-4 py-32">
               <div className="w-12 h-12 border-4 border-meteorix-blue/30 border-t-meteorix-blue rounded-full animate-spin" />
