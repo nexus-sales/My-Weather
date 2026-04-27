@@ -86,7 +86,7 @@ export const useIntelligence = (weather: WeatherData | undefined): IntelligenceD
 
   const { data: aemetCoastal, isLoading: isLoadingCoastal } = useQuery({
     queryKey: ['aemet-coastal', coords.lat, coords.lon],
-    queryFn: () => fetchAemetCoastalForecast('esp'),
+    queryFn: () => fetchAemetCoastalForecast(coords.lat, coords.lon),
     staleTime: 1000 * 60 * 60,
     enabled: !!weather && isSpain,
   });

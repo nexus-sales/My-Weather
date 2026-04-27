@@ -66,14 +66,24 @@ export const fetchAemetAlerts = async (): Promise<AemetAviso[]> => {
 };
 
 export const fetchAemetRadar = async (): Promise<AemetRadar[]> => {
-  try {
-    const res = await fetch('/api/aemet?path=observacion/radar/2d/comun/nacional');
-    if (!res.ok) return [];
-    const data = await res.json();
-    return Array.isArray(data) ? data : [];
-  } catch {
-    return [];
+  const paths = [
+    'observacion/radar/2d/nacional',
+    'observacion/radar/2d/comun/nacional',
+    'observacion/radar/nacional'
+  ];
+
+  for (const path of paths) {
+    try {
+      const res = await fetch(`/api/aemet?path=${path}`);
+      if (res.ok) {
+        const data = await res.json();
+        if (Array.isArray(data) && data.length > 0) return data;
+      }
+    } catch (e) {
+      console.warn(`Radar path ${path} failed`, e);
+    }
   }
+  return [];
 };
 
 export const fetchAemetStations = async (): Promise<AemetStation[]> => {
@@ -87,12 +97,22 @@ export const fetchAemetStations = async (): Promise<AemetStation[]> => {
   }
 };
 
-export const fetchAemetCoastalForecast = async (area = 'esp'): Promise<AemetCoastal | null> => {
+export const fetchAemetCoastalForecast = async (lat: number, lon: number): Promise<AemetCoastal | null> => {
+  // AEMET coastal codes: 40: Galicia, 41: Cantabrico, 42: Cataluña, 43: Valencia/Murcia, 
+  // 44: And. Or, 45: And. Occ, 46: Baleares, 47: Canarias
+  let code = '42'; // default Cataluña
+  if (lat > 42 && lon < -7) code = '40'; // Galicia
+  else if (lat > 43 && lon > -7 && lon < -1) code = '41'; // Cantabrico
+  else if (lat < 30) code = '47'; // Canarias
+  else if (lat < 38 && lon > 1) code = '46'; // Baleares
+  else if (lat < 37 && lon < -5) code = '45'; // And. Occ
+  else if (lat < 37 && lon > -5 && lon < -1) code = '44'; // And. Or
+  else if (lat > 37 && lat < 41 && lon > -1) code = '43'; // Valencia/Murcia
+
   try {
-    const res = await fetch(`/api/aemet?path=prediccion/maritima/costera/area/${area}`);
+    const res = await fetch(`/api/aemet?path=prediccion/maritima/costera/costa/${code}`);
     if (!res.ok) return null;
     const data = await res.json();
-    // AEMET returns coastal as an array or object depending on area
     return Array.isArray(data) ? data[0] : data;
   } catch {
     return null;
