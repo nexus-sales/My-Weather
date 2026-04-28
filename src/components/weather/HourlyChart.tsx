@@ -85,7 +85,7 @@ export default function HourlyChart({ data }: HourlyChartProps) {
   }
 
   return (
-    <div className="w-full h-full bg-meteorix-card border border-meteorix-border rounded-3xl p-6 backdrop-blur-xl animate-fadein" style={{ animationDelay: '300ms' }}>
+    <div className="w-full h-full bg-meteorix-card border border-meteorix-border rounded-3xl p-6 backdrop-blur-xl animate-fadein flex flex-col" style={{ animationDelay: '300ms' }}>
       <div className="flex items-center gap-2 mb-8">
         <Activity className="w-4 h-4 text-meteorix-blue/60" />
         <h3 className="text-[10px] tracking-[0.4em] text-meteorix-blue/80 font-bold uppercase">
@@ -93,8 +93,8 @@ export default function HourlyChart({ data }: HourlyChartProps) {
         </h3>
       </div>
 
-      <div className="h-[220px] w-full relative">
-        <ResponsiveContainer width="99.9%" height={220}>
+      <div className="flex-1 w-full relative min-h-[220px]">
+        <ResponsiveContainer width="99.9%" height="100%">
           <AreaChart data={chartData} margin={{ top: 10, right: 30, left: -10, bottom: 0 }}>
             <defs>
               <linearGradient id="gradTemp" x1="0" y1="0" x2="0" y2="1">
@@ -143,7 +143,7 @@ export default function HourlyChart({ data }: HourlyChartProps) {
         </ResponsiveContainer>
       </div>
 
-      <div className="flex justify-center gap-6 mt-4">
+      <div className="flex justify-center gap-6 mt-6 pt-4 border-t border-white/5">
         <div className="flex items-center gap-2">
           <div className="w-6 h-0.5 bg-[#00d4ff]" />
           <span className="text-[9px] tracking-widest text-white/40 font-bold uppercase">{t('temperature')}</span>

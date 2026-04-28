@@ -2,17 +2,16 @@ import { NextResponse } from 'next/server';
 
 export async function GET() {
   try {
-    const res = await fetch('https://api.rainviewer.com/public/weather-maps.json', {
-      next: { revalidate: 300 },
-    });
-    const data = await res.json();
-    const frames: { time?: number; path: string }[] = data?.radar?.past ?? [];
-    if (frames.length === 0) return NextResponse.json({ path: null });
+    const response = await fetch('https://api.rainviewer.com/public/weather-maps.json');
+    const data = await response.json();
+    
     return NextResponse.json({
-      path: frames[frames.length - 1].path,
-      host: data.host ?? 'https://tilecache.rainviewer.com',
+      host: data.host,
+      version: data.version,
+      radar: data.radar.past,
+      satellite: data.satellite.past
     });
-  } catch {
-    return NextResponse.json({ path: null });
+  } catch (error) {
+    return NextResponse.json({ error: 'Failed to fetch RainViewer data' }, { status: 500 });
   }
 }

@@ -179,7 +179,7 @@ export default function IntelligenceStrip({ data }: IntelligenceStripProps) {
               </div>
               
               <div className="space-y-4">
-                <h4 className="text-[10px] tracking-widest text-cyan-300 font-bold mb-4 uppercase">Radar Nacional (AEMET)</h4>
+                <h4 className="text-[10px] tracking-widest text-cyan-300 font-bold mb-4 uppercase">Radar LIVE de Alta Resolución</h4>
                 <div className="rounded-xl overflow-hidden border border-white/10">
                   <RadarMap />
                 </div>

@@ -23,9 +23,9 @@ export default function WidgetWrapper({ children, title, icon, className }: Widg
 
   return (
     <div className={cn(
-      "relative group overflow-hidden rounded-2xl border border-white/5 bg-[#040d22]/80 p-4 backdrop-blur-xl transition-all duration-700",
-      "hover:border-meteorix-blue/30 hover:shadow-[0_0_40px_rgba(0,212,255,0.08)]",
-      "before:absolute before:inset-0 before:bg-grid-meteorix before:opacity-[0.04] before:pointer-events-none",
+      "relative group overflow-hidden rounded-2xl border border-white/10 bg-[#0f172a] p-4 backdrop-blur-2xl transition-all duration-700 shadow-lg",
+      "hover:border-meteorix-blue/50 hover:shadow-[0_0_50px_rgba(0,212,255,0.15)]",
+      "before:absolute before:inset-0 before:bg-grid-meteorix before:opacity-[0.08] before:pointer-events-none",
       className
     )}>
       {/* Dynamic Cyberpunk background elements */}
@@ -49,7 +49,7 @@ export default function WidgetWrapper({ children, title, icon, className }: Widg
             <div className="absolute -top-1 -right-1 w-1.5 h-1.5 bg-meteorix-green rounded-full animate-pulse shadow-[0_0_5px_rgba(0,255,136,0.8)]" />
           </div>
           <div className="flex flex-col">
-            <h3 className="text-[11px] font-orbitron font-black tracking-[0.3em] text-white/40 uppercase group-hover:text-white/90 transition-all">
+            <h3 className="text-[11px] font-orbitron font-black tracking-[0.3em] text-white/70 uppercase group-hover:text-white transition-all drop-shadow-md">
               {title}
             </h3>
             <div className="h-[1px] w-0 group-hover:w-full bg-meteorix-blue/40 transition-all duration-700" />
@@ -69,7 +69,7 @@ export default function WidgetWrapper({ children, title, icon, className }: Widg
 
       {/* Footer "Status" Bar */}
       <div className="mt-2 pt-2 border-t border-white/5 flex items-center justify-between relative z-10">
-         <span className="text-[6px] font-mono text-white/20 uppercase tracking-widest group-hover:text-meteorix-blue/40 transition-colors">System.Sensor_Active</span>
+         <span className="text-[6px] font-mono text-white/40 uppercase tracking-widest group-hover:text-meteorix-blue/60 transition-colors">System.Sensor_Active</span>
          <div className="flex items-center gap-1">
             <span className="text-[6px] font-mono text-meteorix-green uppercase opacity-40">Live</span>
             <div className="w-1 h-1 rounded-full bg-meteorix-green animate-ping" />

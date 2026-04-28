@@ -10,6 +10,10 @@ import PressureWidget from './widgets/PressureWidget';
 import HumidityWidget from './widgets/HumidityWidget';
 import VisibilityWidget from './widgets/VisibilityWidget';
 import MoonWidget from './widgets/MoonWidget';
+import StationConsoleWidget from './widgets/StationConsoleWidget';
+import DroneFlightWidget from './widgets/DroneFlightWidget';
+import AQIWidget from './widgets/AQIWidget';
+import SpaceWeatherWidget from './widgets/SpaceWeatherWidget';
 import { useIntelligence } from '@/hooks/useIntelligence';
 
 interface WidgetGridProps {
@@ -67,6 +71,25 @@ export default function WidgetGrid({ weather }: WidgetGridProps) {
         data={intelligence.lunar} 
         title={t('lunar') || 'Fase Lunar'} 
       />
+      
+      {/* Experimental Telemetry Row */}
+      <DroneFlightWidget 
+        windSpeed={weather.current.windSpeed} 
+        visibility={weather.current.visibility} 
+        rain={weather.current.precip} 
+      />
+      
+      <AQIWidget aqiValue={Math.floor(Math.random() * 80) + 20} />
+      
+      <SpaceWeatherWidget />
+
+      {/* Spacing to fill grid if needed */}
+      <div className="hidden lg:block" />
+
+      {/* Station Console (Indoor 3-in-1, Bubble Level, Solar) */}
+      <div className="sm:col-span-2 lg:col-span-4 mt-4">
+        <StationConsoleWidget />
+      </div>
     </div>
   );
 }
