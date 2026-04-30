@@ -13,6 +13,7 @@ import { useWeather } from '@/hooks/useWeather';
 import { useLocationStore } from '@/store/useLocationStore';
 import { BarChart3, BrainCircuit, History, LayoutDashboard, Map as MapIcon, Satellite } from 'lucide-react';
 import { useUIStore } from '@/store/useUIStore';
+import LocationPrompt from '@/components/ui/LocationPrompt';
 
 export default function HomePage() {
   const t = useTranslations('Index');
@@ -31,6 +32,7 @@ export default function HomePage() {
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-meteorix-bg text-foreground bg-meteorix-gradient flex flex-col">
+      <LocationPrompt />
       <div className="absolute inset-0 z-0 pointer-events-none bg-grid-meteorix opacity-50" />
       <div className="scan-overlay" />
 

@@ -21,6 +21,12 @@
     "placeholder": "Buscar ciudad...",
     "useLocation": "Usar mi ubicacion"
   },
+  "LocationPrompt": {
+    "title": "Activar Geolocalización",
+    "body": "Nexus-Hub requiere acceso a tu ubicación para ofrecerte telemetría en tiempo real y avisos meteorológicos de precisión local.",
+    "button": "Permitir Acceso",
+    "ignore": "Continuar con Madrid"
+  },
   "Radar": {
     "modes": {
       "rain": "Precipitacion",

@@ -21,6 +21,12 @@
     "placeholder": "Search city...",
     "useLocation": "Use my location"
   },
+  "LocationPrompt": {
+    "title": "Enable Geolocation",
+    "body": "Nexus-Hub requires access to your location to provide real-time telemetry and local precision weather alerts.",
+    "button": "Allow Access",
+    "ignore": "Continue with Madrid"
+  },
   "Radar": {
     "modes": {
       "rain": "Precipitation",
