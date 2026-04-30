@@ -36,8 +36,9 @@ export default function WeatherBackground({ condition, intensity }: WeatherBackg
       opacity: number;
 
       constructor() {
-        this.x = Math.random() * canvas.width;
-        this.y = Math.random() * canvas.height;
+        const c = canvas!;
+        this.x = Math.random() * c.width;
+        this.y = Math.random() * c.height;
         this.size = condition === 'snow' ? Math.random() * 3 + 1 : Math.random() * 1 + 0.5;
         this.speedY = condition === 'snow' ? Math.random() * 1 + 0.5 : Math.random() * 15 + 10;
         this.speedX = (Math.random() - 0.5) * 2;
@@ -45,12 +46,13 @@ export default function WeatherBackground({ condition, intensity }: WeatherBackg
       }
 
       update() {
+        const c = canvas!;
         this.y += this.speedY * intensity;
         this.x += this.speedX;
 
-        if (this.y > canvas.height) {
+        if (this.y > c.height) {
           this.y = -10;
-          this.x = Math.random() * canvas.width;
+          this.x = Math.random() * c.width;
         }
       }
 

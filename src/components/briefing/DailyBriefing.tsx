@@ -3,6 +3,8 @@
 import React, { useMemo } from 'react';
 import { Sparkles, Umbrella, Wind, Sun, Car, Bike, Camera, MapPin, AlertTriangle, Volume2, Info } from 'lucide-react';
 import { WeatherData } from '@/services/weatherService';
+import { useTranslations, useLocale } from 'next-intl';
+import { useIntelligence } from '@/hooks/useIntelligence';
 
 interface DailyBriefingProps {
   weather: WeatherData;
@@ -10,34 +12,22 @@ interface DailyBriefingProps {
 }
 
 export default function DailyBriefing({ weather, cityName }: DailyBriefingProps) {
-  const current = weather.current;
+  const t = useTranslations('Briefing');
+  const locale = useLocale();
+  const intelligence = useIntelligence(weather);
 
-  const handleSpeech = (text: string) => {
-    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
-      window.speechSynthesis.cancel();
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = 'es-ES';
-      utterance.rate = 0.9;
-      window.speechSynthesis.speak(utterance);
-    }
-  };
-  
-  // Logic for the briefing
   const briefing = useMemo(() => {
-    const isRainy = current.precip > 0.1;
-    const isWindy = current.windSpeed > 25;
+    if (!weather) return null;
+
+    const { current } = weather;
+    const isRainy = current.precip > 0.5;
     const isHot = current.temp > 30;
     const isCold = current.temp < 10;
-    
-    // Activity Scores (0-100)
-    const outdoor = Math.max(0, 100 - (isRainy ? 60 : 0) - (isWindy ? 40 : 0) - (isHot ? 20 : 0));
-    const beach = Math.max(0, (current.temp > 25 ? 80 : 20) + (current.cloudCover < 10 ? 20 : -40) - (isRainy ? 100 : 0));
+
+    const outdoor = Math.max(0, 100 - (isRainy ? 50 : 0) - (isHot ? 30 : 0));
+    const beach = Math.max(0, 100 - (isRainy ? 80 : 0) - (isCold ? 50 : 0) + (current.temp > 25 ? 20 : 0));
     const photo = Math.max(0, 70 + (current.cloudCover < 30 ? 30 : -20) + (current.visibility > 10 ? 10 : -30));
     const garden = Math.max(0, 100 - (isHot ? 40 : 0) - (isCold ? 60 : 0) + (isRainy ? 20 : 0));
-
-    // Simple anomaly heuristic (April baseline ~18C)
-    const baseline = 18;
-    const anomaly = current.temp - baseline;
 
     const scores = {
       outdoor,
@@ -45,25 +35,35 @@ export default function DailyBriefing({ weather, cityName }: DailyBriefingProps)
       photo,
       garden,
       driving: Math.max(0, 100 - (isRainy ? 40 : 0) - (current.visibility < 5 ? 60 : 0)),
-      anomaly: parseFloat(anomaly.toFixed(1))
     };
 
-    let summary = "";
-    if (isRainy) summary = "Se esperan precipitaciones. Día ideal para actividades de interior o lectura.";
-    else if (isWindy) summary = "Viento fuerte detectado. Precaución en zonas arboladas y conducción.";
-    else if (isHot) summary = "Calor intenso. Busca sombras y mantén la hidratación alta.";
-    else if (current.cloudCover > 80) summary = "Cielos muy cubiertos, pero sin lluvia inminente. Buena luz difusa para fotos.";
-    else summary = "Condiciones óptimas. El tiempo no será un impedimento para tus planes hoy.";
+    let summary = t('summaries.optimal');
+    if (isRainy) summary = t('summaries.rain');
+    else if (current.windSpeed > 40) summary = t('summaries.wind');
+    else if (isHot) summary = t('summaries.hot');
+    else if (current.cloudCover > 80) summary = t('summaries.clouds');
 
     return { scores, summary };
-  }, [current]);
+  }, [weather, t]);
+
+  const handleSpeech = (text: string) => {
+    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+      window.speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = locale === 'es' ? 'es-ES' : 'en-US';
+      window.speechSynthesis.speak(utterance);
+    }
+  };
+
+  if (!briefing) return null;
+
+  const anomaly = intelligence.climate?.anomaly || 0;
+  const showAnomaly = Math.abs(anomaly) > 1.5;
 
   return (
-    <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-meteorix-blue/20 via-transparent to-purple-500/10 p-6 backdrop-blur-xl animate-fadein shadow-2xl">
-      {/* Background decoration */}
-      <div className="absolute -right-20 -top-20 h-64 w-64 rounded-full bg-meteorix-blue/10 blur-[100px]" />
-      <div className="absolute -bottom-20 -left-20 h-64 w-64 rounded-full bg-purple-500/10 blur-[100px]" />
-
+    <div className="bg-meteorix-card border border-meteorix-border rounded-[2.5rem] p-8 md:p-10 backdrop-blur-2xl relative overflow-hidden group shadow-[0_20px_50px_rgba(0,0,0,0.3)]">
+      <div className="absolute top-0 right-0 w-96 h-96 bg-meteorix-blue/5 blur-[120px] -mr-48 -mt-48 rounded-full" />
+      
       <div className="relative flex flex-col xl:flex-row gap-8 items-start">
         <div className="flex-1 space-y-4">
           <div className="flex items-center justify-between">
@@ -72,14 +72,14 @@ export default function DailyBriefing({ weather, cityName }: DailyBriefingProps)
                 <Sparkles size={20} />
               </div>
               <div>
-                <h3 className="text-[10px] font-bold uppercase tracking-[0.3em] text-white/40">Nexus Intelligence Briefing</h3>
-                <p className="text-xl font-bold text-white/90">Situación en {cityName}</p>
+                <h3 className="text-[10px] font-bold uppercase tracking-[0.3em] text-white/40">{t('title')}</h3>
+                <p className="text-xl font-bold text-white/90">{t('situation', { city: cityName })}</p>
               </div>
             </div>
             <button 
-              onClick={() => handleSpeech(`Resumen meteorológico para ${cityName}. ${briefing.summary}`)}
+              onClick={() => handleSpeech(`${t('voiceIntro', { city: cityName })} ${briefing.summary}`)}
               className="p-3 rounded-full bg-white/5 hover:bg-white/10 text-white/40 hover:text-meteorix-blue transition-all border border-white/5"
-              title="Escuchar resumen"
+              title={t('speech')}
             >
               <Volume2 size={18} />
             </button>
@@ -89,32 +89,32 @@ export default function DailyBriefing({ weather, cityName }: DailyBriefingProps)
             {briefing.summary}
           </p>
 
-          <div className="flex flex-wrap gap-3 pt-2">
-            {current.precip > 0 && (
-              <Badge icon={<Umbrella size={12} />} label="Paraguas necesario" color="bg-meteorix-blue/20 text-meteorix-blue" />
+          <div className="flex flex-wrap gap-2 pt-2">
+            {weather.current.precip > 0.5 && (
+              <Badge icon={<Umbrella size={12} />} label={t('umbrella')} color="bg-blue-500/20 text-blue-400" />
             )}
-            {current.windSpeed > 20 && (
-              <Badge icon={<Wind size={12} />} label="Rachas de viento" color="bg-meteorix-orange/20 text-meteorix-orange" />
+            {weather.current.windSpeed > 35 && (
+              <Badge icon={<Wind size={12} />} label={t('wind')} color="bg-orange-500/20 text-orange-400" />
             )}
-            {current.visibility < 5 && (
-              <Badge icon={<AlertTriangle size={12} />} label="Baja visibilidad" color="bg-red-500/20 text-red-400" />
+            {weather.current.visibility < 5 && (
+              <Badge icon={<AlertTriangle size={12} />} label={t('visibility')} color="bg-red-500/20 text-red-400" />
             )}
-            {Math.abs(briefing.scores.anomaly) > 2 && (
+            {showAnomaly && (
                <Badge 
                  icon={<Info size={12} />} 
-                 label={`${briefing.scores.anomaly > 0 ? '+' : ''}${briefing.scores.anomaly}°C vs Media ERA5`} 
-                 color={briefing.scores.anomaly > 0 ? "bg-orange-500/20 text-orange-400" : "bg-blue-500/20 text-blue-400"} 
+                 label={`${anomaly > 0 ? '+' : ''}${anomaly}°C vs 30y ERA5`} 
+                 color={anomaly > 0 ? "bg-orange-500/20 text-orange-400" : "bg-blue-500/20 text-blue-400"} 
                />
             )}
           </div>
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 w-full xl:w-auto">
-          <ScoreCard icon={<Bike size={18} />} label="Deporte" score={briefing.scores.outdoor} color="text-meteorix-green" />
-          <ScoreCard icon={<Car size={18} />} label="Ruta" score={briefing.scores.driving} color="text-meteorix-blue" />
-          <ScoreCard icon={<Camera size={18} />} label="Foto" score={briefing.scores.photo} color="text-purple-400" />
-          <ScoreCard icon={<Sun size={18} />} label="Playa" score={briefing.scores.beach} color="text-yellow-400" />
-          <ScoreCard icon={<Sparkles size={18} />} label="Jardín" score={briefing.scores.garden} color="text-emerald-400" />
+        <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-3 w-full xl:w-auto">
+          <ScoreCard label={t('activities.sport')} score={briefing.scores.outdoor} icon={<Bike size={14} />} color="text-meteorix-blue" />
+          <ScoreCard label={t('activities.route')} score={briefing.scores.driving} icon={<Car size={14} />} color="text-meteorix-blue" />
+          <ScoreCard label={t('activities.photo')} score={briefing.scores.photo} icon={<Camera size={14} />} color="text-meteorix-blue" />
+          <ScoreCard label={t('activities.beach')} score={briefing.scores.beach} icon={<Sun size={14} />} color="text-meteorix-blue" />
+          <ScoreCard label={t('activities.garden')} score={briefing.scores.garden} icon={<MapPin size={14} />} color="text-meteorix-blue" />
         </div>
       </div>
     </div>
@@ -123,9 +123,9 @@ export default function DailyBriefing({ weather, cityName }: DailyBriefingProps)
 
 function Badge({ icon, label, color }: { icon: React.ReactNode; label: string; color: string }) {
   return (
-    <div className={`flex items-center gap-2 rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-wider ${color}`}>
+    <div className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold ${color}`}>
       {icon}
-      {label}
+      <span>{label}</span>
     </div>
   );
 }

@@ -165,5 +165,65 @@
     },
     "placeholder": "Pregunta sobre la situacion sinoptica...",
     "powered": "Desarrollado con Claude 3.5 Sonnet para analisis meteorologico"
+  },
+  "Briefing": {
+    "title": "Nexus Intelligence Briefing",
+    "situation": "Situacion en {city}",
+    "umbrella": "Paraguas necesario",
+    "wind": "Rachas de viento",
+    "visibility": "Baja visibilidad",
+    "activities": {
+      "sport": "Deporte",
+      "route": "Ruta",
+      "photo": "Foto",
+      "beach": "Playa",
+      "garden": "Jardin"
+    },
+    "speech": "Escuchar resumen",
+    "voiceIntro": "Resumen meteorologico para {city}.",
+    "summaries": {
+      "rain": "Se esperan precipitaciones. Dia ideal para actividades de interior o lectura.",
+      "wind": "Viento fuerte detectado. Precaucion en zonas arboladas y conduccion.",
+      "hot": "Calor intenso. Busca sombras y manten la hidratacion alta.",
+      "clouds": "Cielos muy cubiertos, pero sin lluvia inminente. Buena luz difusa para fotos.",
+      "optimal": "Condiciones optimas. El tiempo no sera un impedimento para tus planes hoy."
+    }
+  },
+  "Comparison": {
+    "title": "Comparador de Modelos",
+    "highConfidence": "Alta Consistencia",
+    "divergence": "Divergencia Detectada",
+    "temp": "Temperatura",
+    "wind": "Viento",
+    "precip": "Precipitacion",
+    "diffNote": "El analisis comparativo detecta una diferencia termica de {diff}C. {info}"
+  },
+  "Charts": {
+    "title": "Analisis de Datos Proyectado",
+    "subtitle": "Visualizacion avanzada de las proximas 48 horas de telemetria.",
+    "thermal": "Dinamica Termica y Nubosidad",
+    "hydro": "Hidrometria y Probabilidades",
+    "cloud": "Nubosidad %"
+  },
+  "History": {
+    "title": "Registros Historicos",
+    "subtitle": "Bitacora de telemetria de los ultimos 7 días registrados.",
+    "sync": "Recuperando registros...",
+    "maxMin": "Max/Min",
+    "rain": "Lluvia",
+    "wind": "Viento Max"
+  },
+  "Stations": {
+    "title": "Red de Estaciones Terrestres",
+    "subtitle": "Monitorizacion en tiempo real via AEMET OpenData y redes PWS.",
+    "reference": "Estacion de Referencia",
+    "syncing": "Sincronizando...",
+    "outOfRange": "Fuera de Cobertura AEMET",
+    "temp": "Temperatura",
+    "wind": "Viento",
+    "humidity": "Humedad",
+    "pressure": "Presion",
+    "lastObs": "Ultima Obs",
+    "capabilities": "Capacidades Operativas"
   }
 }

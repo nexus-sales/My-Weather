@@ -4,7 +4,8 @@ import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { fetchDWDData } from '@/services/dwdService';
 import { WeatherData } from '@/services/weatherService';
-import { GitCompare, CheckCircle2, AlertCircle, Info } from 'lucide-react';
+import { Layers, CheckCircle2, AlertCircle, Info } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 
 interface ModelComparisonProps {
   lat: number;
@@ -13,6 +14,7 @@ interface ModelComparisonProps {
 }
 
 export default function ModelComparison({ lat, lon, ecmwfData }: ModelComparisonProps) {
+  const t = useTranslations('Comparison');
   const { data: iconData, isLoading } = useQuery({
     queryKey: ['model-comparison', lat, lon],
     queryFn: () => fetchDWDData(lat, lon, 'icon_eu'),
@@ -30,59 +32,53 @@ export default function ModelComparison({ lat, lon, ecmwfData }: ModelComparison
   const icon = iconData?.current;
 
   const diffTemp = icon ? Math.abs(ecmwf.temp - icon.temperature_2m) : 0;
-  const isHighConfidence = diffTemp < 1.5;
+  const isDivergent = diffTemp > 2.5;
 
   return (
-    <div className="rounded-3xl border border-white/10 bg-[#050a1a]/60 p-6 backdrop-blur-xl">
-      <div className="flex items-center justify-between mb-6">
+    <div className="bg-meteorix-card border border-meteorix-border rounded-[2rem] p-8 backdrop-blur-xl animate-fadein">
+      <div className="flex items-center justify-between mb-8">
         <div className="flex items-center gap-3">
-          <div className="p-2 rounded-lg bg-meteorix-blue/10 text-meteorix-blue">
-            <GitCompare size={18} />
-          </div>
-          <h3 className="text-sm font-bold uppercase tracking-widest text-white/90 font-orbitron">Comparador de Modelos</h3>
+          <Layers className="text-meteorix-blue" size={20} />
+          <h3 className="text-sm font-bold font-orbitron tracking-widest text-white/90 uppercase">
+            {t('title')}
+          </h3>
         </div>
-        {isHighConfidence ? (
-          <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-meteorix-green/10 border border-meteorix-green/20 text-[10px] text-meteorix-green font-bold uppercase">
-            <CheckCircle2 size={12} /> Alta Consistencia
-          </div>
-        ) : (
-          <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-meteorix-orange/10 border border-meteorix-orange/20 text-[10px] text-meteorix-orange font-bold uppercase">
-            <AlertCircle size={12} /> Divergencia Detectada
-          </div>
-        )}
+        <div className={`px-4 py-1.5 rounded-full text-[9px] font-black tracking-[0.2em] uppercase ${isDivergent ? 'bg-red-500/20 text-red-400 border border-red-500/30' : 'bg-meteorix-green/20 text-meteorix-green border border-meteorix-green/30'}`}>
+          {isDivergent ? t('divergence') : t('highConfidence')}
+        </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {/* ECMWF Table */}
         <div className="space-y-3 p-4 rounded-2xl bg-white/5 border border-white/5">
           <div className="flex justify-between items-center mb-2">
             <span className="text-[10px] font-bold text-meteorix-blue uppercase tracking-tighter">ECMWF IFS 0.1°</span>
             <span className="text-[8px] text-white/30 uppercase">Global Leader</span>
           </div>
-          <Row label="Temperatura" value={`${ecmwf.temp.toFixed(1)}°C`} />
-          <Row label="Viento" value={`${ecmwf.windSpeed.toFixed(1)} km/h`} />
-          <Row label="Precipitación" value={`${ecmwf.precip.toFixed(1)} mm`} />
+          <Row label={t('temp')} value={`${ecmwf.temp.toFixed(1)}°C`} />
+          <Row label={t('wind')} value={`${ecmwf.windSpeed.toFixed(1)} km/h`} />
+          <Row label={t('precip')} value={`${ecmwf.precip.toFixed(1)} mm`} />
         </div>
 
-        {/* ICON Table */}
         <div className="space-y-3 p-4 rounded-2xl bg-white/5 border border-white/5">
           <div className="flex justify-between items-center mb-2">
             <span className="text-[10px] font-bold text-meteorix-orange uppercase tracking-tighter">DWD ICON-EU</span>
             <span className="text-[8px] text-white/30 uppercase">European Precision</span>
           </div>
-          <Row label="Temperatura" value={`${icon?.temperature_2m.toFixed(1)}°C`} />
-          <Row label="Viento" value={`${icon?.wind_speed_10m.toFixed(1)} km/h`} />
-          <Row label="Precipitación" value={`${icon?.precipitation.toFixed(1)} mm`} />
+          <Row label={t('temp')} value={`${icon?.temperature_2m?.toFixed(1) || '--'}°C`} />
+          <Row label={t('wind')} value={`${icon?.wind_speed_10m?.toFixed(1) || '--'} km/h`} />
+          <Row label={t('precip')} value={`${icon?.precipitation?.toFixed(1) || '--'} mm`} />
         </div>
       </div>
 
-      <div className="mt-4 p-3 rounded-xl bg-meteorix-blue/5 border border-meteorix-blue/10 flex gap-3 items-start">
+      <div className="mt-6 p-4 rounded-2xl bg-meteorix-blue/5 border border-meteorix-blue/10 flex gap-3 items-start">
         <Info size={14} className="text-meteorix-blue mt-0.5" />
         <p className="text-[9px] leading-relaxed text-white/40">
-          El análisis comparativo detecta una diferencia térmica de {diffTemp.toFixed(1)}°C. 
-          {isHighConfidence 
-            ? " Los modelos coinciden en la trayectoria sinóptica, lo que otorga una alta fiabilidad al pronóstico."
-            : " Existe divergencia entre los modelos global y regional. Se recomienda precaución en la planificación."}
+          {t('diffNote', { 
+            diff: diffTemp.toFixed(1), 
+            info: !isDivergent 
+              ? " Los modelos coinciden en la trayectoria sinóptica, lo que otorga una alta fiabilidad al pronóstico."
+              : " Existe divergencia entre los modelos global y regional. Se recomienda precaución en la planificación." 
+          })}
         </p>
       </div>
     </div>

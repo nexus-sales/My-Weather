@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { useLocale } from 'next-intl';
 import { useQuery } from '@tanstack/react-query';
-import { WeatherData } from '@/services/weatherService';
+import { WeatherData, fetchAirQuality, fetchHistoricalAnomaly } from '@/services/weatherService';
 import { fetchAemetAlerts, fetchAemetCoastalForecast, fetchAemetRadar, fetchAemetStations } from '@/services/aemetService';
 import { getLunarData, LunarData } from '@/services/astroService';
 import { fetchMarineData } from '@/services/marineService';
@@ -61,6 +61,12 @@ export interface IntelligenceData {
     stations: boolean;
     coastal: boolean;
     weather: boolean;
+    air: boolean;
+    climate: boolean;
+  };
+  climate?: {
+    anomaly: number;
+    baseline: number;
   };
 }
 
@@ -115,6 +121,20 @@ export const useIntelligence = (weather: WeatherData | undefined): IntelligenceD
     enabled: !!weather && isIreland,
   });
 
+  const { data: airQuality, isLoading: isLoadingAir } = useQuery({
+    queryKey: ['air-quality', coords.lat, coords.lon],
+    queryFn: () => fetchAirQuality(coords.lat, coords.lon),
+    staleTime: 1000 * 60 * 60,
+    enabled: !!weather,
+  });
+
+  const { data: climateData, isLoading: isLoadingClimate } = useQuery({
+    queryKey: ['climate-anomaly', coords.lat, coords.lon],
+    queryFn: () => fetchHistoricalAnomaly(coords.lat, coords.lon),
+    staleTime: 1000 * 60 * 60 * 24,
+    enabled: !!weather,
+  });
+
   const nearestStation = useMemo(() => {
     if (!aemetStations || aemetStations.length === 0) return undefined;
     let nearest = aemetStations[0];
@@ -143,7 +163,17 @@ export const useIntelligence = (weather: WeatherData | undefined): IntelligenceD
         aemet: { capabilities: [] },
         metEireann: { isAvailable: false, source: 'Met Eireann' },
         confidence: { score: 0, source: 'N/A', consistency: 'N/A' },
-        isLoading: true,
+        loadStates: {
+          alerts: true,
+          marine: true,
+          metEireann: true,
+          radar: true,
+          stations: true,
+          coastal: true,
+          weather: true,
+          air: true,
+          climate: true
+        }
       };
     }
 
@@ -185,10 +215,12 @@ export const useIntelligence = (weather: WeatherData | undefined): IntelligenceD
           : locale === 'en' ? 'Stable' : 'Estable',
       },
       air: {
-        aqi: Math.round(humidity / 2 + 10),
-        pm10: 15,
-        pm25: 8,
-        status: locale === 'en' ? 'Excellent' : 'Excelente',
+        aqi: airQuality?.aqi ?? Math.round(humidity / 2 + 10),
+        pm10: airQuality?.pm10 ?? 15,
+        pm25: airQuality?.pm25 ?? 8,
+        status: airQuality 
+          ? (airQuality.aqi < 50 ? (locale === 'en' ? 'Excellent' : 'Excelente') : (locale === 'en' ? 'Moderate' : 'Moderado'))
+          : (locale === 'en' ? 'Excellent' : 'Excelente'),
       },
       marine: {
         waveHeight: marineData?.waveHeight ?? (isWindy ? 2.4 : 0.8),
@@ -220,8 +252,14 @@ export const useIntelligence = (weather: WeatherData | undefined): IntelligenceD
         radar: isLoadingRadar,
         stations: isLoadingStations,
         coastal: isLoadingCoastal,
-        weather: !weather
-      }
+        weather: !weather,
+        air: isLoadingAir,
+        climate: isLoadingClimate
+      },
+      climate: climateData ? {
+        anomaly: parseFloat((weather.current.temp - climateData).toFixed(1)),
+        baseline: climateData
+      } : undefined
     };
-  }, [weather, aemetAlerts, aemetRadar, aemetStations, aemetCoastal, marineData, metEireannData, isIreland, isSpain, isLoadingAemet, isLoadingMarine, isLoadingMetEireann, isLoadingRadar, isLoadingStations, isLoadingCoastal, locale, coords.lat, coords.lon, nearestStation]);
+  }, [weather, aemetAlerts, aemetRadar, aemetStations, aemetCoastal, marineData, metEireannData, airQuality, climateData, isIreland, isSpain, isLoadingAemet, isLoadingMarine, isLoadingMetEireann, isLoadingRadar, isLoadingStations, isLoadingCoastal, isLoadingAir, isLoadingClimate, locale, coords.lat, coords.lon, nearestStation]);
 };

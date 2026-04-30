@@ -165,5 +165,65 @@
     },
     "placeholder": "Ask about the synoptic situation...",
     "powered": "Powered by Claude 3.5 Sonnet for meteorological analysis"
+  },
+  "Briefing": {
+    "title": "Nexus Intelligence Briefing",
+    "situation": "Situation in {city}",
+    "umbrella": "Umbrella needed",
+    "wind": "Wind gusts",
+    "visibility": "Low visibility",
+    "activities": {
+      "sport": "Sport",
+      "route": "Route",
+      "photo": "Photo",
+      "beach": "Beach",
+      "garden": "Garden"
+    },
+    "speech": "Listen summary",
+    "voiceIntro": "Weather briefing for {city}.",
+    "summaries": {
+      "rain": "Precipitation is expected. Ideal day for indoor activities or reading.",
+      "wind": "Strong wind detected. Caution in wooded areas and driving.",
+      "hot": "Intense heat. Seek shade and keep hydration high.",
+      "clouds": "Very overcast skies, but no imminent rain. Good diffuse light for photos.",
+      "optimal": "Optimal conditions. Weather won't be an impediment to your plans today."
+    }
+  },
+  "Comparison": {
+    "title": "Model Comparison",
+    "highConfidence": "High Consistency",
+    "divergence": "Divergence Detected",
+    "temp": "Temperature",
+    "wind": "Wind",
+    "precip": "Precipitation",
+    "diffNote": "Comparative analysis detects a thermal difference of {diff}C. {info}"
+  },
+  "Charts": {
+    "title": "Projected Data Analysis",
+    "subtitle": "Advanced visualization of the next 48 hours of telemetry.",
+    "thermal": "Thermal Dynamics & Cloudiness",
+    "hydro": "Hydrometry & Probabilities",
+    "cloud": "Cloudiness %"
+  },
+  "History": {
+    "title": "Historical Records",
+    "subtitle": "Telemetry log of the last 7 recorded days.",
+    "sync": "Retrieving records...",
+    "maxMin": "Max/Min",
+    "rain": "Rain",
+    "wind": "Max Wind"
+  },
+  "Stations": {
+    "title": "Ground Station Network",
+    "subtitle": "Real-time monitoring via AEMET OpenData and PWS networks.",
+    "reference": "Reference Station",
+    "syncing": "Syncing...",
+    "outOfRange": "Out of AEMET Coverage",
+    "temp": "Temperature",
+    "wind": "Wind",
+    "humidity": "Humidity",
+    "pressure": "Pressure",
+    "lastObs": "Last Obs",
+    "capabilities": "Operational Capabilities"
   }
 }

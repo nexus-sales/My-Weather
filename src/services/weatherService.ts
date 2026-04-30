@@ -126,3 +126,54 @@ export const fetchWeather = async (lat: number, lon: number, units: string = 'me
     }
   };
 };
+
+export async function fetchAirQuality(lat: number, lon: number) {
+  const url = new URL('https://air-quality-api.open-meteo.com/v1/air-quality');
+  url.searchParams.append('latitude', lat.toString());
+  url.searchParams.append('longitude', lon.toString());
+  url.searchParams.append('current', 'european_aqi,pm10,pm2_5,alder_pollen,birch_pollen,grass_pollen,mugwort_pollen,olive_pollen,ragweed_pollen');
+  url.searchParams.append('timezone', 'auto');
+
+  try {
+    const res = await fetch(url);
+    if (!res.ok) return null;
+    const data = await res.json();
+    return {
+      aqi: data.current.european_aqi,
+      pm10: data.current.pm10,
+      pm25: data.current.pm2_5,
+      pollen: {
+        alder: data.current.alder_pollen,
+        birch: data.current.birch_pollen,
+        grass: data.current.grass_pollen,
+      }
+    };
+  } catch (error) {
+    console.error('Air Quality API Error:', error);
+    return null;
+  }
+}
+
+export async function fetchHistoricalAnomaly(lat: number, lon: number) {
+  const today = new Date();
+  // We compare with the same day 30 years ago (climatological standard)
+  const targetYear = today.getFullYear() - 30;
+  const dateStr = `${targetYear}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+  
+  const url = new URL('https://archive-api.open-meteo.com/v1/archive');
+  url.searchParams.append('latitude', lat.toString());
+  url.searchParams.append('longitude', lon.toString());
+  url.searchParams.append('start_date', dateStr);
+  url.searchParams.append('end_date', dateStr);
+  url.searchParams.append('daily', 'temperature_2m_max');
+  url.searchParams.append('timezone', 'auto');
+
+  try {
+    const res = await fetch(url);
+    if (!res.ok) return null;
+    const data = await res.json();
+    return data.daily.temperature_2m_max[0];
+  } catch {
+    return null;
+  }
+}

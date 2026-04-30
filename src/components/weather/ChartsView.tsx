@@ -19,7 +19,7 @@ interface ChartsViewProps {
 }
 
 export default function ChartsView({ weather }: ChartsViewProps) {
-  const t = useTranslations('Dashboard');
+  const t = useTranslations('Charts');
   const data = weather.hourly;
 
   const chartData = data.time?.slice(0, 48).map((time, i) => {
@@ -37,35 +37,35 @@ export default function ChartsView({ weather }: ChartsViewProps) {
       <div className="flex flex-col gap-2">
         <h2 className="text-xl font-bold font-orbitron tracking-widest text-white uppercase flex items-center gap-3">
           <BarChart3 className="text-meteorix-blue" />
-          Análisis de Datos Proyectado
+          {t('title')}
         </h2>
-        <p className="text-xs text-white/40 tracking-wider">Visualización avanzada de las próximas 48 horas de telemetría.</p>
+        <p className="text-xs text-white/40 tracking-wider">{t('subtitle')}</p>
       </div>
 
       <div className="grid grid-cols-1 gap-6">
         {/* Gráfico de Temperatura y Nubes */}
         <ChartCard 
-          title="Dinámica Térmica y Nubosidad" 
+          title={t('thermal')} 
           icon={<Cloud size={16} />}
           data={chartData}
           dataKey1="temp"
           dataKey2="cloud"
           color1="#00d4ff"
           color2="#6366f1"
-          label1="Temperatura"
-          label2="Nubosidad %"
+          label1={t('temp')}
+          label2={t('cloud')}
           unit1="°C"
           unit2="%"
         />
 
         {/* Gráfico de Humedad y Lluvia */}
         <ChartCard 
-          title="Hidrometría y Probabilidades" 
+          title={t('hydro')} 
           icon={<Droplets size={16} />}
           data={chartData}
           dataKey1="precip"
           color1="#4d7fff"
-          label1="Prob. Lluvia"
+          label1={t('precip')}
           unit1="%"
         />
       </div>
