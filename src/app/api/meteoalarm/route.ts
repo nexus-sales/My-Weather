@@ -63,8 +63,20 @@ export async function GET(request: NextRequest) {
     }
 
     const xml = await res.text();
-    const alerts = parseAlerts(xml);
-    return NextResponse.json({ country, alerts, count: alerts.length });
+    let alerts = parseAlerts(xml);
+
+    // Filtrado geográfico opcional
+    const query = searchParams.get('query')?.toLowerCase();
+    if (query) {
+      alerts = alerts.filter(
+        (a) =>
+          a.area.toLowerCase().includes(query) ||
+          a.title.toLowerCase().includes(query) ||
+          a.summary.toLowerCase().includes(query)
+      );
+    }
+
+    return NextResponse.json({ country, alerts, count: alerts.length, filteredBy: query || 'none' });
   } catch {
     return NextResponse.json({ error: 'Failed to fetch Meteoalarm feed' }, { status: 502 });
   }

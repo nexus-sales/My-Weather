@@ -65,13 +65,19 @@ export default function IntelligenceStrip({ data }: IntelligenceStripProps) {
 
       {activeCard && (
         <div className="bg-meteorix-card/60 border border-meteorix-border rounded-2xl p-6 backdrop-blur-xl animate-fadein border-t-meteorix-blue/30">
-          {data.isLoading && (
-            <div className="flex items-center justify-center py-8">
-              <div className="w-4 h-4 border-2 border-meteorix-blue/30 border-t-meteorix-blue rounded-full animate-spin" />
+          {(data.loadStates.alerts || data.loadStates.marine || data.loadStates.weather) && activeCard === null && (
+            <div className="flex items-center justify-center py-2">
+               <div className="text-[8px] text-white/20 animate-pulse uppercase tracking-widest">Sincronizando sensores...</div>
             </div>
           )}
 
-          {activeCard === 'alerts' && !data.isLoading && (
+          {activeCard === 'alerts' && data.loadStates.alerts && (
+             <div className="flex items-center justify-center py-8">
+               <div className="w-4 h-4 border-2 border-meteorix-orange/30 border-t-meteorix-orange rounded-full animate-spin" />
+             </div>
+          )}
+
+          {activeCard === 'alerts' && !data.loadStates.alerts && (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <h4 className="text-[10px] tracking-widest text-meteorix-orange font-bold mb-4 uppercase">{t('alertsTitle')}</h4>
@@ -87,7 +93,11 @@ export default function IntelligenceStrip({ data }: IntelligenceStripProps) {
             </div>
           )}
 
-          {activeCard === 'storms' && !data.isLoading && (
+          {activeCard === 'storms' && data.loadStates.weather && (
+             <div className="flex items-center justify-center py-8 text-white/20 animate-pulse">Analizando convección...</div>
+          )}
+
+          {activeCard === 'storms' && !data.loadStates.weather && (
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
               <Metric label={t('metrics.cape')} value={`${data.storms.cape} J/kg`} color="text-yellow-500" />
               <Metric label={t('metrics.lifted')} value={data.storms.liftedIndex.toString()} color="text-yellow-500" />
@@ -96,7 +106,11 @@ export default function IntelligenceStrip({ data }: IntelligenceStripProps) {
             </div>
           )}
 
-          {activeCard === 'air' && !data.isLoading && (
+          {activeCard === 'air' && data.loadStates.weather && (
+             <div className="flex items-center justify-center py-8 text-white/20 animate-pulse">Midiendo partículas...</div>
+          )}
+
+          {activeCard === 'air' && !data.loadStates.weather && (
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
               <Metric label={t('metrics.globalAqi')} value={data.air.aqi.toString()} color="text-meteorix-green" />
               <Metric label="PM10" value={`${data.air.pm10} ug/m3`} />
@@ -105,7 +119,13 @@ export default function IntelligenceStrip({ data }: IntelligenceStripProps) {
             </div>
           )}
 
-          {activeCard === 'marine' && !data.isLoading && (
+          {activeCard === 'marine' && data.loadStates.marine && (
+             <div className="flex items-center justify-center py-8">
+               <div className="w-4 h-4 border-2 border-blue-400/30 border-t-blue-400 rounded-full animate-spin" />
+             </div>
+          )}
+
+          {activeCard === 'marine' && !data.loadStates.marine && (
             <div className="grid grid-cols-2 md:grid-cols-6 gap-6">
               <Metric label={t('metrics.waveHeight')} value={`${data.marine.waveHeight}m`} color="text-blue-400" />
               <Metric label={t('metrics.period')} value={`${data.marine.period}s`} />
@@ -124,7 +144,11 @@ export default function IntelligenceStrip({ data }: IntelligenceStripProps) {
             </div>
           )}
 
-          {activeCard === 'lunar' && !data.isLoading && (
+          {activeCard === 'lunar' && data.loadStates.weather && (
+            <div className="flex items-center justify-center py-8 text-white/20 animate-pulse">Calculando efemérides...</div>
+          )}
+
+          {activeCard === 'lunar' && !data.loadStates.weather && (
             <div className="grid grid-cols-2 md:grid-cols-5 gap-6">
               <Metric label={t('metrics.phase')} value={t(`lunarPhases.${data.lunar.phaseKey}`)} color="text-indigo-300" />
               <Metric label={t('metrics.illumination')} value={`${illumination}%`} />
@@ -134,7 +158,11 @@ export default function IntelligenceStrip({ data }: IntelligenceStripProps) {
             </div>
           )}
 
-          {activeCard === 'aemet' && !data.isLoading && (
+          {activeCard === 'aemet' && (data.loadStates.stations || data.loadStates.radar) && (
+             <div className="flex items-center justify-center py-8 text-white/20 animate-pulse">Conectando con OpenData AEMET...</div>
+          )}
+
+          {activeCard === 'aemet' && !(data.loadStates.stations || data.loadStates.radar) && (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div>
                 <h4 className="text-[10px] tracking-widest text-cyan-300 font-bold mb-4 uppercase">{t('aemet.title')}</h4>
@@ -197,7 +225,11 @@ export default function IntelligenceStrip({ data }: IntelligenceStripProps) {
             </div>
           )}
 
-          {activeCard === 'metEireann' && !data.isLoading && data.metEireann.isAvailable && (
+          {activeCard === 'metEireann' && data.loadStates.metEireann && (
+             <div className="flex items-center justify-center py-8 text-white/20 animate-pulse">Enlace Met Eireann...</div>
+          )}
+
+          {activeCard === 'metEireann' && !data.loadStates.metEireann && data.metEireann.isAvailable && (
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
               <div className="col-span-2 md:col-span-4">
                 <h4 className="text-[10px] tracking-widest text-emerald-300 font-bold mb-2 uppercase">{t('metEireann.title')}</h4>
@@ -219,7 +251,11 @@ export default function IntelligenceStrip({ data }: IntelligenceStripProps) {
             </div>
           )}
 
-          {activeCard === 'confidence' && !data.isLoading && (
+          {activeCard === 'confidence' && data.loadStates.weather && (
+             <div className="flex items-center justify-center py-8 text-white/20 animate-pulse">Calculando consistencia...</div>
+          )}
+
+          {activeCard === 'confidence' && !data.loadStates.weather && (
             <div className="flex flex-col gap-4">
               <div className="flex items-center gap-4">
                 <div className="flex-1">

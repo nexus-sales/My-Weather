@@ -14,17 +14,18 @@ export interface MeteoAlert {
   area: string;
 }
 
-const fetchAlerts = async (country: string): Promise<MeteoAlert[]> => {
-  const res = await fetch(`/api/meteoalarm?country=${country}`);
+const fetchAlerts = async (country: string, query?: string): Promise<MeteoAlert[]> => {
+  const url = `/api/meteoalarm?country=${country}${query ? `&query=${encodeURIComponent(query)}` : ''}`;
+  const res = await fetch(url);
   if (!res.ok) throw new Error('Failed to fetch alerts');
   const data = await res.json();
   return data.alerts ?? [];
 };
 
-export const useAlerts = (country = 'es') => {
+export const useAlerts = (country = 'es', query?: string) => {
   return useQuery({
-    queryKey: ['alerts', country],
-    queryFn: () => fetchAlerts(country),
+    queryKey: ['alerts', country, query],
+    queryFn: () => fetchAlerts(country, query),
     staleTime: 30 * 60 * 1000,
     refetchInterval: 30 * 60 * 1000,
   });

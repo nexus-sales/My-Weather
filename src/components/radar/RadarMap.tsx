@@ -18,8 +18,29 @@ export default function RadarMap() {
   const [host, setHost] = useState('');
   const [currentFrameIndex, setCurrentFrameIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(true);
-  const [layerType, setLayerType] = useState<'wind' | 'radar'>('wind');
+  const [layerType, setLayerType] = useState<'wind' | 'radar' | 'isobars'>('wind');
+  const [strikes, setStrikes] = useState<any[]>([]);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
+
+  useEffect(() => {
+    // Fetch Lightning data
+    const fetchLightning = () => {
+      fetch(`/api/lightning?lat=${coords.lat}&lon=${coords.lon}`)
+        .then(r => r.json())
+        .then(data => {
+          if (data.strikes) setStrikes(data.strikes);
+          else if (data.convective?.current?.isThunderstorm) {
+             // Mock strike near user if thunderstorm is active but no Blitzortung token
+             setStrikes([{ lat: coords.lat + 0.02, lon: coords.lon - 0.02, time: Date.now() }]);
+          }
+        })
+        .catch(() => {});
+    };
+
+    fetchLightning();
+    const lightningInterval = setInterval(fetchLightning, 1000 * 60 * 5);
+    return () => clearInterval(lightningInterval);
+  }, [coords.lat, coords.lon]);
 
   useEffect(() => {
     fetch('/api/rainviewer')
@@ -69,6 +90,12 @@ export default function RadarMap() {
           >
             RADAR LLUVIA
           </button>
+          <button 
+            onClick={() => setLayerType('isobars')} 
+            className={`px-3 py-1.5 rounded-md text-[10px] font-orbitron font-bold tracking-wider transition-all ${layerType === 'isobars' ? 'bg-meteorix-blue text-white shadow-[0_0_15px_rgba(0,212,255,0.4)]' : 'text-white/40 hover:text-white hover:bg-white/5'}`}
+          >
+            ISOBARAS
+          </button>
         </div>
 
         {layerType === 'radar' && currentFrame && (
@@ -90,6 +117,17 @@ export default function RadarMap() {
           width="100%"
           height="100%"
           src={`https://embed.windy.com/embed2.html?lat=${coords.lat}&lon=${coords.lon}&detailLat=${coords.lat}&detailLon=${coords.lon}&width=650&height=450&zoom=6&level=surface&overlay=wind&product=ecmwf&menu=&message=true&marker=true&calendar=now&pressure=&type=map&location=coordinates&detail=&metricWind=km%2Fh&metricTemp=%C2%B0C&radarRange=-1`}
+          frameBorder="0"
+          className="w-full h-full"
+        ></iframe>
+      )}
+
+      {/* Capa de Isobaras (Windy) */}
+      {layerType === 'isobars' && (
+        <iframe
+          width="100%"
+          height="100%"
+          src={`https://embed.windy.com/embed2.html?lat=${coords.lat}&lon=${coords.lon}&detailLat=${coords.lat}&detailLon=${coords.lon}&width=650&height=450&zoom=4&level=surface&overlay=pressure&product=ecmwf&menu=&message=true&marker=true&calendar=now&pressure=true&type=map&location=coordinates&detail=&metricWind=km%2Fh&metricTemp=%C2%B0C&radarRange=-1`}
           frameBorder="0"
           className="w-full h-full"
         ></iframe>
@@ -128,6 +166,17 @@ export default function RadarMap() {
                     maxZoom={12}
                   />
                 )}
+
+                {/* Lightning Strikes Layer */}
+                {strikes.map((strike, idx) => (
+                  <Circle
+                    key={`strike-${idx}`}
+                    center={[strike.lat, strike.lon]}
+                    radius={1000}
+                    pathOptions={{ color: '#fbbf24', fillColor: '#fbbf24', fillOpacity: 0.8, weight: 2 }}
+                    className="animate-pulse"
+                  />
+                ))}
 
                 <Circle
                   center={[coords.lat, coords.lon]}

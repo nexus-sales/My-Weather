@@ -63,14 +63,14 @@ export default function HourlyChart({ data }: HourlyChartProps) {
     setIsMounted(true);
   }, []);
 
-  const chartData = data.time.slice(0, 24).map((time, i) => {
+  const chartData = data.time?.slice(0, 24).map((time, i) => {
     const h = new Date(time).getHours();
     return {
       hour: `${String(h).padStart(2, '0')}:00`,
-      temp: Math.round(data.temp[i]),
-      precip: data.precipProb[i] ?? 0,
+      temp: data.temp ? Math.round(data.temp[i]) : 0,
+      precip: data.precipProb ? (data.precipProb[i] ?? 0) : 0,
     };
-  });
+  }) || [];
 
   const temps = chartData.map((d) => d.temp);
   const tempMin = Math.min(...temps) - 2;

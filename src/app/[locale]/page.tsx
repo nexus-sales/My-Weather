@@ -6,6 +6,9 @@ import SearchBar from '@/components/ui/SearchBar';
 import DashboardView from '@/components/weather/DashboardView';
 import RadarView from '@/components/radar/RadarView';
 import AetherChat from '@/components/ai/AetherChat';
+import ChartsView from '@/components/weather/ChartsView';
+import HistoryView from '@/components/weather/HistoryView';
+import StationsView from '@/components/weather/StationsView';
 import { useWeather } from '@/hooks/useWeather';
 import { useLocationStore } from '@/store/useLocationStore';
 import { BarChart3, BrainCircuit, History, LayoutDashboard, Map as MapIcon, Satellite } from 'lucide-react';
@@ -87,15 +90,9 @@ export default function HomePage() {
               {activeTab === 'dashboard' && <DashboardView weather={weather} cityName={cityName} />}
               {activeTab === 'radar' && <RadarView />}
               {activeTab === 'ai' && <AetherChat weather={weather} cityName={cityName} />}
-
-              {activeTab !== 'dashboard' && activeTab !== 'radar' && activeTab !== 'ai' && (
-                <div className="flex flex-col items-center justify-center py-32 border border-dashed border-white/10 rounded-3xl bg-white/5">
-                  <div className="text-[10px] tracking-[0.4em] font-bold text-white/30 uppercase mb-4 animate-pulse">
-                    {t('moduleOffline', { module: activeTab.toUpperCase() })}
-                  </div>
-                  <p className="text-[8px] tracking-[0.2em] text-white/10 uppercase">{t('moduleMigrating')}</p>
-                </div>
-              )}
+              {activeTab === 'charts' && <ChartsView weather={weather} />}
+              {activeTab === 'history' && <HistoryView />}
+              {activeTab === 'stations' && <StationsView weather={weather} />}
             </>
           )}
         </div>

@@ -53,7 +53,15 @@ export interface IntelligenceData {
     source: string;
     consistency: string;
   };
-  isLoading?: boolean;
+  loadStates: {
+    alerts: boolean;
+    marine: boolean;
+    metEireann: boolean;
+    radar: boolean;
+    stations: boolean;
+    coastal: boolean;
+    weather: boolean;
+  };
 }
 
 export const useIntelligence = (weather: WeatherData | undefined): IntelligenceData => {
@@ -205,7 +213,15 @@ export const useIntelligence = (weather: WeatherData | undefined): IntelligenceD
         source: isIreland && metEireannData?.isAvailable ? 'Met Eireann / ECMWF' : 'ECMWF / IFS 0.1°',
         consistency: locale === 'en' ? 'High (Gale Force Agreement)' : 'Alta (Gale Force Agreement)',
       },
-      isLoading: isLoadingAemet || isLoadingMarine || isLoadingMetEireann || isLoadingRadar || isLoadingStations || isLoadingCoastal,
+      loadStates: {
+        alerts: isLoadingAemet,
+        marine: isLoadingMarine,
+        metEireann: isLoadingMetEireann,
+        radar: isLoadingRadar,
+        stations: isLoadingStations,
+        coastal: isLoadingCoastal,
+        weather: !weather
+      }
     };
   }, [weather, aemetAlerts, aemetRadar, aemetStations, aemetCoastal, marineData, metEireannData, isIreland, isSpain, isLoadingAemet, isLoadingMarine, isLoadingMetEireann, isLoadingRadar, isLoadingStations, isLoadingCoastal, locale, coords.lat, coords.lon, nearestStation]);
 };

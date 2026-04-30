@@ -5,10 +5,14 @@ import CurrentWeatherCard from './CurrentWeatherCard';
 import HourlyChart from './HourlyChart';
 import Forecast7Days from './Forecast7Days';
 import IntelligenceStrip from './IntelligenceStrip';
+import DailyBriefing from '../briefing/DailyBriefing';
+import ModelComparison from './ModelComparison';
 import FavoritesBar from './FavoritesBar';
 import WidgetGrid from './WidgetGrid';
 import { useIntelligence } from '@/hooks/useIntelligence';
 import { useTranslations } from 'next-intl';
+import WeatherBackground from '../ui/WeatherBackground';
+import { useLocationStore } from '@/store/useLocationStore';
 
 interface DashboardViewProps {
   weather: WeatherData;
@@ -18,11 +22,19 @@ interface DashboardViewProps {
 export default function DashboardView({ weather, cityName }: DashboardViewProps) {
   const t = useTranslations('Dashboard');
   const intelligence = useIntelligence(weather);
+  const { coords } = useLocationStore();
+  
+  const condition = weather.current.precip > 0 ? 'rain' : 'none';
+  const intensity = Math.min(1, weather.current.precip / 10 + 0.2);
 
   return (
     <div className="space-y-8 animate-fadein">
+      <WeatherBackground condition={condition} intensity={intensity} />
       {/* Quick Access Favorites */}
       <FavoritesBar />
+
+      {/* Intelligent Daily Briefing */}
+      <DailyBriefing weather={weather} cityName={cityName} />
 
       {/* Intelligence Strip */}
       <IntelligenceStrip data={intelligence} />
@@ -55,6 +67,9 @@ export default function DashboardView({ weather, cityName }: DashboardViewProps)
         </div>
         <WidgetGrid weather={weather} />
       </div>
+
+      {/* Advanced Model Comparison */}
+      <ModelComparison lat={coords.lat} lon={coords.lon} ecmwfData={weather} />
 
       {/* 7-Day Forecast */}
       <Forecast7Days daily={weather.daily} hourly={weather.hourly} />
