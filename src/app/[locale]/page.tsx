@@ -36,7 +36,7 @@ export default function HomePage() {
       <div className="absolute inset-0 z-0 pointer-events-none bg-grid-meteorix opacity-50" />
       <div className="scan-overlay" />
 
-      <header className="relative z-40 flex items-center justify-between px-8 py-4 border-b border-meteorix-border bg-meteorix-bg/80 backdrop-blur-xl">
+      <header className="relative z-40 flex items-center justify-between px-4 md:px-8 py-4 border-b border-meteorix-border bg-meteorix-bg/80 backdrop-blur-xl">
         <div className="flex items-center gap-4">
           <h1 className="text-xl font-black tracking-widest text-meteorix-blue animate-pulse-glow font-orbitron">
             {t('title')}
@@ -55,7 +55,7 @@ export default function HomePage() {
         </div>
       </header>
 
-      <nav className="relative z-30 flex items-center justify-center px-8 border-b border-white/5 bg-meteorix-bg/40 backdrop-blur-md overflow-x-auto no-scrollbar">
+      <nav className="relative z-30 flex items-center justify-center px-4 md:px-8 border-b border-white/5 bg-meteorix-bg/40 backdrop-blur-md overflow-x-auto no-scrollbar">
         {tabs.map((tab) => (
           <button
             key={tab.id}
@@ -76,7 +76,7 @@ export default function HomePage() {
         <SearchBar />
       </div>
 
-      <main className="relative z-10 flex-1 flex flex-col items-center px-8 py-8 md:py-12 animate-fadein overflow-y-auto">
+      <main className="relative z-10 flex-1 flex flex-col items-center px-4 md:px-8 py-6 md:py-12 animate-fadein overflow-y-auto">
         <div className="max-w-[1500px] w-full px-4 md:px-0">
           {isLoading ? (
             <div className="flex flex-col items-center gap-4 py-32">

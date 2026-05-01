@@ -3,10 +3,19 @@
 import { Cpu, Thermometer, Droplets, BatteryCharging, Orbit } from 'lucide-react';
 import WidgetWrapper from './WidgetWrapper';
 
-export default function StationConsoleWidget() {
-  // Mock indoor data slightly different from outdoor for realism
-  const indoorTemp = 22.4;
-  const indoorHum = 45;
+interface StationConsoleWidgetProps {
+  outdoorTemp: number;
+  outdoorHum: number;
+}
+
+export default function StationConsoleWidget({ outdoorTemp, outdoorHum }: StationConsoleWidgetProps) {
+  // Indoor data derived from outdoor for realism (buffered)
+  const indoorTemp = parseFloat((outdoorTemp * 0.3 + 18).toFixed(1));
+  const indoorHum = Math.min(65, Math.max(30, outdoorHum - 10));
+
+  // Battery and Solar simulation
+  const batteryLevel = 98 + Math.sin(new Date().getHours()) * 2;
+  const voltage = (4.1 + Math.random() * 0.1).toFixed(1);
 
   return (
     <WidgetWrapper title="Consola Base / Interior TFT" icon={<Cpu size={14} className="text-meteorix-blue" />} className="h-auto pb-4">
@@ -41,7 +50,7 @@ export default function StationConsoleWidget() {
              {/* Bubble */}
              <div className="w-6 h-6 bg-[#00ff88] rounded-full shadow-[0_0_15px_#00ff88] opacity-90" />
            </div>
-           <span className="text-[10px] font-mono text-[#00ff88] uppercase mt-3 tracking-widest bg-[#00ff88]/10 px-3 py-1 rounded-full border border-[#00ff88]/20">Instalación 100% Nivelada</span>
+           <span className="text-[10px] font-mono text-[#00ff88] uppercase mt-3 tracking-widest bg-[#00ff88]/10 px-3 py-1 rounded-full border border-[#00ff88]/20">Instalación {(99.8 + Math.random() * 0.2).toFixed(1)}% Nivelada</span>
         </div>
 
         {/* Right section: Solar Panel & Battery */}
@@ -50,13 +59,13 @@ export default function StationConsoleWidget() {
               <Orbit size={18} className="text-yellow-400 animate-[spin_10s_linear_infinite]" />
               <div className="flex flex-col">
                  <span className="text-[10px] font-orbitron text-white/50 uppercase tracking-widest">Panel Solar</span>
-                 <span className="text-[12px] text-yellow-400 font-bold">Cargando 4.2V</span>
+                 <span className="text-[12px] text-yellow-400 font-bold">Cargando {voltage}V</span>
               </div>
            </div>
            
            <div className="flex items-center gap-2 bg-black/50 px-3 py-2 rounded-lg border border-[#00ff88]/30">
               <BatteryCharging size={18} className="text-[#00ff88]" />
-              <span className="text-[14px] font-mono font-bold text-[#00ff88]">100%</span>
+              <span className="text-[14px] font-mono font-bold text-[#00ff88]">{Math.round(batteryLevel)}%</span>
            </div>
         </div>
       </div>

@@ -44,7 +44,7 @@ export default function Forecast7Days({ daily, hourly }: Forecast7DaysProps) {
         </h3>
       </div>
 
-      <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3 mb-8">
+      <div className="flex overflow-x-auto pb-4 gap-3 mb-8 no-scrollbar snap-x lg:grid lg:grid-cols-7 lg:overflow-visible">
         {daily.time.map((time, i) => {
           const condition = getWeatherCondition(daily.weatherCode[i], locale);
           const isSelected = selectedIndex === i;
@@ -53,7 +53,7 @@ export default function Forecast7Days({ daily, hourly }: Forecast7DaysProps) {
             <button
               key={time}
               onClick={() => setSelectedIndex(i)}
-              className={`relative flex flex-col items-center p-5 rounded-2xl border transition-all hover:scale-[1.02] ${
+              className={`relative flex flex-col items-center p-5 rounded-2xl border transition-all hover:scale-[1.02] min-w-[120px] lg:min-w-0 snap-start ${
                 isSelected 
                   ? 'bg-meteorix-blue/10 border-meteorix-blue/40 shadow-[0_0_20px_rgba(0,212,255,0.1)]' 
                   : 'bg-meteorix-card border-meteorix-border hover:border-white/10'

@@ -40,11 +40,11 @@ export default function DashboardView({ weather, cityName }: DashboardViewProps)
       <IntelligenceStrip data={intelligence} />
 
       {/* Main Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div className="lg:col-span-1 min-w-0">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="md:col-span-1 min-w-0">
           <CurrentWeatherCard weather={weather.current} cityName={cityName} />
         </div>
-        <div className="lg:col-span-2 min-w-0">
+        <div className="md:col-span-1 lg:col-span-2 min-w-0">
           <HourlyChart data={weather.hourly} />
         </div>
       </div>

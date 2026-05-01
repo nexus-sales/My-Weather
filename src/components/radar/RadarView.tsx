@@ -46,7 +46,7 @@ export default function RadarView() {
         </button>
       </div>
 
-      <div className="relative aspect-video w-full bg-[#040d22] border border-meteorix-border rounded-3xl overflow-hidden shadow-2xl group">
+      <div className="relative aspect-square md:aspect-video w-full bg-[#040d22] border border-meteorix-border rounded-3xl overflow-hidden shadow-2xl group">
         <iframe
           key={`${radarLayer}-${coords.lat}-${coords.lon}`}
           src={windyUrl}

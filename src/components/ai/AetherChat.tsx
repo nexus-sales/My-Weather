@@ -49,7 +49,7 @@ export default function AetherChat({ weather, cityName }: AetherChatProps) {
   };
 
   return (
-    <div className="flex flex-col h-[600px] bg-meteorix-card border border-meteorix-border rounded-3xl overflow-hidden backdrop-blur-2xl">
+    <div className="flex flex-col h-[500px] md:h-[650px] bg-meteorix-card border border-meteorix-border rounded-3xl overflow-hidden backdrop-blur-2xl">
       <div className="p-6 border-b border-white/5 bg-white/5 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="p-2 bg-meteorix-blue/10 rounded-lg">

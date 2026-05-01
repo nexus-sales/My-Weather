@@ -4,9 +4,12 @@ import { Radio, Satellite } from 'lucide-react';
 import WidgetWrapper from './WidgetWrapper';
 
 export default function SpaceWeatherWidget() {
-  // Mock data for space weather
-  const kpIndex = 3; // 0-9 scale
-  const solarFlareClass = 'C'; // A, B, C, M, X
+  // Semi-dynamic data for space weather based on current day/hour
+  const now = new Date();
+  const dayHash = now.getDate() + now.getHours();
+  const kpIndex = (dayHash % 7) + 1; // 1-7 scale
+  const flareClasses = ['A', 'B', 'C', 'M'];
+  const solarFlareClass = flareClasses[dayHash % 4];
   
   let status = 'ESTABLE';
   let color = '#00ff88';
@@ -14,7 +17,7 @@ export default function SpaceWeatherWidget() {
     status = 'MODERADO';
     color = '#ffcc00';
   }
-  if (kpIndex > 6) {
+  if (kpIndex > 5) {
     status = 'TORMENTA SOLAR';
     color = '#ff3e3e';
   }

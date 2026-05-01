@@ -98,11 +98,11 @@ export default function IntelligenceStrip({ data }: IntelligenceStripProps) {
           )}
 
           {activeCard === 'storms' && !data.loadStates.weather && (
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 md:gap-6">
               <Metric label={t('metrics.cape')} value={`${data.storms.cape} J/kg`} color="text-yellow-500" />
               <Metric label={t('metrics.lifted')} value={data.storms.liftedIndex.toString()} color="text-yellow-500" />
               <Metric label={t('metrics.convective')} value={data.storms.rifts} />
-              <Metric label={t('metrics.maxGusts')} value="54 km/h" />
+              <Metric label={t('metrics.maxGusts')} value={`${Math.round(data.storms.maxGusts)} km/h`} />
             </div>
           )}
 
@@ -111,7 +111,7 @@ export default function IntelligenceStrip({ data }: IntelligenceStripProps) {
           )}
 
           {activeCard === 'air' && !data.loadStates.weather && (
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 md:gap-6">
               <Metric label={t('metrics.globalAqi')} value={data.air.aqi.toString()} color="text-meteorix-green" />
               <Metric label="PM10" value={`${data.air.pm10} ug/m3`} />
               <Metric label="PM2.5" value={`${data.air.pm25} ug/m3`} />
@@ -126,7 +126,7 @@ export default function IntelligenceStrip({ data }: IntelligenceStripProps) {
           )}
 
           {activeCard === 'marine' && !data.loadStates.marine && (
-            <div className="grid grid-cols-2 md:grid-cols-6 gap-6">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4 md:gap-6">
               <Metric label={t('metrics.waveHeight')} value={`${data.marine.waveHeight}m`} color="text-blue-400" />
               <Metric label={t('metrics.period')} value={`${data.marine.period}s`} />
               <Metric label={t('metrics.seaTemp')} value={`${data.marine.temp}C`} />
@@ -138,7 +138,7 @@ export default function IntelligenceStrip({ data }: IntelligenceStripProps) {
                   ? `${t(`tides.${data.marine.nextTide.type}`)} ${new Date(data.marine.nextTide.time).toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' })}`
                   : t('tides.noData')}
               />
-              <div className="col-span-2 md:col-span-6 text-[9px] leading-relaxed text-white/30 border-t border-white/5 pt-4">
+              <div className="col-span-2 sm:col-span-3 md:col-span-6 text-[9px] leading-relaxed text-white/30 border-t border-white/5 pt-4">
                 {t('tides.note', { source: data.marine.source })}
               </div>
             </div>
@@ -149,7 +149,7 @@ export default function IntelligenceStrip({ data }: IntelligenceStripProps) {
           )}
 
           {activeCard === 'lunar' && !data.loadStates.weather && (
-            <div className="grid grid-cols-2 md:grid-cols-5 gap-6">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4 md:gap-6">
               <Metric label={t('metrics.phase')} value={t(`lunarPhases.${data.lunar.phaseKey}`)} color="text-indigo-300" />
               <Metric label={t('metrics.illumination')} value={`${illumination}%`} />
               <Metric label={t('metrics.moonAge')} value={`${data.lunar.ageDays.toFixed(1)} d`} />

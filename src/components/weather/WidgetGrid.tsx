@@ -79,7 +79,7 @@ export default function WidgetGrid({ weather }: WidgetGridProps) {
         rain={weather.current.precip} 
       />
       
-      <AQIWidget aqiValue={Math.floor(Math.random() * 80) + 20} />
+      <AQIWidget aqiValue={intelligence.air.aqi} />
       
       <SpaceWeatherWidget />
 
@@ -88,7 +88,10 @@ export default function WidgetGrid({ weather }: WidgetGridProps) {
 
       {/* Station Console (Indoor 3-in-1, Bubble Level, Solar) */}
       <div className="sm:col-span-2 lg:col-span-4 mt-4">
-        <StationConsoleWidget />
+        <StationConsoleWidget 
+          outdoorTemp={weather.current.temp} 
+          outdoorHum={weather.current.humidity} 
+        />
       </div>
     </div>
   );

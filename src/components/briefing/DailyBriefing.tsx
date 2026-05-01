@@ -20,21 +20,57 @@ export default function DailyBriefing({ weather, cityName }: DailyBriefingProps)
     if (!weather) return null;
 
     const { current } = weather;
-    const isRainy = current.precip > 0.5;
-    const isHot = current.temp > 30;
-    const isCold = current.temp < 10;
+    const { temp, windSpeed, precip, visibility, cloudCover, uvIndex, humidity } = current;
+    
+    const isRainy = precip > 0.5;
+    const isHot = temp > 30;
+    const isCold = temp < 10;
 
-    const outdoor = Math.max(0, 100 - (isRainy ? 50 : 0) - (isHot ? 30 : 0));
-    const beach = Math.max(0, 100 - (isRainy ? 80 : 0) - (isCold ? 50 : 0) + (current.temp > 25 ? 20 : 0));
-    const photo = Math.max(0, 70 + (current.cloudCover < 30 ? 30 : -20) + (current.visibility > 10 ? 10 : -30));
-    const garden = Math.max(0, 100 - (isHot ? 40 : 0) - (isCold ? 60 : 0) + (isRainy ? 20 : 0));
+    // 1. Sport Score (Ideal: 15-22°C, no rain, low wind)
+    let sport = 100;
+    if (precip > 0) sport -= precip * 15;
+    if (temp > 25) sport -= (temp - 25) * 4;
+    if (temp < 12) sport -= (12 - temp) * 4;
+    if (windSpeed > 20) sport -= (windSpeed - 20) * 1.5;
+    if (humidity > 75) sport -= 10;
+    
+    // 2. Route/Driving Score (Ideal: high visibility, no rain)
+    let driving = 100;
+    if (visibility < 15) driving -= (15 - visibility) * 5;
+    if (precip > 0.2) driving -= 15;
+    if (windSpeed > 45) driving -= 25;
+
+    // 3. Photo Score (Ideal: Golden hour light, but here we use clouds/visibility)
+    let photo = 60;
+    if (cloudCover >= 20 && cloudCover <= 60) photo += 30; // Nice clouds for texture
+    else if (cloudCover < 20) photo += 20; // Clear skies
+    else photo -= 20; // Very overcast
+    
+    if (visibility > 15) photo += 10;
+    if (visibility < 5) photo -= 40;
+    if (precip > 0.1) photo -= 30;
+
+    // 4. Beach Score (Ideal: >25°C, sunny, low wind)
+    let beach = 0;
+    if (temp > 18) beach = (temp - 18) * 8;
+    if (cloudCover > 40) beach -= (cloudCover - 40) * 0.8;
+    if (windSpeed > 25) beach -= (windSpeed - 25) * 2;
+    if (precip > 0) beach = 0;
+    if (uvIndex > 6) beach += 15;
+
+    // 5. Garden Score (Ideal: moderate temp, some rain is good for plants but bad for working)
+    let garden = 90;
+    if (temp > 30) garden -= 20;
+    if (temp < 8) garden -= 30;
+    if (precip > 2) garden -= 40; // Too wet to work
+    if (windSpeed > 35) garden -= 15;
 
     const scores = {
-      outdoor,
-      beach,
-      photo,
-      garden,
-      driving: Math.max(0, 100 - (isRainy ? 40 : 0) - (current.visibility < 5 ? 60 : 0)),
+      outdoor: Math.round(Math.min(100, Math.max(0, sport))),
+      driving: Math.round(Math.min(100, Math.max(0, driving))),
+      photo: Math.round(Math.min(100, Math.max(0, photo))),
+      beach: Math.round(Math.min(100, Math.max(0, beach))),
+      garden: Math.round(Math.min(100, Math.max(0, garden))),
     };
 
     let summary = t('summaries.optimal');
@@ -61,10 +97,10 @@ export default function DailyBriefing({ weather, cityName }: DailyBriefingProps)
   const showAnomaly = Math.abs(anomaly) > 1.5;
 
   return (
-    <div className="bg-meteorix-card border border-meteorix-border rounded-[2.5rem] p-8 md:p-10 backdrop-blur-2xl relative overflow-hidden group shadow-[0_20px_50px_rgba(0,0,0,0.3)]">
+    <div className="bg-meteorix-card border border-meteorix-border rounded-3xl md:rounded-[2.5rem] p-6 md:p-10 backdrop-blur-2xl relative overflow-hidden group shadow-[0_20px_50px_rgba(0,0,0,0.3)]">
       <div className="absolute top-0 right-0 w-96 h-96 bg-meteorix-blue/5 blur-[120px] -mr-48 -mt-48 rounded-full" />
       
-      <div className="relative flex flex-col xl:flex-row gap-8 items-start">
+      <div className="relative flex flex-col xl:flex-row gap-8 items-stretch">
         <div className="flex-1 space-y-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
@@ -73,7 +109,7 @@ export default function DailyBriefing({ weather, cityName }: DailyBriefingProps)
               </div>
               <div>
                 <h3 className="text-[10px] font-bold uppercase tracking-[0.3em] text-white/40">{t('title')}</h3>
-                <p className="text-xl font-bold text-white/90">{t('situation', { city: cityName })}</p>
+                <p className="text-lg md:text-xl font-bold text-white/90">{t('situation', { city: cityName })}</p>
               </div>
             </div>
             <button 
@@ -85,7 +121,7 @@ export default function DailyBriefing({ weather, cityName }: DailyBriefingProps)
             </button>
           </div>
           
-          <p className="text-sm md:text-base leading-relaxed text-white/70 max-w-2xl font-medium">
+          <p className="text-xs md:text-base leading-relaxed text-white/70 max-w-2xl font-medium">
             {briefing.summary}
           </p>
 
@@ -109,7 +145,7 @@ export default function DailyBriefing({ weather, cityName }: DailyBriefingProps)
           </div>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-3 w-full xl:w-auto">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 md:gap-3 w-full xl:w-auto">
           <ScoreCard label={t('activities.sport')} score={briefing.scores.outdoor} icon={<Bike size={14} />} color="text-meteorix-blue" />
           <ScoreCard label={t('activities.route')} score={briefing.scores.driving} icon={<Car size={14} />} color="text-meteorix-blue" />
           <ScoreCard label={t('activities.photo')} score={briefing.scores.photo} icon={<Camera size={14} />} color="text-meteorix-blue" />
