@@ -55,7 +55,7 @@ export default function DashboardView({ weather, cityName }: DashboardViewProps)
           <div className="flex items-center gap-2">
              <div className="w-1.5 h-1.5 bg-meteorix-blue animate-ping rounded-full" />
              <h2 className="text-[12px] font-orbitron font-black tracking-[0.5em] text-white/80 uppercase">
-               Sensores de Telemetría Avanzada
+               {t('telemetryTitle')}
              </h2>
           </div>
           <div className="flex-1 h-[1px] bg-gradient-to-r from-meteorix-blue/40 to-transparent" />

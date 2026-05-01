@@ -73,7 +73,21 @@ export default function ChartsView({ weather }: ChartsViewProps) {
   );
 }
 
-function ChartCard({ title, icon, data, dataKey1, dataKey2, color1, color2, label1, label2, unit1, unit2 }: any) {
+interface ChartCardProps {
+  title: string;
+  icon: React.ReactNode;
+  data: any[];
+  dataKey1: string;
+  dataKey2?: string;
+  color1: string;
+  color2?: string;
+  label1: string;
+  label2?: string;
+  unit1: string;
+  unit2?: string;
+}
+
+function ChartCard({ title, icon, data, dataKey1, dataKey2, color1, color2, label1, label2, unit1, unit2 }: ChartCardProps) {
   return (
     <div className="bg-meteorix-card border border-meteorix-border rounded-3xl p-6 backdrop-blur-xl">
       <div className="flex items-center gap-3 mb-6">
@@ -91,7 +105,7 @@ function ChartCard({ title, icon, data, dataKey1, dataKey2, color1, color2, labe
                 <stop offset="5%" stopColor={color1} stopOpacity={0.2} />
                 <stop offset="95%" stopColor={color1} stopOpacity={0} />
               </linearGradient>
-              {dataKey2 && (
+              {dataKey2 && color2 && (
                 <linearGradient id={`grad-${dataKey2}`} x1="0" y1="0" x2="0" y2="1">
                   <stop offset="5%" stopColor={color2} stopOpacity={0.1} />
                   <stop offset="95%" stopColor={color2} stopOpacity={0} />
@@ -106,7 +120,7 @@ function ChartCard({ title, icon, data, dataKey1, dataKey2, color1, color2, labe
               itemStyle={{ fontSize: '10px', fontFamily: 'Orbitron' }}
             />
             <Area type="monotone" dataKey={dataKey1} stroke={color1} fill={`url(#grad-${dataKey1})`} strokeWidth={2} />
-            {dataKey2 && <Area type="monotone" dataKey={dataKey2} stroke={color2} fill={`url(#grad-${dataKey2})`} strokeWidth={1} strokeDasharray="5 5" />}
+            {dataKey2 && color2 && <Area type="monotone" dataKey={dataKey2} stroke={color2} fill={`url(#grad-${dataKey2})`} strokeWidth={1} strokeDasharray="5 5" />}
           </AreaChart>
         </ResponsiveContainer>
       </div>

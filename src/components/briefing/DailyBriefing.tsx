@@ -52,11 +52,12 @@ export default function DailyBriefing({ weather, cityName }: DailyBriefingProps)
 
     // 4. Beach Score (Ideal: >25°C, sunny, low wind)
     let beach = 0;
-    if (temp > 18) beach = (temp - 18) * 8;
-    if (cloudCover > 40) beach -= (cloudCover - 40) * 0.8;
-    if (windSpeed > 25) beach -= (windSpeed - 25) * 2;
-    if (precip > 0) beach = 0;
-    if (uvIndex > 6) beach += 15;
+    if (temp > 18) beach = (temp - 18) * 10;
+    if (temp > 24) beach += 20; // Sweet spot base
+    if (cloudCover > 20) beach -= (cloudCover - 20) * 0.5; // Less aggressive cloud penalty
+    if (windSpeed > 20) beach -= (windSpeed - 20) * 2;
+    if (precip > 0.1) beach = 0; // Rain ruins beach day
+    if (uvIndex > 6) beach += 10;
 
     // 5. Garden Score (Ideal: moderate temp, some rain is good for plants but bad for working)
     let garden = 90;

@@ -64,7 +64,7 @@ export const fetchAemetAlerts = async (): Promise<AemetAviso[]> => {
     if (!Array.isArray(data)) return [];
 
     return (data as AemetAvisoApiItem[]).map((item) => ({
-      id: item.id || Math.random().toString(),
+      id: item.id || crypto.randomUUID(),
       nivel: item.nivel || 'amarillo',
       descripcion: item.descripcion || item.texto || 'Aviso meteorológico',
       comienzo: item.comienzo || '',
@@ -96,7 +96,7 @@ export const fetchAemetStations = async (): Promise<AemetStation[]> => {
     if (!Array.isArray(rawData)) return [];
 
     // Map and parse AEMET's weird coordinate format
-    return rawData.map((s: any) => ({
+    return rawData.map((s: AemetStation) => ({
       idema: s.idema,
       lat: typeof s.lat === 'string' ? dmsToDecimal(s.lat) : s.lat,
       lon: typeof s.lon === 'string' ? dmsToDecimal(s.lon) : s.lon,
@@ -122,7 +122,7 @@ export const fetchAemetCoastalForecast = async (lat: number, lon: number): Promi
   if (lat > 42 && lon < -7) code = '40'; // Galicia
   else if (lat > 43 && lon > -7 && lon < -1) code = '41'; // Cantabrico
   else if (lat < 30) code = '47'; // Canarias
-  else if (lat < 38 && lon > 1) code = '46'; // Baleares
+  else if (lat > 38 && lat < 40.5 && lon > 1) code = '46'; // Baleares (Corrected lat)
   else if (lat < 37 && lon < -5) code = '45'; // And. Occ
   else if (lat < 37 && lon > -5 && lon < -1) code = '44'; // And. Or
   else if (lat > 37 && lat < 41 && lon > -1) code = '43'; // Valencia/Murcia
@@ -143,7 +143,7 @@ export const fetchAemetCoastalForecast = async (lat: number, lon: number): Promi
   }
 };
 
-export const fetchAemetModelProduct = async (municipioId: string): Promise<any> => {
+export const fetchAemetModelProduct = async (municipioId: string): Promise<unknown> => {
   try {
     const res = await fetch(`/api/aemet?path=prediccion/especifica/municipio/diaria/${municipioId}`);
     if (!res.ok) return null;

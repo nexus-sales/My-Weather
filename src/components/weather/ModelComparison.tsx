@@ -76,8 +76,8 @@ export default function ModelComparison({ lat, lon, ecmwfData }: ModelComparison
           {t('diffNote', { 
             diff: diffTemp.toFixed(1), 
             info: !isDivergent 
-              ? " Los modelos coinciden en la trayectoria sinóptica, lo que otorga una alta fiabilidad al pronóstico."
-              : " Existe divergencia entre los modelos global y regional. Se recomienda precaución en la planificación." 
+              ? t('consensusInfo')
+              : t('divergenceInfo') 
           })}
         </p>
       </div>

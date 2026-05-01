@@ -65,7 +65,8 @@
     "rainProbability": "Prob. lluvia",
     "rain": "Lluvia",
     "visibility": "Visibilidad",
-    "lunar": "Fase Lunar"
+    "lunar": "Fase Lunar",
+    "telemetryTitle": "Sensores de Telemetría Avanzada"
   },
   "Intelligence": {
     "cards": {
@@ -92,6 +93,11 @@
       "falling": "Baja",
       "steady": "Estable"
     },
+    "syncing": "Sincronizando sensores...",
+    "analyzingConvection": "Analizando conveccion...",
+    "measuringParticles": "Midiendo particulas...",
+    "calculatingEphemeris": "Calculando efemerides...",
+    "connectingAemet": "Conectando con OpenData AEMET...",
     "alertsTitle": "Avisos oficiales (AEMET / MeteoAlarm)",
     "noAlerts": "No hay avisos meteorologicos en vigor.",
     "metrics": {
@@ -140,7 +146,15 @@
         "radar": "Radar e imagenes",
         "models": "Mapas y productos de modelo"
       },
-      "note": "La ruta /api/aemet ya funciona como proxy generico por path. Siguiente paso: crear capas concretas para radar, prediccion costera, estaciones y productos de modelo sin exponer la API key al cliente."
+      "nearestStation": "Estacion mas cercana (AEMET)",
+      "temperature": "Temperatura",
+      "wind": "Viento",
+      "rain": "Lluvia",
+      "obs": "Obs:",
+      "noStations": "No hay estaciones cercanas activas.",
+      "radarTitle": "Radar LIVE de Alta Resolución",
+      "marineTitle": "Predicción Marítima",
+      "note": "Los datos provienen de la red oficial de AEMET."
     },
     "confidence": {
       "title": "Analisis de calidad de prevision",
@@ -202,7 +216,9 @@
     "temp": "Temperatura",
     "wind": "Viento",
     "precip": "Precipitacion",
-    "diffNote": "El analisis comparativo detecta una diferencia termica de {diff}C. {info}"
+    "diffNote": "El analisis comparativo detecta una diferencia termica de {diff}C. {info}",
+    "consensusInfo": "Los modelos coinciden en la trayectoria sinoptica, lo que otorga una alta fiabilidad al pronostico.",
+    "divergenceInfo": "Existe divergencia entre los modelos global y regional. Se recomienda precaucion en la planificación."
   },
   "Charts": {
     "title": "Analisis de Datos Proyectado",

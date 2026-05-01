@@ -1,5 +1,6 @@
 'use client';
 
+import { useMemo } from 'react';
 import { Cpu, Thermometer, Droplets, BatteryCharging, Orbit } from 'lucide-react';
 import WidgetWrapper from './WidgetWrapper';
 
@@ -13,9 +14,15 @@ export default function StationConsoleWidget({ outdoorTemp, outdoorHum }: Statio
   const indoorTemp = parseFloat((outdoorTemp * 0.3 + 18).toFixed(1));
   const indoorHum = Math.min(65, Math.max(30, outdoorHum - 10));
 
-  // Battery and Solar simulation
-  const batteryLevel = 98 + Math.sin(new Date().getHours()) * 2;
-  const voltage = (4.1 + Math.random() * 0.1).toFixed(1);
+  // Battery and Solar — stable values derived from hour, not Math.random()
+  const { voltage, batteryLevel, levelLabel } = useMemo(() => {
+    const hour = new Date().getHours();
+    const isSunny = hour >= 8 && hour <= 20;
+    const solarFactor = isSunny ? Math.sin(((hour - 8) / 12) * Math.PI) : 0;
+    const v = isSunny ? (4.0 + solarFactor * 0.2).toFixed(1) : '3.8';
+    const bat = Math.round(Math.min(100, 85 + solarFactor * 15));
+    return { voltage: v, batteryLevel: bat, levelLabel: `${bat}%` };
+  }, []);
 
   return (
     <WidgetWrapper title="Consola Base / Interior TFT" icon={<Cpu size={14} className="text-meteorix-blue" />} className="h-auto pb-4">

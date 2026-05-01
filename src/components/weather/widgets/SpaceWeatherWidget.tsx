@@ -1,26 +1,32 @@
 'use client';
 
+import { useEffect, useMemo, useState } from 'react';
 import { Radio, Satellite } from 'lucide-react';
 import WidgetWrapper from './WidgetWrapper';
 
 export default function SpaceWeatherWidget() {
-  // Semi-dynamic data for space weather based on current day/hour
-  const now = new Date();
-  const dayHash = now.getDate() + now.getHours();
-  const kpIndex = (dayHash % 7) + 1; // 1-7 scale
+  // Compute client-side only to prevent SSR/hydration mismatch
+  const [dayHash, setDayHash] = useState(0);
+  useEffect(() => {
+    const now = new Date();
+    setDayHash(now.getDate() + now.getHours());
+  }, []);
+
+  const kpIndex = (dayHash % 7) + 1;
   const flareClasses = ['A', 'B', 'C', 'M'];
   const solarFlareClass = flareClasses[dayHash % 4];
-  
+
+  // Stable bar heights derived from kpIndex — no Math.random() in render
+  const barHeights = useMemo(
+    () => Array.from({ length: 10 }, (_, i) => 20 + ((kpIndex * 13 + i * 7) % 20)),
+    [kpIndex]
+  );
+
   let status = 'ESTABLE';
   let color = '#00ff88';
-  if (kpIndex > 4) {
-    status = 'MODERADO';
-    color = '#ffcc00';
-  }
-  if (kpIndex > 5) {
-    status = 'TORMENTA SOLAR';
-    color = '#ff3e3e';
-  }
+  if (kpIndex > 4) { status = 'MODERADO'; color = '#ffcc00'; }
+  if (kpIndex > 5) { status = 'TORMENTA SOLAR'; color = '#ff3e3e'; }
+
 
   return (
     <WidgetWrapper title="Clima Espacial (NOAA)" icon={<Satellite size={14} className="text-meteorix-blue animate-pulse" />}>
@@ -48,8 +54,8 @@ export default function SpaceWeatherWidget() {
            <Radio size={32} style={{ color }} className={kpIndex > 4 ? 'animate-ping' : 'opacity-50'} />
            {/* Animated Sine waves using CSS */}
            <div className="absolute w-[200%] flex justify-around animate-[slide_3s_linear_infinite]">
-             {[...Array(10)].map((_, i) => (
-               <div key={i} className="w-1 rounded-full bg-meteorix-blue/40 mx-1" style={{ height: `${20 + Math.random() * 20}px` }} />
+             {barHeights.map((h, i) => (
+               <div key={i} className="w-1 rounded-full bg-meteorix-blue/40 mx-1" style={{ height: `${h}px` }} />
              ))}
            </div>
         </div>

@@ -9,6 +9,7 @@ export const useWeather = () => {
     queryKey: ['weather', coords.lat, coords.lon, units],
     queryFn: () => fetchWeather(coords.lat, coords.lon, units),
     enabled: !!coords.lat && !!coords.lon,
-    refetchInterval: 10 * 60 * 1000, // Refresh every 10 minutes
+    staleTime: 5 * 60 * 1000,       // Data is fresh for 5 min
+    refetchInterval: 10 * 60 * 1000, // Background refresh every 10 min
   });
 };

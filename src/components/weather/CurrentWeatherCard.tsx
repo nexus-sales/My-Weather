@@ -87,10 +87,26 @@ export default function CurrentWeatherCard({ weather, cityName }: CurrentWeather
         </button>
 
         <div className="flex gap-2">
-           <button className="p-2 rounded-xl bg-white/5 border border-white/5 text-white/20 hover:text-meteorix-blue hover:border-meteorix-blue/40 transition-all">
+           <button 
+             onClick={() => {
+               if (navigator.share) {
+                 navigator.share({
+                   title: `Weather in ${cityName}`,
+                   text: `Current temperature in ${cityName} is ${Math.round(weather.temp)}°C. Check it out on MyWeather!`,
+                   url: window.location.href,
+                 });
+               } else {
+                 alert('Sharing not supported on this browser.');
+               }
+             }}
+             className="p-2 rounded-xl bg-white/5 border border-white/5 text-white/20 hover:text-meteorix-blue hover:border-meteorix-blue/40 transition-all"
+           >
              <Share2 size={14} />
            </button>
-           <button className="p-2 rounded-xl bg-white/5 border border-white/5 text-white/20 hover:text-meteorix-blue hover:border-meteorix-blue/40 transition-all">
+           <button 
+             onClick={() => alert('METEORIX Core v5.0: Engineering-grade meteorological analysis engine.')}
+             className="p-2 rounded-xl bg-white/5 border border-white/5 text-white/20 hover:text-meteorix-blue hover:border-meteorix-blue/40 transition-all"
+           >
              <Info size={14} />
            </button>
         </div>

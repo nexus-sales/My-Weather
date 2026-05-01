@@ -67,7 +67,7 @@ export default function IntelligenceStrip({ data }: IntelligenceStripProps) {
         <div className="bg-meteorix-card/60 border border-meteorix-border rounded-2xl p-6 backdrop-blur-xl animate-fadein border-t-meteorix-blue/30">
           {(data.loadStates.alerts || data.loadStates.marine || data.loadStates.weather) && activeCard === null && (
             <div className="flex items-center justify-center py-2">
-               <div className="text-[8px] text-white/20 animate-pulse uppercase tracking-widest">Sincronizando sensores...</div>
+               <div className="text-[8px] text-white/20 animate-pulse uppercase tracking-widest">{t('syncing')}</div>
             </div>
           )}
 
@@ -94,7 +94,7 @@ export default function IntelligenceStrip({ data }: IntelligenceStripProps) {
           )}
 
           {activeCard === 'storms' && data.loadStates.weather && (
-             <div className="flex items-center justify-center py-8 text-white/20 animate-pulse">Analizando convección...</div>
+             <div className="flex items-center justify-center py-8 text-white/20 animate-pulse">{t('analyzingConvection')}</div>
           )}
 
           {activeCard === 'storms' && !data.loadStates.weather && (
@@ -107,7 +107,7 @@ export default function IntelligenceStrip({ data }: IntelligenceStripProps) {
           )}
 
           {activeCard === 'air' && data.loadStates.weather && (
-             <div className="flex items-center justify-center py-8 text-white/20 animate-pulse">Midiendo partículas...</div>
+             <div className="flex items-center justify-center py-8 text-white/20 animate-pulse">{t('measuringParticles')}</div>
           )}
 
           {activeCard === 'air' && !data.loadStates.weather && (
@@ -145,7 +145,7 @@ export default function IntelligenceStrip({ data }: IntelligenceStripProps) {
           )}
 
           {activeCard === 'lunar' && data.loadStates.weather && (
-            <div className="flex items-center justify-center py-8 text-white/20 animate-pulse">Calculando efemérides...</div>
+            <div className="flex items-center justify-center py-8 text-white/20 animate-pulse">{t('calculatingEphemeris')}</div>
           )}
 
           {activeCard === 'lunar' && !data.loadStates.weather && (
@@ -159,7 +159,7 @@ export default function IntelligenceStrip({ data }: IntelligenceStripProps) {
           )}
 
           {activeCard === 'aemet' && (data.loadStates.stations || data.loadStates.radar) && (
-             <div className="flex items-center justify-center py-8 text-white/20 animate-pulse">Conectando con OpenData AEMET...</div>
+             <div className="flex items-center justify-center py-8 text-white/20 animate-pulse">{t('connectingAemet')}</div>
           )}
 
           {activeCard === 'aemet' && !(data.loadStates.stations || data.loadStates.radar) && (
@@ -169,32 +169,32 @@ export default function IntelligenceStrip({ data }: IntelligenceStripProps) {
                 
                 {data.aemet.nearestStation ? (
                   <div className="bg-white/5 border border-white/5 rounded-xl p-4 mb-4">
-                    <div className="text-[8px] tracking-widest text-white/30 uppercase mb-2">Estación más cercana (AEMET)</div>
+                    <div className="text-[8px] tracking-widest text-white/30 uppercase mb-2">{t('aemet.nearestStation')}</div>
                     <div className="text-sm font-bold text-white/90 mb-1">{data.aemet.nearestStation.ubi}</div>
                     <div className="flex gap-6 mt-3">
                       <div>
-                        <div className="text-[8px] text-white/20 uppercase mb-1">Temperatura</div>
+                        <div className="text-[8px] text-white/20 uppercase mb-1">{t('aemet.temperature')}</div>
                         <div className="text-sm font-bold font-orbitron text-cyan-300">{data.aemet.nearestStation.ta}ºC</div>
                       </div>
                       {data.aemet.nearestStation.vvm !== undefined && (
                         <div>
-                          <div className="text-[8px] text-white/20 uppercase mb-1">Viento</div>
+                          <div className="text-[8px] text-white/20 uppercase mb-1">{t('aemet.wind')}</div>
                           <div className="text-sm font-bold font-orbitron text-white/60">{Math.round(data.aemet.nearestStation.vvm * 3.6)} km/h</div>
                         </div>
                       )}
                       {data.aemet.nearestStation.prec !== undefined && (
                         <div>
-                          <div className="text-[8px] text-white/20 uppercase mb-1">Lluvia</div>
+                          <div className="text-[8px] text-white/20 uppercase mb-1">{t('aemet.rain')}</div>
                           <div className="text-sm font-bold font-orbitron text-meteorix-blue">{data.aemet.nearestStation.prec} mm</div>
                         </div>
                       )}
                     </div>
                     <div className="mt-3 pt-3 border-t border-white/5 text-[8px] text-white/20 uppercase">
-                      Obs: {new Date(data.aemet.nearestStation.fint).toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' })}
+                      {t('aemet.obs')} {new Date(data.aemet.nearestStation.fint).toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' })}
                     </div>
                   </div>
                 ) : (
-                  <div className="text-xs text-white/30 italic mb-4">No hay estaciones cercanas activas.</div>
+                  <div className="text-xs text-white/30 italic mb-4">{t('aemet.noStations')}</div>
                 )}
                 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
@@ -207,13 +207,13 @@ export default function IntelligenceStrip({ data }: IntelligenceStripProps) {
               </div>
               
               <div className="space-y-4">
-                <h4 className="text-[10px] tracking-widest text-cyan-300 font-bold mb-4 uppercase">Radar LIVE de Alta Resolución</h4>
+                <h4 className="text-[10px] tracking-widest text-cyan-300 font-bold mb-4 uppercase">{t('aemet.radarTitle')}</h4>
                 <div className="rounded-xl overflow-hidden border border-white/10">
                   <RadarMap />
                 </div>
                 {data.aemet.coastal && (
                   <div className="bg-blue-900/10 border border-blue-900/20 rounded-xl p-4">
-                    <div className="text-[8px] tracking-widest text-blue-400 uppercase mb-2">Predicción Marítima</div>
+                    <div className="text-[8px] tracking-widest text-blue-400 uppercase mb-2">{t('aemet.marineTitle')}</div>
                     <div className="text-[10px] font-bold text-white/80 mb-2">{data.aemet.coastal.nombre}</div>
                     <p className="text-[9px] text-white/50 leading-relaxed line-clamp-3 hover:line-clamp-none transition-all cursor-pointer">
                       {data.aemet.coastal.texto}

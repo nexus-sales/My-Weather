@@ -101,7 +101,7 @@ export const fetchWeather = async (lat: number, lon: number, units: string = 'me
       gusts: data.current.wind_gusts_10m,
       uvIndex: data.current.uv_index,
       precip: Math.max(data.current.precipitation || 0, data.current.rain || 0, data.current.showers || 0),
-      visibility: data.current.visibility,
+      visibility: (data.current.visibility ?? 0) / 1000, // Open-Meteo returns meters; convert to km
       weatherCode: data.current.weather_code,
       cloudCover: data.current.cloud_cover,
       time: data.current.time,

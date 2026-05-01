@@ -51,6 +51,24 @@ const fetchAemetPath = async (
   return { json, datosUrl: meta.datos, isBinary: false };
 };
 
+/**
+ * Strict whitelist of AEMET paths the client is allowed to request.
+ * Prefixes are used for dynamic segments (e.g. coastal codes 40-47).
+ */
+const ALLOWED_PATHS: Array<string | RegExp> = [
+  'avisos_cap/ultimoelaborado/area/esp',
+  'observacion/convencional/todas',
+  '__radar_probe__',
+  /^prediccion\/maritima\/costera\/costa\/4[0-7]$/,
+  /^prediccion\/especifica\/municipio\/diaria\/\d+$/,
+];
+
+const isAllowedPath = (path: string): boolean => {
+  return ALLOWED_PATHS.some((allowed) =>
+    typeof allowed === 'string' ? allowed === path : allowed.test(path)
+  );
+};
+
 export async function GET(request: NextRequest) {
   const { searchParams } = request.nextUrl;
   const path = searchParams.get('path') ?? 'avisos_cap/ultimoelaborado/area/esp';
@@ -58,6 +76,12 @@ export async function GET(request: NextRequest) {
 
   if (!apiKey) {
     return NextResponse.json({ error: 'AEMET API key not configured.' }, { status: 503 });
+  }
+
+  // Security: reject any path not in the whitelist
+  if (!isAllowedPath(path)) {
+    console.warn(`[AEMET Proxy] Blocked unauthorized path: ${path}`);
+    return NextResponse.json({ error: 'Forbidden AEMET path.' }, { status: 403 });
   }
 
   // Server-side radar probing — one client request, no browser 404s

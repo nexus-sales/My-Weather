@@ -65,7 +65,8 @@
     "rainProbability": "Rain chance",
     "rain": "Rain",
     "visibility": "Visibility",
-    "lunar": "Moon Phase"
+    "lunar": "Moon Phase",
+    "telemetryTitle": "Advanced Telemetry Sensors"
   },
   "Intelligence": {
     "cards": {
@@ -92,6 +93,11 @@
       "falling": "Falling",
       "steady": "Steady"
     },
+    "syncing": "Syncing sensors...",
+    "analyzingConvection": "Analyzing convection...",
+    "measuringParticles": "Measuring particles...",
+    "calculatingEphemeris": "Calculating ephemeris...",
+    "connectingAemet": "Connecting with AEMET OpenData...",
     "alertsTitle": "Official alerts (AEMET / MeteoAlarm)",
     "noAlerts": "No active weather alerts.",
     "metrics": {
@@ -140,7 +146,15 @@
         "radar": "Radar and imagery",
         "models": "Model maps and products"
       },
-      "note": "The /api/aemet route already works as a generic path proxy. Next step: create specific layers for radar, coastal forecast, stations and model products without exposing the API key to the client."
+      "nearestStation": "Nearest Station (AEMET)",
+      "temperature": "Temperature",
+      "wind": "Wind",
+      "rain": "Rain",
+      "obs": "Obs:",
+      "noStations": "No active nearby stations.",
+      "radarTitle": "Live High-Resolution Radar",
+      "marineTitle": "Marine Forecast",
+      "note": "Data provided by the official AEMET network."
     },
     "confidence": {
       "title": "Forecast quality analysis",
@@ -202,7 +216,9 @@
     "temp": "Temperature",
     "wind": "Wind",
     "precip": "Precipitation",
-    "diffNote": "Comparative analysis detects a thermal difference of {diff}C. {info}"
+    "diffNote": "Comparative analysis detects a thermal difference of {diff}C. {info}",
+    "consensusInfo": "The models agree on the synoptic track, providing high reliability to the forecast.",
+    "divergenceInfo": "Divergence exists between global and regional models. Caution is recommended in planning."
   },
   "Charts": {
     "title": "Projected Data Analysis",

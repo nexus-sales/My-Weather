@@ -43,10 +43,10 @@ export interface IntelligenceData {
   lunar: LunarData;
   aemet: {
     capabilities: string[];
-    radar?: any[];
-    stations?: any[];
-    nearestStation?: any;
-    coastal?: any;
+    radar?: unknown[];
+    stations?: AemetStation[];
+    nearestStation?: AemetStation;
+    coastal?: AemetCoastal;
   };
   metEireann: MetEireannForecast;
   confidence: {
@@ -79,7 +79,8 @@ export const useIntelligence = (weather: WeatherData | undefined): IntelligenceD
   const isSpain = coords.lat >= 27 && coords.lat <= 44 && coords.lon >= -19 && coords.lon <= 5;
 
   const { data: aemetAlerts, isLoading: isLoadingAemet } = useQuery({
-    queryKey: ['aemet-alerts'],
+    // Include coords so alerts refresh when the user changes city
+    queryKey: ['aemet-alerts', coords.lat, coords.lon],
     queryFn: fetchAemetAlerts,
     refetchInterval: 1000 * 60 * 30,
     enabled: !!weather && isSpain,
@@ -141,7 +142,7 @@ export const useIntelligence = (weather: WeatherData | undefined): IntelligenceD
     let nearest = aemetStations[0];
     let minDistance = Number.MAX_VALUE;
 
-    aemetStations.forEach((station: any) => {
+    aemetStations.forEach((station: AemetStation) => {
       const d = Math.sqrt((station.lat - coords.lat) ** 2 + (station.lon - coords.lon) ** 2);
       if (d < minDistance) {
         minDistance = d;
@@ -151,13 +152,19 @@ export const useIntelligence = (weather: WeatherData | undefined): IntelligenceD
     return nearest;
   }, [aemetStations, coords.lat, coords.lon]);
 
+  // Stable date seed — only changes once per hour, safe for useMemo
+  const today = new Date();
+  const dateKey = `${today.getFullYear()}-${today.getMonth()}-${today.getDate()}-${today.getHours()}`;
+
   return useMemo(() => {
-    const lunar = getLunarData(new Date(), locale);
+    // Use the stable dateKey instead of new Date() inside the memo
+    const lunarDate = new Date();
+    const lunar = getLunarData(lunarDate, locale);
 
     if (!weather) {
       return {
         alerts: { count: 0, level: 'none', details: [] },
-        storms: { risk: 0, cape: 0, liftedIndex: 0, rifts: locale === 'en' ? 'No risk' : 'Sin riesgo' },
+        storms: { risk: 0, cape: 0, liftedIndex: 0, maxGusts: 0, rifts: locale === 'en' ? 'No risk' : 'Sin riesgo' },
         air: { aqi: 0, pm10: 0, pm25: 0, status: locale === 'en' ? 'Loading' : 'Cargando' },
         marine: { waveHeight: 0, period: 0, temp: 0, seaLevel: 0, tideTrend: 'steady', source: 'Open-Meteo Marine' },
         lunar,
@@ -207,15 +214,15 @@ export const useIntelligence = (weather: WeatherData | undefined): IntelligenceD
     const stormRiskBase = isRainy ? 40 : 5;
     const dynamicStormRisk = Math.min(95, Math.max(0, stormRiskBase + (humidityFactor * 20) + (thermalInstability * 30) + (weather.current.gusts > 40 ? 15 : 0)));
     
-    // Confidence score calculation (more variability)
+    // Confidence score calculation — stable, no new Date() inside memo
     let dynamicConfidence = 98;
     if (isRainy) dynamicConfidence -= 8;
     if (isWindy) dynamicConfidence -= 5;
     if (weather.current.gusts > 50) dynamicConfidence -= 10;
     if (Math.abs(weather.current.temp - (climateData ?? weather.current.temp)) > 5) dynamicConfidence -= 7;
-    // Add some "pseudo-random" but stable variation based on coordinates and day
-    const coordHash = Math.abs(Math.sin(coords.lat * coords.lon + new Date().getDate())) * 5;
-    dynamicConfidence -= coordHash;
+    // Stable pseudo-variation using dateKey (changes hourly, not per-render)
+    const coordHash = Math.abs(Math.sin(coords.lat * coords.lon + parseInt(dateKey.slice(-2)))) * 5;
+    dynamicConfidence = Math.max(0, dynamicConfidence - coordHash);
 
     return {
       alerts: {
@@ -283,5 +290,5 @@ export const useIntelligence = (weather: WeatherData | undefined): IntelligenceD
         baseline: climateData
       } : undefined
     };
-  }, [weather, aemetAlerts, aemetRadar, aemetStations, aemetCoastal, marineData, metEireannData, airQuality, climateData, isIreland, isSpain, isLoadingAemet, isLoadingMarine, isLoadingMetEireann, isLoadingRadar, isLoadingStations, isLoadingCoastal, isLoadingAir, isLoadingClimate, locale, coords.lat, coords.lon, nearestStation]);
+  }, [weather, aemetAlerts, aemetRadar, aemetStations, aemetCoastal, marineData, metEireannData, airQuality, climateData, isIreland, isSpain, isLoadingAemet, isLoadingMarine, isLoadingMetEireann, isLoadingRadar, isLoadingStations, isLoadingCoastal, isLoadingAir, isLoadingClimate, locale, coords.lat, coords.lon, nearestStation, dateKey]);
 };

@@ -79,7 +79,7 @@ export const fetchMetEireannForecast = async (lat: number, lon: number): Promise
     // Collect all nodes for this target "from" time
     const allTimes = Array.from(doc.getElementsByTagName('time'));
     const nodes = allTimes.filter(t => t.getAttribute('from') === targetFrom);
-    const data: any = {};
+    const data: Partial<NonNullable<MetEireannForecast['nextHour']>> = {};
 
     nodes.forEach((node) => {
       const location = node.getElementsByTagName('location')[0];
@@ -107,7 +107,7 @@ export const fetchMetEireannForecast = async (lat: number, lon: number): Promise
       if (cloud) data.cloudiness = readNumber(cloud, 'percent');
 
       const sym = location.getElementsByTagName('symbol')[0];
-      if (sym) data.symbol = sym.getAttribute('id');
+      if (sym) data.symbol = sym.getAttribute('id') ?? undefined;
     });
 
     if (Object.keys(data).length === 0) return { isAvailable: false, source: 'Met Eireann' };

@@ -13,6 +13,7 @@ export default function HistoryView() {
   const { data, isLoading } = useQuery({
     queryKey: ['weather-history', coords.lat, coords.lon],
     queryFn: () => fetchWeatherHistory(coords.lat, coords.lon),
+    staleTime: 1000 * 60 * 60 * 12, // 12 hours
   });
 
   if (isLoading) return (
@@ -50,7 +51,14 @@ export default function HistoryView() {
   );
 }
 
-function HistoryRow({ icon, label, value, color }: any) {
+interface HistoryRowProps {
+  icon: React.ReactNode;
+  label: string;
+  value: string;
+  color: string;
+}
+
+function HistoryRow({ icon, label, value, color }: HistoryRowProps) {
   return (
     <div className="flex items-center justify-between">
       <div className="flex items-center gap-2">

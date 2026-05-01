@@ -94,7 +94,7 @@ export default function StationsView({ weather }: StationsViewProps) {
   );
 }
 
-function StationMetric({ label, value }: any) {
+function StationMetric({ label, value }: { label: string; value: string | number }) {
   return (
     <div className="space-y-2">
        <div className="text-[9px] font-bold text-white/20 uppercase tracking-widest">{label}</div>
