@@ -34,6 +34,13 @@ export default function ModelComparison({ lat, lon, ecmwfData }: ModelComparison
   const diffTemp = icon ? Math.abs(ecmwf.temp - icon.temperature_2m) : 0;
   const isDivergent = diffTemp > 2.5;
 
+  const sourceLabel: Record<string, { name: string; subtitle: string }> = {
+    'open-meteo': { name: 'ECMWF IFS 0.1°', subtitle: 'Global Leader' },
+    owm: { name: 'OpenWeatherMap', subtitle: 'GFS Fallback' },
+    tomorrow: { name: 'Tomorrow.io', subtitle: 'Fallback Active' },
+  };
+  const primarySource = sourceLabel[ecmwfData.source ?? 'open-meteo'];
+
   return (
     <div className="bg-meteorix-card border border-meteorix-border rounded-[2rem] p-8 backdrop-blur-xl animate-fadein">
       <div className="flex items-center justify-between mb-8">
@@ -51,8 +58,8 @@ export default function ModelComparison({ lat, lon, ecmwfData }: ModelComparison
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="space-y-3 p-4 rounded-2xl bg-white/5 border border-white/5">
           <div className="flex justify-between items-center mb-2">
-            <span className="text-[10px] font-bold text-meteorix-blue uppercase tracking-tighter">ECMWF IFS 0.1°</span>
-            <span className="text-[8px] text-white/30 uppercase">Global Leader</span>
+            <span className="text-[10px] font-bold text-meteorix-blue uppercase tracking-tighter">{primarySource.name}</span>
+            <span className="text-[8px] text-white/30 uppercase">{primarySource.subtitle}</span>
           </div>
           <Row label={t('temp')} value={`${ecmwf.temp.toFixed(1)}°C`} />
           <Row label={t('wind')} value={`${ecmwf.windSpeed.toFixed(1)} km/h`} />

@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { useLocale } from 'next-intl';
 import { useQuery } from '@tanstack/react-query';
 import { WeatherData, fetchAirQuality, fetchHistoricalAnomaly } from '@/services/weatherService';
-import { fetchAemetAlerts, fetchAemetCoastalForecast, fetchAemetRadar, fetchAemetStations } from '@/services/aemetService';
+import { fetchAemetAlerts, fetchAemetCoastalForecast, fetchAemetRadar, fetchAemetStations, AemetStation, AemetCoastal } from '@/services/aemetService';
 import { getLunarData, LunarData } from '@/services/astroService';
 import { fetchMarineData } from '@/services/marineService';
 import { fetchMetEireannForecast, isIrelandCoords, MetEireannForecast } from '@/services/metEireannService';
@@ -264,7 +264,7 @@ export const useIntelligence = (weather: WeatherData | undefined): IntelligenceD
         radar: aemetRadar,
         stations: aemetStations,
         nearestStation,
-        coastal: aemetCoastal,
+        coastal: aemetCoastal ?? undefined,
       },
       metEireann: metEireannData ?? { isAvailable: false, source: 'Met Eireann' },
       confidence: {
