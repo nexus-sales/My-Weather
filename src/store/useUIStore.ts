@@ -6,7 +6,7 @@ interface UIState {
   isSidebarOpen: boolean;
   
   // Radar
-  radarLayer: 'rain' | 'wind' | 'temp' | 'clouds' | 'satellite';
+  radarLayer: 'radar' | 'satellite' | 'wind' | 'isobars' | 'clouds' | 'temp';
   
   // Actions
   setActiveTab: (tab: UIState['activeTab']) => void;
@@ -17,7 +17,7 @@ interface UIState {
 export const useUIStore = create<UIState>((set) => ({
   activeTab: 'dashboard',
   isSidebarOpen: false,
-  radarLayer: 'rain',
+  radarLayer: 'radar',
 
   setActiveTab: (activeTab) => set({ activeTab }),
   setSidebarOpen: (isSidebarOpen) => set({ isSidebarOpen }),

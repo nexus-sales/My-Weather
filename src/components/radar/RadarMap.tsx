@@ -5,20 +5,27 @@ import { MapContainer, TileLayer, Circle, ZoomControl } from 'react-leaflet';
 import { useLocationStore } from '@/store/useLocationStore';
 import 'leaflet/dist/leaflet.css';
 
-const MAP_HEIGHT = 300;
+interface RadarMapProps {
+  height?: number | string;
+  hideControls?: boolean;
+  externalLayerType?: 'wind' | 'radar' | 'isobars' | 'satellite' | 'clouds' | 'temp' | 'wind_owm';
+}
 
 interface RainViewerFrame {
   time: number;
   path: string;
 }
 
-export default function RadarMap() {
+export default function RadarMap({ height = 300, hideControls = false, externalLayerType }: RadarMapProps) {
   const { coords } = useLocationStore();
   const [radarFrames, setRadarFrames] = useState<RainViewerFrame[]>([]);
+  const [satelliteFrames, setSatelliteFrames] = useState<RainViewerFrame[]>([]);
   const [host, setHost] = useState('');
   const [currentFrameIndex, setCurrentFrameIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(true);
-  const [layerType, setLayerType] = useState<'wind' | 'radar' | 'isobars'>('wind');
+  const [internalLayerType, setInternalLayerType] = useState<'wind' | 'radar' | 'isobars' | 'satellite' | 'clouds' | 'temp' | 'wind_owm'>('radar');
+  
+  const layerType = externalLayerType || internalLayerType;
   const [strikes, setStrikes] = useState<any[]>([]);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -48,6 +55,9 @@ export default function RadarMap() {
       .then(data => {
         if (data.radar && data.radar.length > 0) {
           setRadarFrames(data.radar);
+          if (data.satellite && data.satellite.length > 0) {
+            setSatelliteFrames(data.satellite);
+          }
           setHost(data.host);
           // Start 3 frames back for stability (avoiding "Zoom Not Supported" on fresh data)
           const stableIndex = Math.max(0, data.radar.length - 3);
@@ -58,9 +68,10 @@ export default function RadarMap() {
   }, []);
 
   useEffect(() => {
-    if (isPlaying && radarFrames.length > 0) {
+    const framesToUse = layerType === 'satellite' ? satelliteFrames : radarFrames;
+    if (isPlaying && framesToUse.length > 0) {
       timerRef.current = setInterval(() => {
-        setCurrentFrameIndex(prev => (prev + 1) % radarFrames.length);
+        setCurrentFrameIndex(prev => (prev + 1) % framesToUse.length);
       }, 1000);
     } else {
       if (timerRef.current) clearInterval(timerRef.current);
@@ -68,48 +79,64 @@ export default function RadarMap() {
     return () => {
       if (timerRef.current) clearInterval(timerRef.current);
     };
-  }, [isPlaying, radarFrames.length]);
+  }, [isPlaying, radarFrames.length, satelliteFrames.length, layerType]);
 
-  const currentFrame = radarFrames[currentFrameIndex];
+  const activeFrames = layerType === 'satellite' ? satelliteFrames : radarFrames;
+  const currentFrame = activeFrames[currentFrameIndex];
   const timeString = currentFrame ? new Date(currentFrame.time * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '';
 
   return (
-    <div className="relative group w-full border border-white/5 rounded-xl overflow-hidden bg-[#00060f]" style={{ height: MAP_HEIGHT }}>
+    <div className="relative group w-full border border-white/5 rounded-xl overflow-hidden bg-[#00060f]" style={{ height }}>
       {/* Controles superiores */}
-      <div className="absolute top-4 left-4 z-[1000] flex flex-col gap-2 pointer-events-none">
-        <div className="bg-black/80 backdrop-blur-md border border-white/10 p-1 rounded-lg flex items-center gap-1 pointer-events-auto shadow-xl">
-          <button 
-            onClick={() => setLayerType('wind')} 
-            className={`px-3 py-1.5 rounded-md text-[10px] font-orbitron font-bold tracking-wider transition-all ${layerType === 'wind' ? 'bg-meteorix-blue text-white shadow-[0_0_15px_rgba(0,212,255,0.4)]' : 'text-white/40 hover:text-white hover:bg-white/5'}`}
-          >
-            VIENTO ECMWF
-          </button>
-          <button 
-            onClick={() => setLayerType('radar')} 
-            className={`px-3 py-1.5 rounded-md text-[10px] font-orbitron font-bold tracking-wider transition-all ${layerType === 'radar' ? 'bg-meteorix-blue text-white shadow-[0_0_15px_rgba(0,212,255,0.4)]' : 'text-white/40 hover:text-white hover:bg-white/5'}`}
-          >
-            RADAR LLUVIA
-          </button>
-          <button 
-            onClick={() => setLayerType('isobars')} 
-            className={`px-3 py-1.5 rounded-md text-[10px] font-orbitron font-bold tracking-wider transition-all ${layerType === 'isobars' ? 'bg-meteorix-blue text-white shadow-[0_0_15px_rgba(0,212,255,0.4)]' : 'text-white/40 hover:text-white hover:bg-white/5'}`}
-          >
-            ISOBARAS
-          </button>
-        </div>
+      {!hideControls && (
+        <div className="absolute top-4 left-4 z-[1000] flex flex-col gap-2 pointer-events-none">
+          <div className="bg-black/80 backdrop-blur-md border border-white/10 p-1 rounded-lg flex items-center gap-1 pointer-events-auto shadow-xl">
+            <button 
+              onClick={() => setInternalLayerType('satellite')} 
+              className={`px-3 py-1.5 rounded-md text-[10px] font-orbitron font-bold tracking-wider transition-all ${layerType === 'satellite' ? 'bg-meteorix-blue text-white shadow-[0_0_15px_rgba(0,212,255,0.4)]' : 'text-white/40 hover:text-white hover:bg-white/5'}`}
+            >
+              SATÉLITE
+            </button>
+            <button 
+              onClick={() => setInternalLayerType('clouds')} 
+              className={`px-3 py-1.5 rounded-md text-[10px] font-orbitron font-bold tracking-wider transition-all ${layerType === 'clouds' ? 'bg-meteorix-blue text-white shadow-[0_0_15px_rgba(0,212,255,0.4)]' : 'text-white/40 hover:text-white hover:bg-white/5'}`}
+            >
+              NUBES (GFS)
+            </button>
+            <button 
+              onClick={() => setInternalLayerType('radar')} 
+              className={`px-3 py-1.5 rounded-md text-[10px] font-orbitron font-bold tracking-wider transition-all ${layerType === 'radar' ? 'bg-meteorix-blue text-white shadow-[0_0_15px_rgba(0,212,255,0.4)]' : 'text-white/40 hover:text-white hover:bg-white/5'}`}
+            >
+              RADAR LLUVIA
+            </button>
+            <button 
+              onClick={() => setInternalLayerType('temp')} 
+              className={`px-3 py-1.5 rounded-md text-[10px] font-orbitron font-bold tracking-wider transition-all ${layerType === 'temp' ? 'bg-meteorix-blue text-white shadow-[0_0_15px_rgba(0,212,255,0.4)]' : 'text-white/40 hover:text-white hover:bg-white/5'}`}
+            >
+              TEMPERATURA
+            </button>
+            <button 
+              onClick={() => setInternalLayerType('wind')} 
+              className={`px-3 py-1.5 rounded-md text-[10px] font-orbitron font-bold tracking-wider transition-all ${layerType === 'wind' ? 'bg-meteorix-blue text-white shadow-[0_0_15px_rgba(0,212,255,0.4)]' : 'text-white/40 hover:text-white hover:bg-white/5'}`}
+            >
+              VIENTO (ECMWF)
+            </button>
+          </div>
 
-        {layerType === 'radar' && currentFrame && (
+
+        {((layerType === 'radar' || layerType === 'satellite') && currentFrame) && (
           <div className="bg-black/80 backdrop-blur-md border border-white/10 px-3 py-1.5 rounded-lg flex items-center gap-3 w-fit pointer-events-auto shadow-xl">
             <button onClick={() => setIsPlaying(!isPlaying)} className="text-meteorix-blue hover:text-white transition-colors">
               {isPlaying ? '⏸' : '▶'}
             </button>
             <div className="flex flex-col">
               <span className="text-[10px] font-orbitron font-bold text-white tracking-widest">{timeString}</span>
-              <span className="text-[6px] text-white/40 uppercase tracking-tighter">Radar LIVE Pro</span>
+              <span className="text-[6px] text-white/40 uppercase tracking-tighter">{layerType === 'satellite' ? 'Satélite LIVE' : 'Radar LIVE Pro'}</span>
             </div>
           </div>
         )}
       </div>
+      )}
 
       {/* Capa de Viento (Windy) */}
       {layerType === 'wind' && (
@@ -133,10 +160,10 @@ export default function RadarMap() {
         ></iframe>
       )}
 
-      {/* Capa de Radar (RainViewer + Leaflet) */}
-      {layerType === 'radar' && (
+      {/* Capas Nativas (RainViewer & OWM Proxy) */}
+      {(layerType === 'radar' || layerType === 'satellite' || layerType === 'clouds' || layerType === 'temp' || layerType === 'wind_owm') && (
         <>
-          {(!host || radarFrames.length === 0) ? (
+          {((layerType === 'radar' || layerType === 'satellite') && (!host || radarFrames.length === 0)) ? (
             <div className="w-full h-full flex flex-col items-center justify-center gap-4">
               <div className="w-4 h-4 border-2 border-meteorix-blue/30 border-t-meteorix-blue rounded-full animate-spin" />
               <span className="text-[8px] font-orbitron tracking-widest text-white/20 uppercase">Sincronizando Radar...</span>
@@ -152,18 +179,52 @@ export default function RadarMap() {
                 attributionControl={false}
               >
                 <TileLayer
-                  url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
+                  url="https://{s}.basemaps.cartocdn.com/rastertiles/dark_all/{z}/{x}/{y}{r}.png"
                   subdomains="abcd"
                   maxZoom={12}
                 />
                 
-                {currentFrame && (
+                {currentFrame && layerType === 'radar' && (
                   <TileLayer
                     key={`rad-${currentFrame.time}`}
                     url={`${host}${currentFrame.path}/256/{z}/{x}/{y}/4/1_1.png`}
                     opacity={0.8}
                     zIndex={10}
                     maxZoom={12}
+                  />
+                )}
+
+                {currentFrame && layerType === 'satellite' && (
+                  <TileLayer
+                    key={`sat-${currentFrame.time}`}
+                    url={`${host}${currentFrame.path}/256/{z}/{x}/{y}/0/1_1.png`}
+                    opacity={0.7}
+                    zIndex={5}
+                    maxZoom={12}
+                  />
+                )}
+
+                {layerType === 'clouds' && (
+                  <TileLayer
+                    url="/api/tiles/owm/clouds_new/{z}/{x}/{y}"
+                    opacity={0.6}
+                    zIndex={8}
+                  />
+                )}
+
+                {layerType === 'temp' && (
+                  <TileLayer
+                    url="/api/tiles/owm/temp_new/{z}/{x}/{y}"
+                    opacity={0.5}
+                    zIndex={7}
+                  />
+                )}
+
+                {layerType === 'wind_owm' && (
+                  <TileLayer
+                    url="/api/tiles/owm/wind_new/{z}/{x}/{y}"
+                    opacity={0.5}
+                    zIndex={7}
                   />
                 )}
 
