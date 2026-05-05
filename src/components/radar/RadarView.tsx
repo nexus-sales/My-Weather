@@ -32,7 +32,7 @@ export default function RadarView() {
   const { radarLayer, setRadarLayer } = useUIStore();
 
   // Map the generic store state to the RadarMap specific types, defaulting to radar
-  const activeLayer = (radarLayer === 'rain' ? 'radar' : radarModes.some(m => m.id === radarLayer) ? radarLayer : 'radar') as 'radar' | 'satellite' | 'wind' | 'isobars' | 'clouds' | 'temp';
+  const activeLayer = (radarModes.some(m => m.id === radarLayer) ? radarLayer : 'radar') as 'radar' | 'satellite' | 'wind' | 'isobars' | 'clouds' | 'temp';
 
   return (
     <div className="w-full flex flex-col gap-6 animate-fadein h-full min-h-[600px]">
