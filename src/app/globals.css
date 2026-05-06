@@ -5,53 +5,45 @@
   --font-orbitron: var(--font-orbitron);
   --font-exo2: var(--font-exo2);
 
-  /* Meteorix Colors */
-  --color-meteorix-bg: #030b1a;
-  --color-meteorix-card: rgba(4, 13, 34, 0.82);
+  /* Meteorix Colors - Radically enhanced for high-definition definition */
+  --color-meteorix-bg: #01040a;
+  --color-meteorix-card: rgba(13, 31, 68, 0.5);
   --color-meteorix-blue: #00d4ff;
   --color-meteorix-glow: rgba(0, 212, 255, 0.6);
-  --color-meteorix-orange: #ff8c35;
-  --color-meteorix-green: #00ff88;
-  --color-meteorix-border: rgba(0, 150, 255, 0.16);
+  --color-meteorix-orange: #ff9d4d;
+  --color-meteorix-green: #00ffa3;
+  --color-meteorix-border: rgba(0, 212, 255, 0.45);
 
   /* Animations from Original App */
-  --animate-pulse-glow: pulse-glow 3s infinite;
-  --animate-blink: blink 1s infinite;
-  --animate-fadein: fadein 0.5s ease-out both;
+  --animate-pulse-glow: pulse-glow 2s infinite;
+  --animate-blink: blink 1.2s infinite;
+  --animate-fadein: fadein 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
   --animate-scan: scan 2s linear infinite;
 
   @keyframes pulse-glow {
-    0%, 100% { text-shadow: 0 0 12px rgba(0, 200, 255, 0.6); }
-    50% { text-shadow: 0 0 35px rgba(0, 212, 255, 1), 0 0 70px rgba(0, 212, 255, 0.4); }
+    0%, 100% { text-shadow: 0 0 10px rgba(0, 212, 255, 0.4); }
+    50% { text-shadow: 0 0 30px rgba(0, 212, 255, 1), 0 0 50px rgba(0, 212, 255, 0.4); }
   }
   @keyframes blink {
     0%, 100% { opacity: 1; }
-    50% { opacity: 0.2; }
+    50% { opacity: 0.4; }
   }
   @keyframes fadein {
-    from { opacity: 0; transform: translateY(14px); }
+    from { opacity: 0; transform: translateY(30px); }
     to { opacity: 1; transform: translateY(0); }
   }
   @keyframes scan {
     0% { background-position: 0 0; }
-    100% { background-position: 0 120px; }
-  }
-  @keyframes spin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
-  }
-  @keyframes wave {
-    0% { transform: translateX(-50%) translateY(-50%); }
-    100% { transform: translateX(0%) translateY(-50%); }
+    100% { background-position: 0 100px; }
   }
 }
 
 .animate-wave {
-  animation: wave 2s linear infinite;
+  animation: wave 2.5s linear infinite;
 }
 
 .animate-spin-slow {
-  animation: spin 8s linear infinite;
+  animation: spin 12s linear infinite;
 }
 
 @keyframes fall {
@@ -61,49 +53,78 @@
 }
 
 .animate-fall {
-  animation: fall linear infinite;
+  animation: fall 1.5s linear infinite;
 }
 
 /* Base Styles */
 :root {
-  --background: #030b1a;
-  --foreground: #c8e0f0;
+  --background: #01040a;
+  --foreground: #ffffff;
 }
 
 body {
   font-family: var(--font-exo2), sans-serif;
   background-color: var(--color-meteorix-bg);
+  background-image: 
+    radial-gradient(circle at 50% -20%, rgba(0, 150, 255, 0.25), transparent 70%),
+    radial-gradient(circle at 0% 100%, rgba(0, 80, 255, 0.12), transparent 50%),
+    radial-gradient(circle at 100% 100%, rgba(0, 212, 255, 0.1), transparent 50%);
+  background-attachment: fixed;
   color: var(--foreground);
   overflow-x: hidden;
 }
 
 h1, h2, h3, .font-orbitron {
   font-family: var(--font-orbitron), sans-serif;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+/* Premium Card Style - HIGH DEFINITION */
+.meteorix-card {
+  background: linear-gradient(135deg, rgba(15, 35, 75, 0.6) 0%, rgba(5, 15, 35, 0.8) 100%);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--color-meteorix-border);
+  box-shadow: 
+    0 20px 50px -20px rgba(0, 0, 0, 0.8), 
+    inset 0 0 30px rgba(0, 212, 255, 0.05),
+    0 0 0 1px rgba(255, 255, 255, 0.03);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.meteorix-card:hover {
+  border-color: rgba(0, 212, 255, 0.8);
+  box-shadow: 
+    0 30px 70px -15px rgba(0, 0, 0, 0.9), 
+    inset 0 0 40px rgba(0, 212, 255, 0.1),
+    0 0 20px rgba(0, 212, 255, 0.2);
+  transform: translateY(-4px);
 }
 
 /* Custom Scrollbar */
-::-webkit-scrollbar { width: 4px; height: 4px; }
-::-webkit-scrollbar-track { background: #060f22; }
-::-webkit-scrollbar-thumb { background: #0a3a6a; border-radius: 2px; }
-::-webkit-scrollbar-thumb:hover { background: #0066bb; }
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.4); }
+::-webkit-scrollbar-thumb { background: var(--color-meteorix-blue); border-radius: 10px; box-shadow: 0 0 10px var(--color-meteorix-blue); }
+::-webkit-scrollbar-thumb:hover { background: #ffffff; }
 
-/* Scan Overlay Effect */
+/* Scan Overlay Effect - HIGH CONTRAST */
 .scan-overlay {
-  background-image: repeating-linear-gradient(transparent, transparent 3px, rgba(0,180,255,.012) 3px, rgba(0,180,255,.012) 4px);
+  background-image: repeating-linear-gradient(transparent, transparent 1px, rgba(0, 212, 255, 0.015) 1px, rgba(0, 212, 255, 0.015) 2px);
   pointer-events: none;
   position: fixed;
   inset: 0;
   z-index: 50;
+  opacity: 0.6;
 }
 
-/* Background Gradients from original */
+/* Background Gradients */
 .bg-meteorix-gradient {
-  background: radial-gradient(ellipse 80% 60% at 20% 10%, rgba(0, 60, 140, 0.12), transparent), 
-              radial-gradient(ellipse 60% 50% at 85% 90%, rgba(0, 80, 160, 0.1), transparent);
+  background: transparent;
 }
 
 .bg-grid-meteorix {
-  background-image: linear-gradient(rgba(0, 120, 255, 0.025) 1px, transparent 1px), 
-                    linear-gradient(90deg, rgba(0, 120, 255, 0.025) 1px, transparent 1px);
-  background-size: 48px 48px;
+  background-image: 
+    linear-gradient(rgba(0, 212, 255, 0.05) 1px, transparent 1px), 
+    linear-gradient(90deg, rgba(0, 212, 255, 0.05) 1px, transparent 1px);
+  background-size: 60px 60px;
 }

@@ -89,16 +89,16 @@ interface ChartCardProps {
 
 function ChartCard({ title, icon, data, dataKey1, dataKey2, color1, color2, label1, label2, unit1, unit2 }: ChartCardProps) {
   return (
-    <div className="bg-meteorix-card border border-meteorix-border rounded-3xl p-6 backdrop-blur-xl">
+    <div className="meteorix-card rounded-3xl p-6">
       <div className="flex items-center gap-3 mb-6">
-        <div className="p-2 rounded-lg bg-white/5 text-white/60">
+        <div className="p-2 rounded-lg bg-meteorix-blue/10 text-meteorix-blue border border-meteorix-blue/20">
           {icon}
         </div>
-        <h3 className="text-[10px] font-bold tracking-[0.2em] text-white/80 uppercase font-orbitron">{title}</h3>
+        <h3 className="text-[10px] font-bold tracking-[0.2em] text-white/70 uppercase font-orbitron">{title}</h3>
       </div>
       
-      <div className="h-[250px] w-full">
-        <ResponsiveContainer width="100%" height="100%">
+      <div className="h-auto min-h-[250px] w-full">
+        <ResponsiveContainer width="100%" height="100%" aspect={2.5}>
           <AreaChart data={data}>
             <defs>
               <linearGradient id={`grad-${dataKey1}`} x1="0" y1="0" x2="0" y2="1">

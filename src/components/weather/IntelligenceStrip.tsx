@@ -48,15 +48,15 @@ export default function IntelligenceStrip({ data }: IntelligenceStripProps) {
               onClick={() => setActiveCard(isActive ? null : card.id)}
               className={`flex flex-col items-center justify-center p-4 rounded-2xl border transition-all ${
                 isActive
-                  ? 'bg-meteorix-blue/10 border-meteorix-blue/40 shadow-[0_0_20px_rgba(0,212,255,0.1)]'
-                  : 'bg-meteorix-card border-meteorix-border hover:border-white/10'
+                  ? 'bg-meteorix-blue/20 border-meteorix-blue/60 shadow-[0_0_25px_rgba(0,212,255,0.2)]'
+                  : 'meteorix-card hover:border-white/20'
               }`}
             >
-              <card.icon className={`w-5 h-5 mb-3 ${card.color}`} />
-              <span className="text-[8px] tracking-[0.2em] font-bold text-white/30 uppercase mb-1">{card.label}</span>
-              <span className="text-[10px] font-bold font-orbitron tracking-widest text-white/80 uppercase">{card.value}</span>
+              <card.icon className={`w-5 h-5 mb-3 ${card.color} ${isActive ? 'brightness-125' : ''}`} />
+              <span className={`text-[8px] tracking-[0.2em] font-bold uppercase mb-1 ${isActive ? 'text-white/80' : 'text-white/40'}`}>{card.label}</span>
+              <span className="text-[10px] font-bold font-orbitron tracking-widest text-white uppercase">{card.value}</span>
               <div className="mt-2">
-                {isActive ? <ChevronUp size={10} className="text-meteorix-blue/50" /> : <ChevronDown size={10} className="text-white/10" />}
+                {isActive ? <ChevronUp size={10} className="text-meteorix-blue" /> : <ChevronDown size={10} className="text-white/20" />}
               </div>
             </button>
           );

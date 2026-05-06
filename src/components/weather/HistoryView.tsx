@@ -35,13 +35,13 @@ export default function HistoryView() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {data?.daily.time.map((date, i) => (
-          <div key={date} className="bg-meteorix-card border border-meteorix-border rounded-2xl p-6 hover:border-meteorix-blue/30 transition-all group">
-            <div className="text-[10px] font-bold text-white/30 uppercase mb-4 tracking-widest border-b border-white/5 pb-2">
+          <div key={date} className="meteorix-card rounded-2xl p-6 transition-all group">
+            <div className="text-[10px] font-bold text-white/50 uppercase mb-4 tracking-widest border-b border-white/10 pb-2">
               {new Date(date).toLocaleDateString([], { weekday: 'long', day: 'numeric', month: 'short' })}
             </div>
             <div className="space-y-4">
-               <HistoryRow icon={<Thermometer size={12} />} label={t('maxMin')} value={`${data.daily.tempMax[i]}° / ${data.daily.tempMin[i]}°`} color="text-meteorix-blue" />
-               <HistoryRow icon={<Droplets size={12} />} label={t('rain')} value={`${data.daily.precipSum[i]} mm`} color="text-meteorix-blue/60" />
+               <HistoryRow icon={<Thermometer size={12} />} label={t('maxMin')} value={`${data.daily.tempMax[i]}° / ${data.daily.tempMin[i]}°`} color="text-white" />
+               <HistoryRow icon={<Droplets size={12} />} label={t('rain')} value={`${data.daily.precipSum[i]} mm`} color="text-meteorix-blue" />
                <HistoryRow icon={<Wind size={12} />} label={t('wind')} value={`${Math.round(data.daily.windMax[i])} km/h`} color="text-white/40" />
             </div>
           </div>

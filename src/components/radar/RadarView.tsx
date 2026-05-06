@@ -31,8 +31,8 @@ export default function RadarView() {
   const { coords } = useLocationStore();
   const { radarLayer, setRadarLayer } = useUIStore();
 
-  // Map the generic store state to the RadarMap specific types, defaulting to radar
-  const activeLayer = (radarModes.some(m => m.id === radarLayer) ? radarLayer : 'radar') as 'radar' | 'satellite' | 'wind' | 'isobars' | 'clouds' | 'temp';
+  // Map the generic store state to the RadarMap specific types
+  const activeLayer = radarLayer as any;
 
   return (
     <div className="w-full flex flex-col gap-6 animate-fadein h-full min-h-[600px]">
@@ -60,7 +60,7 @@ export default function RadarView() {
         </button>
       </div>
 
-      <div className="relative flex-1 w-full border border-meteorix-border rounded-3xl overflow-hidden shadow-2xl group">
+      <div className="relative w-full border border-meteorix-border rounded-3xl overflow-hidden shadow-2xl group min-h-[600px] h-[600px]">
         <RadarMap 
           height="100%" 
           hideControls={true} 

@@ -55,34 +55,34 @@ export default function Forecast7Days({ daily, hourly }: Forecast7DaysProps) {
               onClick={() => setSelectedIndex(i)}
               className={`relative flex flex-col items-center p-5 rounded-2xl border transition-all hover:scale-[1.02] min-w-[120px] lg:min-w-0 snap-start ${
                 isSelected 
-                  ? 'bg-meteorix-blue/10 border-meteorix-blue/40 shadow-[0_0_20px_rgba(0,212,255,0.1)]' 
-                  : 'bg-meteorix-card border-meteorix-border hover:border-white/10'
+                  ? 'bg-meteorix-blue/20 border-meteorix-blue/60 shadow-[0_0_25px_rgba(0,212,255,0.2)]' 
+                  : 'meteorix-card hover:border-white/20'
               }`}
             >
               <span className={`text-[10px] font-bold tracking-widest uppercase mb-1 ${
-                isSelected ? 'text-meteorix-blue' : 'text-white/40'
+                isSelected ? 'text-meteorix-blue' : 'text-white/50'
               }`}>
                 {getDayName(time)}
               </span>
-              <span className="text-[9px] text-white/20 mb-4 font-mono">
+              <span className="text-[9px] text-white/30 mb-4 font-mono">
                 {getFormattedDate(time)}
               </span>
 
-              <div className="text-3xl mb-4 drop-shadow-md" title={condition.label}>
+              <div className="text-3xl mb-4 drop-shadow-[0_0_8px_rgba(255,255,255,0.2)]" title={condition.label}>
                 {condition.icon}
               </div>
 
               <div className="flex flex-col items-center gap-0.5 mb-4">
-                <span className="text-lg font-bold font-orbitron text-meteorix-orange">
+                <span className="text-lg font-bold font-orbitron text-white">
                   {Math.round(daily.tempMax[i])}°
                 </span>
-                <span className="text-xs font-bold font-orbitron text-white/30">
+                <span className="text-xs font-bold font-orbitron text-white/40">
                   {Math.round(daily.tempMin[i])}°
                 </span>
               </div>
 
-              <div className="flex flex-col gap-1 w-full pt-4 border-t border-white/5">
-                <div className="flex items-center justify-center gap-1.5 text-[9px] font-bold text-blue-400/80">
+              <div className="flex flex-col gap-1 w-full pt-4 border-t border-white/10">
+                <div className="flex items-center justify-center gap-1.5 text-[10px] font-bold text-blue-400">
                   <span>💧</span>
                   <span>{daily.precipProb[i]}%</span>
                 </div>
@@ -93,10 +93,10 @@ export default function Forecast7Days({ daily, hourly }: Forecast7DaysProps) {
       </div>
 
       {/* Hourly Detail Section */}
-      <div className="bg-meteorix-card/40 border border-meteorix-border rounded-3xl p-6 backdrop-blur-xl animate-fadein">
+      <div className="meteorix-card rounded-3xl p-6">
         <div className="flex items-center gap-2 mb-6">
-          <Clock className="w-3.5 h-3.5 text-white/20" />
-          <h4 className="text-[9px] font-bold tracking-[0.2em] text-white/40 uppercase">
+          <Clock className="w-3.5 h-3.5 text-meteorix-blue/60" />
+          <h4 className="text-[9px] font-bold tracking-[0.2em] text-white/60 uppercase">
             Detalle por horas — {getDayName(selectedDateStr)} {getFormattedDate(selectedDateStr)}
           </h4>
         </div>

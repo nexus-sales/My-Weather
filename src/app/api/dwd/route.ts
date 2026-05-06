@@ -58,6 +58,16 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ ...data, model: 'icon_eu', fallback: true });
     }
 
+    if (!res.ok && model === 'icon_eu') {
+      // Fallback to Global if EU fails (e.g. outside domain)
+      res = await fetchIcon(lat, lon, 'icon_global', 1800);
+      if (!res.ok) {
+        return NextResponse.json({ error: 'DWD API error' }, { status: res.status });
+      }
+      const data = await res.json();
+      return NextResponse.json({ ...data, model: 'icon_global', fallback: true });
+    }
+
     if (!res.ok) {
       return NextResponse.json({ error: 'DWD API error', status: res.status }, { status: res.status });
     }

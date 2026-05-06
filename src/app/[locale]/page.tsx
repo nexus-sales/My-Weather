@@ -55,18 +55,18 @@ export default function HomePage() {
         </div>
       </header>
 
-      <nav className="relative z-30 flex items-center justify-center px-4 md:px-8 border-b border-white/5 bg-meteorix-bg/40 backdrop-blur-md overflow-x-auto no-scrollbar">
+      <nav className="relative z-30 flex items-center justify-center px-4 md:px-8 border-b border-white/10 bg-black/40 backdrop-blur-xl overflow-x-auto no-scrollbar">
         {tabs.map((tab) => (
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
             className={`flex items-center gap-2 px-6 py-4 border-b-2 transition-all whitespace-nowrap ${
               activeTab === tab.id
-                ? 'border-meteorix-blue text-meteorix-blue bg-meteorix-blue/5'
-                : 'border-transparent text-white/40 hover:text-white/70'
+                ? 'border-meteorix-blue text-meteorix-blue bg-meteorix-blue/10 shadow-[inset_0_-10px_20px_-10px_rgba(0,212,255,0.2)]'
+                : 'border-transparent text-white/40 hover:text-white/80 hover:bg-white/5'
             }`}
           >
-            <tab.icon size={14} className={activeTab === tab.id ? 'animate-pulse' : ''} />
+            <tab.icon size={14} className={activeTab === tab.id ? 'animate-pulse text-meteorix-blue' : ''} />
             <span className="text-[10px] font-bold tracking-[0.2em] uppercase">{tab.label}</span>
           </button>
         ))}

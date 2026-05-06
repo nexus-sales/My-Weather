@@ -29,11 +29,11 @@
   },
   "Radar": {
     "modes": {
-      "rain": "Precipitacion",
-      "wind": "Viento",
-      "temp": "Temperatura",
-      "clouds": "Nubes",
-      "satellite": "Satelite"
+      "rain": "Radar Precip.",
+      "wind": "Dinámica Viento",
+      "temp": "Mapa Térmico",
+      "clouds": "Nubosidad",
+      "satellite": "Satélite HD"
     },
     "expand": "Expandir",
     "satelliteLink": "Enlace satelital activo",
@@ -225,7 +225,9 @@
     "subtitle": "Visualizacion avanzada de las proximas 48 horas de telemetria.",
     "thermal": "Dinamica Termica y Nubosidad",
     "hydro": "Hidrometria y Probabilidades",
-    "cloud": "Nubosidad %"
+    "cloud": "Nubosidad %",
+    "temp": "Temperatura",
+    "precip": "Precipitacion"
   },
   "History": {
     "title": "Registros Historicos",
@@ -246,6 +248,7 @@
     "humidity": "Humedad",
     "pressure": "Presion",
     "lastObs": "Ultima Obs",
-    "capabilities": "Capacidades Operativas"
+    "capabilities": "Capacidades Operativas",
+    "note": "Nota: Los datos provienen de la red oficial de AEMET y sensores asociados."
   }
 }

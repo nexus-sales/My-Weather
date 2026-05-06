@@ -49,23 +49,23 @@ export default function AetherChat({ weather, cityName }: AetherChatProps) {
   };
 
   return (
-    <div className="flex flex-col h-[500px] md:h-[650px] bg-meteorix-card border border-meteorix-border rounded-3xl overflow-hidden backdrop-blur-2xl">
-      <div className="p-6 border-b border-white/5 bg-white/5 flex items-center justify-between">
+    <div className="flex flex-col h-[500px] md:h-[650px] meteorix-card rounded-3xl overflow-hidden">
+      <div className="p-6 border-b border-white/10 bg-white/5 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="p-2 bg-meteorix-blue/10 rounded-lg">
+          <div className="p-2 bg-meteorix-blue/10 rounded-lg border border-meteorix-blue/20">
             <BrainCircuit className="text-meteorix-blue w-5 h-5 animate-pulse" />
           </div>
           <div>
-            <h3 className="text-xs font-black tracking-widest text-white/80 uppercase font-orbitron">Dr. AETHER AI</h3>
+            <h3 className="text-xs font-black tracking-widest text-white font-orbitron">Dr. AETHER AI</h3>
             <div className="flex items-center gap-1.5 mt-0.5">
-              <div className="w-1.5 h-1.5 rounded-full bg-meteorix-green animate-pulse" />
-              <span className="text-[8px] font-bold tracking-widest text-white/30 uppercase">{t('status')}</span>
+              <div className="w-1.5 h-1.5 rounded-full bg-meteorix-green animate-pulse shadow-[0_0_8px_#00ffa3]" />
+              <span className="text-[8px] font-bold tracking-widest text-white/40 uppercase">{t('status')}</span>
             </div>
           </div>
         </div>
         <div className="hidden sm:flex gap-2">
           {[t('tags.synoptic'), t('tags.risks'), t('tags.advice')].map((tag) => (
-            <span key={tag} className="text-[7px] font-bold tracking-widest text-white/20 border border-white/5 px-2 py-1 rounded bg-white/5">
+            <span key={tag} className="text-[7px] font-bold tracking-widest text-white/40 border border-white/10 px-2 py-1 rounded bg-white/5 uppercase">
               {tag}
             </span>
           ))}
@@ -74,7 +74,7 @@ export default function AetherChat({ weather, cityName }: AetherChatProps) {
 
       <div
         ref={scrollRef}
-        className="flex-1 overflow-y-auto p-6 space-y-6 scrollbar-thin scrollbar-thumb-white/5"
+        className="flex-1 overflow-y-auto p-6 space-y-6 scrollbar-thin scrollbar-thumb-white/10"
       >
         {messages.map((msg, index) => (
           <div
@@ -83,16 +83,16 @@ export default function AetherChat({ weather, cityName }: AetherChatProps) {
           >
             <div className={`flex-shrink-0 w-8 h-8 rounded-lg flex items-center justify-center border ${
               msg.role === 'user'
-                ? 'bg-meteorix-blue/20 border-meteorix-blue/30 text-meteorix-blue'
-                : 'bg-white/5 border-white/10 text-white/40'
+                ? 'bg-meteorix-blue/20 border-meteorix-blue/40 text-meteorix-blue'
+                : 'bg-white/10 border-white/20 text-white/60'
             }`}
             >
               {msg.role === 'user' ? <User size={14} /> : <Bot size={14} />}
             </div>
             <div className={`max-w-[80%] p-4 rounded-2xl text-xs leading-relaxed ${
               msg.role === 'user'
-                ? 'bg-meteorix-blue/5 border border-meteorix-blue/10 text-white/80 rounded-tr-none'
-                : 'bg-white/5 border border-white/5 text-white/70 rounded-tl-none'
+                ? 'bg-meteorix-blue/10 border border-meteorix-blue/20 text-white rounded-tr-none shadow-[0_4px_15px_rgba(0,0,0,0.2)]'
+                : 'bg-white/5 border border-white/10 text-white/80 rounded-tl-none shadow-[0_4px_15px_rgba(0,0,0,0.2)]'
             }`}
             >
               {msg.content.split('\n').map((line, lineIndex) => (
@@ -105,14 +105,14 @@ export default function AetherChat({ weather, cityName }: AetherChatProps) {
         ))}
         {isLoading && (
           <div className="flex gap-4 animate-fadein">
-            <div className="flex-shrink-0 w-8 h-8 rounded-lg flex items-center justify-center border bg-white/5 border-white/10 text-white/40">
+            <div className="flex-shrink-0 w-8 h-8 rounded-lg flex items-center justify-center border bg-white/10 border-white/20 text-white/60">
               <Bot size={14} className="animate-spin" />
             </div>
-            <div className="bg-white/5 border border-white/5 p-4 rounded-2xl rounded-tl-none">
+            <div className="bg-white/5 border border-white/10 p-4 rounded-2xl rounded-tl-none">
               <div className="flex gap-1">
-                <span className="w-1 h-1 bg-meteorix-blue rounded-full animate-bounce" />
-                <span className="w-1 h-1 bg-meteorix-blue rounded-full animate-bounce [animation-delay:0.2s]" />
-                <span className="w-1 h-1 bg-meteorix-blue rounded-full animate-bounce [animation-delay:0.4s]" />
+                <span className="w-1.5 h-1.5 bg-meteorix-blue rounded-full animate-bounce" />
+                <span className="w-1.5 h-1.5 bg-meteorix-blue rounded-full animate-bounce [animation-delay:0.2s]" />
+                <span className="w-1.5 h-1.5 bg-meteorix-blue rounded-full animate-bounce [animation-delay:0.4s]" />
               </div>
             </div>
           </div>
@@ -121,7 +121,7 @@ export default function AetherChat({ weather, cityName }: AetherChatProps) {
 
       <form
         onSubmit={handleSubmit}
-        className="p-6 border-t border-white/5 bg-white/5"
+        className="p-6 border-t border-white/10 bg-white/5"
       >
         <div className="relative">
           <input
@@ -129,7 +129,7 @@ export default function AetherChat({ weather, cityName }: AetherChatProps) {
             value={input}
             onChange={(e) => setInput(e.target.value)}
             placeholder={t('placeholder')}
-            className="w-full bg-meteorix-bg/50 border border-meteorix-border rounded-xl px-4 py-3 text-xs text-white/80 placeholder:text-white/20 focus:outline-none focus:border-meteorix-blue/40 transition-all pr-12 font-orbitron tracking-widest"
+            className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-xs text-white placeholder:text-white/30 focus:outline-none focus:border-meteorix-blue/60 transition-all pr-12 font-orbitron tracking-widest"
           />
           <button
             type="submit"
@@ -140,8 +140,8 @@ export default function AetherChat({ weather, cityName }: AetherChatProps) {
           </button>
         </div>
         <div className="mt-3 flex items-center gap-2">
-          <Sparkles size={10} className="text-meteorix-blue" />
-          <span className="text-[7px] tracking-[0.2em] font-bold text-white/20 uppercase">
+          <Sparkles size={10} className="text-meteorix-blue/60" />
+          <span className="text-[7px] tracking-[0.2em] font-bold text-white/40 uppercase">
             {t('powered')}
           </span>
         </div>

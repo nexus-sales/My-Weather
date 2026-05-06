@@ -8,7 +8,11 @@ export async function GET(
   const apiKey = process.env.OPENWEATHERMAP_API_KEY;
 
   if (!apiKey) {
-    return new NextResponse('API Key not configured', { status: 500 });
+    // Return a transparent 1x1 PNG to avoid console errors if key is missing
+    const transparentPixel = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=', 'base64');
+    return new NextResponse(transparentPixel, {
+      headers: { 'Content-Type': 'image/png', 'Cache-Control': 'public, max-age=86400' },
+    });
   }
 
   // OWM Tile layers: clouds_new, precipitation_new, pressure_new, wind_new, temp_new

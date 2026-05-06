@@ -27,32 +27,32 @@ export default function StationsView({ weather }: StationsViewProps) {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Main Station Card */}
-        <div className="bg-meteorix-card border border-meteorix-border rounded-3xl p-8 relative overflow-hidden">
+        <div className="meteorix-card rounded-3xl p-8 relative overflow-hidden">
           <div className="absolute -right-10 -top-10 text-meteorix-blue/5">
              <Radio size={200} />
           </div>
           
           <div className="relative z-10">
             <div className="flex items-center gap-4 mb-8">
-               <div className="p-3 rounded-2xl bg-meteorix-blue/20 text-meteorix-blue shadow-[0_0_20px_rgba(0,212,255,0.2)]">
+               <div className="p-3 rounded-2xl bg-meteorix-blue/20 text-meteorix-blue border border-meteorix-blue/30 shadow-[0_0_25px_rgba(0,212,255,0.2)]">
                   <Satellite size={24} />
                </div>
                <div>
-                  <div className="text-[10px] font-bold text-meteorix-blue uppercase tracking-[0.3em] mb-1">{t('reference')}</div>
-                  <h3 className="text-2xl font-black text-white font-orbitron">
+                  <div className="text-[10px] font-bold text-meteorix-blue/60 uppercase tracking-[0.3em] mb-1">{t('reference')}</div>
+                  <h3 className="text-2xl font-black text-white font-orbitron tracking-tight">
                     {aemet.nearestStation?.ubi || (intelligence.loadStates.stations ? t('syncing') : t('outOfRange'))}
                   </h3>
                </div>
             </div>
 
             <div className="grid grid-cols-2 gap-8 mb-8">
-               <StationMetric label={t('temp')} value={`${aemet.nearestStation?.ta || '--'}°C`} />
-               <StationMetric label={t('wind')} value={`${Math.round((aemet.nearestStation?.vvm || 0) * 3.6)} km/h`} />
-               <StationMetric label={t('humidity')} value={`${aemet.nearestStation?.hr || '--'}%`} />
-               <StationMetric label={t('pressure')} value={`${aemet.nearestStation?.pres || '--'} hPa`} />
+               <StationMetric label={t('temp')} value={`${aemet.nearestStation?.ta || '--'}°C`} color="text-white" />
+               <StationMetric label={t('wind')} value={`${Math.round((aemet.nearestStation?.vvm || 0) * 3.6)} km/h`} color="text-white/80" />
+               <StationMetric label={t('humidity')} value={`${aemet.nearestStation?.hr || '--'}%`} color="text-white/70" />
+               <StationMetric label={t('pressure')} value={`${aemet.nearestStation?.pres || '--'} hPa`} color="text-white/60" />
             </div>
 
-            <div className="pt-6 border-t border-white/5 flex items-center justify-between text-[8px] text-white/30 uppercase tracking-[0.2em] font-bold">
+            <div className="pt-6 border-t border-white/10 flex items-center justify-between text-[8px] text-white/40 uppercase tracking-[0.2em] font-bold">
                <span>ID: {aemet.nearestStation?.idema || 'N/A'}</span>
                <span>{t('lastObs')}: {aemet.nearestStation ? new Date(aemet.nearestStation.fint).toLocaleTimeString() : '--'}</span>
             </div>
@@ -94,11 +94,11 @@ export default function StationsView({ weather }: StationsViewProps) {
   );
 }
 
-function StationMetric({ label, value }: { label: string; value: string | number }) {
+function StationMetric({ label, value, color = 'text-white' }: { label: string; value: string | number; color?: string }) {
   return (
     <div className="space-y-2">
        <div className="text-[9px] font-bold text-white/20 uppercase tracking-widest">{label}</div>
-       <div className="text-2xl font-black text-white font-orbitron">{value}</div>
+       <div className={`text-2xl font-black font-orbitron ${color}`}>{value}</div>
     </div>
   );
 }

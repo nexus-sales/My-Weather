@@ -34,39 +34,39 @@ export default function CurrentWeatherCard({ weather, cityName }: CurrentWeather
   const condition = getWeatherCondition(weather.weatherCode, locale);
 
   return (
-    <div className="relative group bg-[#040d22]/80 border border-white/5 p-8 rounded-[2.5rem] backdrop-blur-3xl transition-all duration-700 hover:border-meteorix-blue/40 overflow-hidden h-full shadow-[0_30px_60px_-15px_rgba(0,0,0,0.5)]">
+    <div className="relative group meteorix-card p-8 rounded-[2.5rem] transition-all duration-700 overflow-hidden h-full">
       {/* HUD Background Elements */}
       <div className="absolute top-0 right-0 p-6 opacity-10">
         <div className="text-[10px] font-mono tracking-tighter text-meteorix-blue uppercase">METEORIX_MAIN_CORE_v5</div>
       </div>
-      <div className="absolute -bottom-20 -left-20 w-64 h-64 bg-meteorix-blue/5 blur-[100px] rounded-full" />
+      <div className="absolute -bottom-20 -left-20 w-64 h-64 bg-meteorix-blue/10 blur-[100px] rounded-full" />
       
       {/* Header Overlay */}
       <div className="flex justify-between items-start mb-8 relative z-10">
         <div className="flex flex-col gap-1">
           <div className="flex items-center gap-2 mb-1">
-             <div className="w-2 h-2 rounded-full bg-meteorix-blue animate-pulse shadow-[0_0_8px_#00d4ff]" />
-             <h3 className="text-[10px] tracking-[0.5em] text-white/30 font-black uppercase">
+             <div className="w-2 h-2 rounded-full bg-meteorix-blue animate-pulse shadow-[0_0_12px_#00d4ff]" />
+             <h3 className="text-[10px] tracking-[0.5em] text-white/50 font-black uppercase">
                {d('current_weather')}
              </h3>
           </div>
           <div className="flex items-center gap-2">
             <MapPin size={12} className="text-meteorix-blue" />
-            <span className="text-xs font-orbitron font-bold text-white/90 tracking-widest uppercase">{cityName}</span>
+            <span className="text-xs font-orbitron font-bold text-white tracking-widest uppercase">{cityName}</span>
           </div>
         </div>
         <div className="flex flex-col items-end">
-           <div className="text-5xl drop-shadow-[0_0_15px_rgba(255,255,255,0.3)] filter brightness-125 mb-1">
+           <div className="text-5xl drop-shadow-[0_0_20px_rgba(255,255,255,0.4)] filter brightness-125 mb-1">
              {condition.icon}
            </div>
-           <span className="text-[9px] font-orbitron text-meteorix-blue/60 font-bold uppercase tracking-widest">{condition.label}</span>
+           <span className="text-[9px] font-orbitron text-meteorix-blue/80 font-bold uppercase tracking-widest">{condition.label}</span>
         </div>
       </div>
       
       {/* Main Temp Display */}
       <div className="relative z-10 flex flex-col items-center py-4">
-        <div className="text-[10rem] leading-none font-black text-white font-orbitron drop-shadow-[0_0_50px_rgba(0,212,255,0.2)] tracking-tighter hover:scale-105 transition-transform duration-1000 cursor-default selection:bg-transparent">
-          {Math.round(weather.temp)}<span className="text-5xl absolute -top-4 -right-12 opacity-40">°</span>
+        <div className="text-[10rem] leading-none font-black text-white font-orbitron drop-shadow-[0_0_60px_rgba(0,212,255,0.25)] tracking-tighter hover:scale-105 transition-transform duration-1000 cursor-default selection:bg-transparent">
+          {Math.round(weather.temp)}<span className="text-5xl absolute -top-4 -right-12 opacity-50">°</span>
         </div>
       </div>
       
@@ -76,8 +76,8 @@ export default function CurrentWeatherCard({ weather, cityName }: CurrentWeather
           onClick={toggleFavorite}
           className={`flex items-center gap-2 px-4 py-2 rounded-xl border transition-all duration-500 ${
             isFavorite 
-              ? 'bg-meteorix-blue/20 border-meteorix-blue/50 text-meteorix-blue shadow-[0_0_15px_rgba(0,212,255,0.2)]' 
-              : 'bg-white/5 border-white/5 text-white/30 hover:text-white/60 hover:border-white/10'
+              ? 'bg-meteorix-blue/30 border-meteorix-blue/60 text-white shadow-[0_0_20px_rgba(0,212,255,0.3)]' 
+              : 'bg-white/5 border-white/10 text-white/40 hover:text-white/80 hover:bg-white/10'
           }`}
         >
           <Star size={12} fill={isFavorite ? 'currentColor' : 'none'} className={isFavorite ? 'animate-pulse' : ''} />
@@ -99,13 +99,13 @@ export default function CurrentWeatherCard({ weather, cityName }: CurrentWeather
                  alert('Sharing not supported on this browser.');
                }
              }}
-             className="p-2 rounded-xl bg-white/5 border border-white/5 text-white/20 hover:text-meteorix-blue hover:border-meteorix-blue/40 transition-all"
+             className="p-2 rounded-xl bg-white/5 border border-white/10 text-white/40 hover:text-meteorix-blue hover:border-meteorix-blue/60 transition-all"
            >
              <Share2 size={14} />
            </button>
            <button 
              onClick={() => alert('METEORIX Core v5.0: Engineering-grade meteorological analysis engine.')}
-             className="p-2 rounded-xl bg-white/5 border border-white/5 text-white/20 hover:text-meteorix-blue hover:border-meteorix-blue/40 transition-all"
+             className="p-2 rounded-xl bg-white/5 border border-white/10 text-white/40 hover:text-meteorix-blue hover:border-meteorix-blue/60 transition-all"
            >
              <Info size={14} />
            </button>
@@ -113,16 +113,16 @@ export default function CurrentWeatherCard({ weather, cityName }: CurrentWeather
       </div>
       
       {/* Bottom Telemetry HUD */}
-      <div className="relative z-10 grid grid-cols-2 gap-4 pt-8 border-t border-white/5">
+      <div className="relative z-10 grid grid-cols-2 gap-4 pt-8 border-t border-white/10">
         <MetricSmall label={d('feels_like')} value={`${Math.round(weather.feelsLike)}°`} color="text-meteorix-orange" />
         <MetricSmall label={d('humidity')} value={`${weather.humidity}%`} color="text-meteorix-blue" />
         <MetricSmall label={d('wind')} value={`${Math.round(weather.windSpeed)} km/h`} color="text-meteorix-green" />
-        <MetricSmall label={d('pressure')} value={`${Math.round(weather.pressure)} hpa`} color="text-white/40" />
+        <MetricSmall label={d('pressure')} value={`${Math.round(weather.pressure)} hpa`} color="text-white/60" />
       </div>
 
       {/* Decorative HUD Lines */}
-      <div className="absolute top-1/2 left-0 w-1 h-12 bg-meteorix-blue/30 -translate-y-1/2 rounded-r-full" />
-      <div className="absolute top-1/2 right-0 w-1 h-12 bg-meteorix-blue/30 -translate-y-1/2 rounded-l-full" />
+      <div className="absolute top-1/2 left-0 w-1 h-12 bg-meteorix-blue/40 -translate-y-1/2 rounded-r-full" />
+      <div className="absolute top-1/2 right-0 w-1 h-12 bg-meteorix-blue/40 -translate-y-1/2 rounded-l-full" />
     </div>
   );
 }

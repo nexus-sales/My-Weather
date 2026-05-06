@@ -85,34 +85,34 @@ export default function HourlyChart({ data }: HourlyChartProps) {
   }
 
   return (
-    <div className="w-full h-full bg-meteorix-card border border-meteorix-border rounded-3xl p-6 backdrop-blur-xl animate-fadein flex flex-col" style={{ animationDelay: '300ms' }}>
+    <div className="w-full meteorix-card rounded-3xl p-6 animate-fadein flex flex-col h-[400px]" style={{ animationDelay: '300ms' }}>
       <div className="flex items-center gap-2 mb-8">
-        <Activity className="w-4 h-4 text-meteorix-blue/60" />
-        <h3 className="text-[10px] tracking-[0.4em] text-meteorix-blue/80 font-bold uppercase">
+        <Activity className="w-4 h-4 text-meteorix-blue/80" />
+        <h3 className="text-[10px] tracking-[0.4em] text-white/60 font-bold uppercase">
           {t('thermalEvolution')}
         </h3>
       </div>
 
-      <div className="flex-1 w-full relative min-h-[220px]">
-        <ResponsiveContainer width="99.9%" height="100%">
+      <div className="h-auto min-h-[250px] w-full">
+        <ResponsiveContainer width="100%" height="100%" aspect={2.5}>
           <AreaChart data={chartData} margin={{ top: 10, right: 30, left: -10, bottom: 0 }}>
             <defs>
               <linearGradient id="gradTemp" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#00d4ff" stopOpacity={0.25} />
+                <stop offset="5%" stopColor="#00d4ff" stopOpacity={0.3} />
                 <stop offset="95%" stopColor="#00d4ff" stopOpacity={0} />
               </linearGradient>
               <linearGradient id="gradPrecip" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#4d7fff" stopOpacity={0.15} />
+                <stop offset="5%" stopColor="#4d7fff" stopOpacity={0.2} />
                 <stop offset="95%" stopColor="#4d7fff" stopOpacity={0} />
               </linearGradient>
             </defs>
 
-            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(0,150,255,0.05)" />
+            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(0,150,255,0.08)" />
             <XAxis
               dataKey="hour"
               axisLine={false}
               tickLine={false}
-              tick={{ fill: 'rgba(255,255,255,0.3)', fontSize: 10, fontWeight: 600 }}
+              tick={{ fill: 'rgba(255,255,255,0.5)', fontSize: 10, fontWeight: 600 }}
               interval={3}
             />
             <YAxis
@@ -121,7 +121,7 @@ export default function HourlyChart({ data }: HourlyChartProps) {
               domain={[tempMin, tempMax]}
               axisLine={false}
               tickLine={false}
-              tick={{ fill: 'rgba(0,212,255,0.5)', fontSize: 10, fontWeight: 600 }}
+              tick={{ fill: 'rgba(0,212,255,0.7)', fontSize: 10, fontWeight: 600 }}
               tickFormatter={(v) => `${v}°`}
               width={36}
             />
@@ -131,26 +131,26 @@ export default function HourlyChart({ data }: HourlyChartProps) {
               domain={[0, 100]}
               axisLine={false}
               tickLine={false}
-              tick={{ fill: 'rgba(77,127,255,0.5)', fontSize: 10, fontWeight: 600 }}
+              tick={{ fill: 'rgba(77,127,255,0.7)', fontSize: 10, fontWeight: 600 }}
               tickFormatter={(v) => `${v}%`}
               width={36}
             />
 
-            <Tooltip content={<CustomTooltip temperatureLabel={t('temperature')} rainLabel={t('rain')} />} cursor={{ stroke: 'rgba(0,212,255,0.15)', strokeWidth: 1 }} />
-            <Area yAxisId="temp" type="monotone" dataKey="temp" stroke="#00d4ff" strokeWidth={2.5} fill="url(#gradTemp)" animationDuration={1500} />
-            <Area yAxisId="precip" type="monotone" dataKey="precip" stroke="#4d7fff" strokeWidth={1.5} strokeDasharray="5 4" fill="url(#gradPrecip)" animationDuration={1500} />
+            <Tooltip content={<CustomTooltip temperatureLabel={t('temperature')} rainLabel={t('rain')} />} cursor={{ stroke: 'rgba(0,212,255,0.25)', strokeWidth: 1 }} />
+            <Area yAxisId="temp" type="monotone" dataKey="temp" stroke="#00d4ff" strokeWidth={3} fill="url(#gradTemp)" animationDuration={1500} />
+            <Area yAxisId="precip" type="monotone" dataKey="precip" stroke="#4d7fff" strokeWidth={2} strokeDasharray="5 4" fill="url(#gradPrecip)" animationDuration={1500} />
           </AreaChart>
         </ResponsiveContainer>
       </div>
 
-      <div className="flex justify-center gap-6 mt-6 pt-4 border-t border-white/5">
+      <div className="flex justify-center gap-6 mt-6 pt-4 border-t border-white/10">
         <div className="flex items-center gap-2">
-          <div className="w-6 h-0.5 bg-[#00d4ff]" />
-          <span className="text-[9px] tracking-widest text-white/40 font-bold uppercase">{t('temperature')}</span>
+          <div className="w-6 h-0.5 bg-[#00d4ff] shadow-[0_0_8px_#00d4ff]" />
+          <span className="text-[9px] tracking-widest text-white/60 font-bold uppercase">{t('temperature')}</span>
         </div>
         <div className="flex items-center gap-2">
-          <div className="w-6 h-0.5 border-t-2 border-dashed border-[#4d7fff] opacity-70" />
-          <span className="text-[9px] tracking-widest text-white/40 font-bold uppercase">{t('rainProbability')}</span>
+          <div className="w-6 h-0.5 border-t-2 border-dashed border-[#4d7fff] opacity-80" />
+          <span className="text-[9px] tracking-widest text-white/60 font-bold uppercase">{t('rainProbability')}</span>
         </div>
       </div>
     </div>
