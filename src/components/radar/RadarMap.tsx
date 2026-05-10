@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState, useRef } from 'react';
-import { MapContainer, TileLayer, Circle, ZoomControl, useMap } from 'react-leaflet';
+import { MapContainer, TileLayer, WMSTileLayer, Circle, ZoomControl, useMap } from 'react-leaflet';
 import { useLocationStore } from '@/store/useLocationStore';
 import { fetchAemetStations, AemetStation } from '@/services/aemetService';
 import 'leaflet/dist/leaflet.css';
@@ -226,14 +226,15 @@ export default function RadarMap({ height = 300, hideControls = false, externalL
                   />
                 )}
                 
-                {/* Weather Overlay Layers */}
                 {currentFrame && layerType === 'radar' && (
-                  <TileLayer
-                    key={`rad-${currentFrame.time}`}
-                    url={`${host}${currentFrame.path}/256/{z}/{x}/{y}/2/1_1.png`}
-                    opacity={0.68}
+                  <WMSTileLayer
+                    url="https://wms.mapama.gob.es/sig/Agua/Precipitacion/wms.aspx"
+                    layers="Precipitacion_Radar"
+                    format="image/png"
+                    transparent={true}
+                    opacity={0.75}
                     zIndex={10}
-                    maxZoom={12}
+                    maxZoom={18}
                   />
                 )}
 
@@ -244,6 +245,7 @@ export default function RadarMap({ height = 300, hideControls = false, externalL
                     opacity={0.85}
                     zIndex={20}
                     maxZoom={12}
+                    maxNativeZoom={7}
                   />
                 )}
 
@@ -252,6 +254,8 @@ export default function RadarMap({ height = 300, hideControls = false, externalL
                     url="/api/tiles/owm/clouds_new/{z}/{x}/{y}"
                     opacity={0.42}
                     zIndex={8}
+                    maxZoom={12}
+                    maxNativeZoom={7}
                   />
                 )}
 
@@ -260,6 +264,8 @@ export default function RadarMap({ height = 300, hideControls = false, externalL
                     url="/api/tiles/owm/temp_new/{z}/{x}/{y}"
                     opacity={0.45}
                     zIndex={7}
+                    maxZoom={12}
+                    maxNativeZoom={7}
                   />
                 )}
 
@@ -268,6 +274,8 @@ export default function RadarMap({ height = 300, hideControls = false, externalL
                     url="/api/tiles/owm/wind_new/{z}/{x}/{y}"
                     opacity={0.45}
                     zIndex={7}
+                    maxZoom={12}
+                    maxNativeZoom={7}
                   />
                 )}
 
