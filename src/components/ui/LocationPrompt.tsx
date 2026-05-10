@@ -16,7 +16,18 @@ export default function LocationPrompt() {
     // Check if permission was already granted or denied
     if ('permissions' in navigator) {
       navigator.permissions.query({ name: 'geolocation' }).then((status) => {
-        if (status.state === 'prompt') {
+        if (status.state === 'granted') {
+          // Si ya hay permiso, actualizar coordenadas silenciosamente
+          navigator.geolocation.getCurrentPosition(
+            async (pos) => {
+              const { latitude: lat, longitude: lon } = pos.coords;
+              setCoords({ lat, lon });
+              const name = await getCityFromCoords(lat, lon);
+              setCityName(name);
+            },
+            (err) => console.error('Error fetching granted location:', err)
+          );
+        } else if (status.state === 'prompt') {
           // If it's the first time, wait a bit and show our custom prompt
           const timer = setTimeout(() => setShow(true), 1500);
           return () => clearTimeout(timer);

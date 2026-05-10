@@ -17,6 +17,7 @@ import SpaceWeatherWidget from './widgets/SpaceWeatherWidget';
 import CloudWidget from './widgets/CloudWidget';
 import ClimateAnomalyWidget from './widgets/ClimateAnomalyWidget';
 import MarineWidget from './widgets/MarineWidget';
+import SurfWidget from './widgets/SurfWidget';
 import DewPointWidget from './widgets/DewPointWidget';
 import StormRiskWidget from './widgets/StormRiskWidget';
 import { useIntelligence } from '@/hooks/useIntelligence';
@@ -83,6 +84,13 @@ export default function WidgetGrid({ weather }: WidgetGridProps) {
           <DewPointWidget temp={weather.current.temp} humidity={weather.current.humidity} title="Punto de Rocío" />
           <ClimateAnomalyWidget anomaly={intelligence.climate?.anomaly ?? 0} baseline={intelligence.climate?.baseline ?? 0} title="Registro Histórico" />
           <MarineWidget waveHeight={intelligence.marine.waveHeight} period={intelligence.marine.period} tideTrend={intelligence.marine.tideTrend} temp={intelligence.marine.temp} title="Estado del Mar" />
+          <SurfWidget 
+            waveHeight={intelligence.marine.waveHeight} 
+            period={intelligence.marine.period} 
+            windSpeed={weather.current.windSpeed} 
+            windDir={weather.current.windDir} 
+            title="Surf Quality" 
+          />
           <StormRiskWidget 
             risk={intelligence.storms.risk} 
             cape={intelligence.storms.cape} 
