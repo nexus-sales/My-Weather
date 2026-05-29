@@ -14,7 +14,7 @@ export default function HumidityWidget({ humidity, temp, title }: HumidityWidget
   const dewPoint = temp - ((100 - humidity) / 5);
   
   return (
-    <WidgetWrapper title={title} icon={<Droplet size={14} className="text-meteorix-blue animate-pulse" />}>
+    <WidgetWrapper title={title} icon={<Droplet size={14} className="text-blue-400 animate-pulse" />}>
       <div className="relative flex flex-col items-center justify-center w-full h-full">
         {/* Modern Circular Hygrometer */}
         <div className="relative w-32 h-32 flex items-center justify-center">
@@ -34,7 +34,7 @@ export default function HumidityWidget({ humidity, temp, title }: HumidityWidget
               strokeDashoffset={264 - (humidity / 100) * 264}
               strokeLinecap="round"
               className="transition-all duration-1000 ease-out"
-              style={{ filter: 'drop-shadow(0 0 8px rgba(0, 212, 255, 0.3))' }}
+              style={{ filter: 'drop-shadow(0 0 8px rgba(96, 165, 250, 0.3))' }}
             />
 
             {/* Inner Scale */}
@@ -49,7 +49,7 @@ export default function HumidityWidget({ humidity, temp, title }: HumidityWidget
             
             <defs>
               <linearGradient id="hum-grad-pro" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="#00d4ff" />
+                <stop offset="0%" stopColor="#60a5fa" />
                 <stop offset="100%" stopColor="#0055ff" />
               </linearGradient>
             </defs>
@@ -58,24 +58,24 @@ export default function HumidityWidget({ humidity, temp, title }: HumidityWidget
           {/* Central Readout */}
           <div className="absolute flex flex-col items-center">
             <div className="flex items-baseline">
-              <span className="text-4xl font-orbitron font-black text-white leading-none drop-shadow-glow">
+              <span className="text-4xl font-outfit font-black text-white leading-none drop-shadow-glow">
                 {humidity}
               </span>
-              <span className="text-sm font-orbitron text-meteorix-blue opacity-60 ml-0.5">%</span>
+              <span className="text-sm font-outfit text-blue-400 opacity-60 ml-0.5">%</span>
             </div>
-            <span className="text-[7px] font-orbitron text-white/30 uppercase tracking-[0.4em] mt-1">Humedad</span>
+            <span className="text-[7px] font-outfit text-white/30 uppercase tracking-[0.4em] mt-1">Humedad</span>
           </div>
         </div>
 
         {/* Secondary Telemetry (Dew Point) */}
         <div className="mt-2 w-full flex items-center justify-around px-2">
           <div className="flex flex-col items-center">
-             <span className="text-[10px] font-mono text-white/60">{dewPoint.toFixed(1)}°C</span>
+             <span className="text-[10px] font-inter text-xs text-white/60">{dewPoint.toFixed(1)}°C</span>
              <span className="text-[6px] text-white/20 uppercase tracking-widest">Punto Rocío</span>
           </div>
           <div className="w-[1px] h-4 bg-white/5" />
           <div className="flex flex-col items-center">
-             <span className="text-[10px] font-orbitron text-meteorix-green uppercase">{humidity < 40 ? 'Seco' : humidity < 70 ? 'Ideal' : 'Húmedo'}</span>
+             <span className="text-[10px] font-outfit text-emerald-400 uppercase">{humidity < 40 ? 'Seco' : humidity < 70 ? 'Ideal' : 'Húmedo'}</span>
              <span className="text-[6px] text-white/20 uppercase tracking-widest">Sensación</span>
           </div>
         </div>

@@ -48,10 +48,10 @@ export default function CloudWidget({ coverage, title }: CloudWidgetProps) {
           
           {/* Percentage Center */}
           <div className="absolute inset-0 flex flex-col items-center justify-center">
-            <span className="text-2xl font-orbitron font-black text-white leading-none">
+            <span className="text-2xl font-outfit font-black text-white leading-none">
               {coverage}<span className="text-[10px] text-white/50">%</span>
             </span>
-            <span className="text-[7px] font-mono text-white/40 uppercase tracking-tighter mt-1">{status}</span>
+            <span className="text-[7px] font-inter text-xs text-white/40 uppercase tracking-tighter mt-1">{status}</span>
           </div>
           
           {/* Decorative icons on the circle */}
@@ -66,12 +66,12 @@ export default function CloudWidget({ coverage, title }: CloudWidgetProps) {
         {/* Small Data Strip */}
         <div className="mt-4 w-full flex justify-between px-2">
            <div className="flex flex-col">
-              <span className="text-[6px] font-orbitron text-white/30 uppercase">Transparencia</span>
-              <span className="text-[9px] font-mono text-white/80">{100 - coverage}%</span>
+              <span className="text-[6px] font-outfit text-white/30 uppercase">Transparencia</span>
+              <span className="text-[9px] font-inter text-xs text-white/80">{100 - coverage}%</span>
            </div>
            <div className="flex flex-col text-right">
-              <span className="text-[6px] font-orbitron text-white/30 uppercase">Opacidad</span>
-              <span className="text-[9px] font-mono text-white/80">{coverage}%</span>
+              <span className="text-[6px] font-outfit text-white/30 uppercase">Opacidad</span>
+              <span className="text-[9px] font-inter text-xs text-white/80">{coverage}%</span>
            </div>
         </div>
       </div>

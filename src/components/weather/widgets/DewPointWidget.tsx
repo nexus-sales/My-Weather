@@ -27,16 +27,16 @@ export default function DewPointWidget({ temp, humidity, title }: DewPointWidget
     <WidgetWrapper title={title} icon={<ThermometerSnowflake size={14} style={{ color }} />}>
       <div className="w-full h-full flex flex-col justify-between p-2">
         <div className="flex flex-col items-center">
-           <span className="text-3xl font-orbitron font-black text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.2)]">
+           <span className="text-3xl font-outfit font-black text-white drop-shadow-sm">
              {dewPoint.toFixed(1)}°
            </span>
-           <span className="text-[8px] font-mono uppercase tracking-[0.2em] mt-1" style={{ color }}>
+           <span className="text-[8px] font-inter text-xs uppercase tracking-[0.2em] mt-1" style={{ color }}>
              {comfort}
            </span>
         </div>
 
         <div className="mt-4 flex flex-col gap-2">
-           <div className="flex justify-between items-center text-[7px] font-mono text-white/40 uppercase">
+           <div className="flex justify-between items-center text-[7px] font-inter text-xs text-white/40 uppercase">
               <span>Saturación de Aire</span>
               <span>{humidity}%</span>
            </div>
@@ -46,7 +46,7 @@ export default function DewPointWidget({ temp, humidity, title }: DewPointWidget
                 style={{ width: `${humidity}%`, backgroundColor: color }} 
               />
            </div>
-           <p className="text-[6px] font-mono text-white/20 uppercase leading-tight">
+           <p className="text-[6px] font-inter text-xs text-white/20 uppercase leading-tight">
              Temperatura a la que el aire se satura y forma condensación.
            </p>
         </div>

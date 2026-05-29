@@ -13,7 +13,7 @@ export default function VisibilityWidget({ visibility, title }: VisibilityWidget
   const progress = Math.min(100, (km / 12) * 100);
 
   return (
-    <WidgetWrapper title={title} icon={<Radar size={14} className="text-meteorix-blue animate-pulse" />}>
+    <WidgetWrapper title={title} icon={<Radar size={14} className="text-blue-400 animate-pulse" />}>
       <div className="relative flex flex-col items-center justify-center w-full px-4 h-full">
         {/* Lidar/Laser Telemetry Visualization */}
         <div className="relative w-full h-20 mb-4 bg-[#050a1a]/60 rounded-lg border border-white/5 overflow-hidden flex items-end">
@@ -31,7 +31,7 @@ export default function VisibilityWidget({ visibility, title }: VisibilityWidget
 
           {/* Active Range Beam */}
           <div 
-            className="absolute top-1/2 left-0 h-16 -translate-y-1/2 bg-gradient-to-r from-transparent via-meteorix-blue/40 to-meteorix-blue shadow-[0_0_20px_rgba(0,212,255,0.4)] transition-all duration-1500 ease-in-out"
+            className="absolute top-1/2 left-0 h-16 -translate-y-1/2 bg-gradient-to-r from-transparent via-blue-400/40 to-blue-400 shadow-sm transition-all duration-1500 ease-in-out"
             style={{ width: `${progress}%` }}
           >
             {/* Lead Pulse */}
@@ -44,7 +44,7 @@ export default function VisibilityWidget({ visibility, title }: VisibilityWidget
           {/* Distance Markers */}
           <div className="absolute bottom-1 w-full flex justify-between px-2">
              {[0, 3, 6, 9, 12].map(d => (
-               <span key={d} className="text-[6px] font-mono text-white/20">{d}km</span>
+               <span key={d} className="text-[6px] font-inter text-xs text-white/20">{d}km</span>
              ))}
           </div>
         </div>
@@ -52,15 +52,15 @@ export default function VisibilityWidget({ visibility, title }: VisibilityWidget
         {/* Metric Readout */}
         <div className="flex flex-col items-center">
            <div className="flex items-baseline gap-1.5">
-             <span className="text-4xl font-orbitron font-bold text-white tracking-tighter drop-shadow-glow">
+             <span className="text-4xl font-outfit font-bold text-white tracking-tighter drop-shadow-glow">
                {km.toFixed(1)}
              </span>
-             <span className="text-sm font-orbitron text-meteorix-blue opacity-60">KM</span>
+             <span className="text-sm font-outfit text-blue-400 opacity-60">KM</span>
            </div>
            
            <div className="mt-2 flex items-center gap-2">
-             <div className={`w-1.5 h-1.5 rounded-full ${km > 5 ? 'bg-meteorix-green' : 'bg-meteorix-orange'} animate-pulse`} />
-             <span className="text-[8px] font-orbitron text-white/40 uppercase tracking-[0.2em]">
+             <div className={`w-1.5 h-1.5 rounded-full ${km > 5 ? 'bg-emerald-400' : 'bg-orange-400'} animate-pulse`} />
+             <span className="text-[8px] font-outfit text-white/40 uppercase tracking-[0.2em]">
                {km > 8 ? 'Visibilidad Óptima' : km > 3 ? 'Visibilidad Moderada' : 'Alcance Reducido'}
              </span>
            </div>

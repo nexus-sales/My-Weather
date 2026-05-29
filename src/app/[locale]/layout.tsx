@@ -2,7 +2,7 @@ import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import { routing } from '@/i18n/routing';
-import { Orbitron, Exo_2 } from 'next/font/google';
+import { Outfit, Inter } from 'next/font/google';
 import '../globals.css';
 import { Metadata, Viewport } from 'next';
 import QueryProvider from '@/providers/QueryProvider';
@@ -41,14 +41,14 @@ export const viewport: Viewport = {
   colorScheme: 'dark',
 };
 
-const orbitron = Orbitron({
+const outfit = Outfit({
   subsets: ['latin'],
-  variable: '--font-orbitron',
+  variable: '--font-outfit',
 });
 
-const exo2 = Exo_2({
+const inter = Inter({
   subsets: ['latin'],
-  variable: '--font-exo2',
+  variable: '--font-inter',
 });
 
 export default async function LocaleLayout({
@@ -67,7 +67,7 @@ export default async function LocaleLayout({
   const messages = await getMessages();
 
   return (
-    <html lang={locale} className={`${orbitron.variable} ${exo2.variable} h-full antialiased`}>
+    <html lang={locale} className={`${outfit.variable} ${inter.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col bg-[#030b1a] text-[#c8e0f0]">
         <NextIntlClientProvider messages={messages}>
           <QueryProvider>

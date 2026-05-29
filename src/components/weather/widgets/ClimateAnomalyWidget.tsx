@@ -11,7 +11,7 @@ interface ClimateAnomalyWidgetProps {
 
 export default function ClimateAnomalyWidget({ anomaly, baseline, title }: ClimateAnomalyWidgetProps) {
   const isWarmer = anomaly > 0;
-  const color = isWarmer ? '#ff3e3e' : '#00d4ff';
+  const color = isWarmer ? '#ff3e3e' : '#60a5fa';
   const Icon = isWarmer ? TrendingUp : TrendingDown;
 
   return (
@@ -25,19 +25,19 @@ export default function ClimateAnomalyWidget({ anomaly, baseline, title }: Clima
           
           <div className="flex flex-col">
             <div className="flex items-baseline gap-1">
-              <span className="text-2xl font-orbitron font-black text-white" style={{ textShadow: `0 0 10px ${color}40` }}>
+              <span className="text-2xl font-outfit font-black text-white" style={{ textShadow: `0 0 10px ${color}40` }}>
                 {isWarmer ? '+' : ''}{anomaly}°
               </span>
-              <span className="text-[10px] text-white/40 font-mono">VS 1996</span>
+              <span className="text-[10px] text-white/40 font-inter text-xs">VS 1996</span>
             </div>
-            <span className="text-[7px] font-mono text-white/30 uppercase tracking-widest">Anomalía Térmica Histórica</span>
+            <span className="text-[7px] font-inter text-xs text-white/30 uppercase tracking-widest">Anomalía Térmica Histórica</span>
           </div>
         </div>
 
         <div className="bg-black/40 rounded-lg p-2 border border-white/5 space-y-2 mt-4">
            <div className="flex justify-between items-center">
-              <span className="text-[7px] font-orbitron text-white/40 uppercase">Referencia (30 años)</span>
-              <span className="text-[9px] font-mono text-white/80">{baseline.toFixed(1)}°C</span>
+              <span className="text-[7px] font-outfit text-white/40 uppercase">Referencia (30 años)</span>
+              <span className="text-[9px] font-inter text-xs text-white/80">{baseline.toFixed(1)}°C</span>
            </div>
            
            {/* Visual Scale */}
@@ -53,7 +53,7 @@ export default function ClimateAnomalyWidget({ anomaly, baseline, title }: Clima
               />
            </div>
            
-           <p className="text-[6px] font-mono text-white/20 uppercase leading-tight italic">
+           <p className="text-[6px] font-inter text-xs text-white/20 uppercase leading-tight italic">
              Comparativa automática basada en registros de ERA5 para esta ubicación exacta.
            </p>
         </div>

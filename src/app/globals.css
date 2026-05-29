@@ -1,130 +1,99 @@
 @import "tailwindcss";
 
 @theme {
-  /* Fonts */
-  --font-orbitron: var(--font-orbitron);
-  --font-exo2: var(--font-exo2);
+  /* Premium Fonts */
+  --font-outfit: var(--font-outfit);
+  --font-inter: var(--font-inter);
 
-  /* Meteorix Colors - Radically enhanced for high-definition definition */
-  --color-meteorix-bg: #01040a;
-  --color-meteorix-card: rgba(13, 31, 68, 0.5);
-  --color-meteorix-blue: #00d4ff;
-  --color-meteorix-glow: rgba(0, 212, 255, 0.6);
-  --color-meteorix-orange: #ff9d4d;
-  --color-meteorix-green: #00ffa3;
-  --color-meteorix-border: rgba(0, 212, 255, 0.45);
+  /* Aether Premium Color Palette */
+  --color-aether-bg: #09090b; /* zinc-950 */
+  --color-aether-panel: rgba(24, 24, 27, 0.4); /* zinc-900 with opacity */
+  --color-aether-border: rgba(255, 255, 255, 0.08);
+  --color-aether-border-hover: rgba(255, 255, 255, 0.15);
+  --color-aether-accent: #60a5fa; /* blue-400 */
+  --color-aether-text: #fafafa;
+  --color-aether-text-muted: #a1a1aa; /* zinc-400 */
 
-  /* Animations from Original App */
-  --animate-pulse-glow: pulse-glow 2s infinite;
-  --animate-blink: blink 1.2s infinite;
-  --animate-fadein: fadein 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
-  --animate-scan: scan 2s linear infinite;
+  /* Smooth Animations */
+  --animate-fadein: fadein 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+  --animate-slideup: slideup 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
 
-  @keyframes pulse-glow {
-    0%, 100% { text-shadow: 0 0 10px rgba(0, 212, 255, 0.4); }
-    50% { text-shadow: 0 0 30px rgba(0, 212, 255, 1), 0 0 50px rgba(0, 212, 255, 0.4); }
-  }
-  @keyframes blink {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.4; }
-  }
   @keyframes fadein {
-    from { opacity: 0; transform: translateY(30px); }
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  @keyframes slideup {
+    from { opacity: 0; transform: translateY(20px); }
     to { opacity: 1; transform: translateY(0); }
   }
-  @keyframes scan {
-    0% { background-position: 0 0; }
-    100% { background-position: 0 100px; }
-  }
-}
-
-.animate-wave {
-  animation: wave 2.5s linear infinite;
-}
-
-.animate-spin-slow {
-  animation: spin 12s linear infinite;
-}
-
-@keyframes fall {
-  0% { transform: translateY(-20px); opacity: 0; }
-  50% { opacity: 1; }
-  100% { transform: translateY(40px); opacity: 0; }
-}
-
-.animate-fall {
-  animation: fall 1.5s linear infinite;
 }
 
 /* Base Styles */
 :root {
-  --background: #01040a;
-  --foreground: #ffffff;
+  --background: #09090b;
+  --foreground: #fafafa;
 }
 
 body {
-  font-family: var(--font-exo2), sans-serif;
-  background-color: var(--color-meteorix-bg);
-  background-image: 
-    radial-gradient(circle at 50% -20%, rgba(0, 150, 255, 0.25), transparent 70%),
-    radial-gradient(circle at 0% 100%, rgba(0, 80, 255, 0.12), transparent 50%),
-    radial-gradient(circle at 100% 100%, rgba(0, 212, 255, 0.1), transparent 50%);
-  background-attachment: fixed;
+  font-family: var(--font-inter), sans-serif;
+  background-color: var(--background);
   color: var(--foreground);
   overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-h1, h2, h3, .font-orbitron {
-  font-family: var(--font-orbitron), sans-serif;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
+/* Typography Hierarchy */
+h1, h2, h3, h4, h5, h6, .font-outfit {
+  font-family: var(--font-outfit), sans-serif;
+  letter-spacing: -0.02em;
 }
 
-/* Premium Card Style - HIGH DEFINITION */
-.meteorix-card {
-  background: linear-gradient(135deg, rgba(15, 35, 75, 0.6) 0%, rgba(5, 15, 35, 0.8) 100%);
-  backdrop-filter: blur(20px);
-  border: 1px solid var(--color-meteorix-border);
+/* Premium Glass Panel (For Bento Grid Cards) */
+.glass-panel {
+  background: var(--color-aether-panel);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid var(--color-aether-border);
   box-shadow: 
-    0 20px 50px -20px rgba(0, 0, 0, 0.8), 
-    inset 0 0 30px rgba(0, 212, 255, 0.05),
-    0 0 0 1px rgba(255, 255, 255, 0.03);
-  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06),
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
+  border-radius: 1.5rem; /* 24px */
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  overflow: hidden;
 }
 
-.meteorix-card:hover {
-  border-color: rgba(0, 212, 255, 0.8);
+.glass-panel:hover {
+  border-color: var(--color-aether-border-hover);
   box-shadow: 
-    0 30px 70px -15px rgba(0, 0, 0, 0.9), 
-    inset 0 0 40px rgba(0, 212, 255, 0.1),
-    0 0 20px rgba(0, 212, 255, 0.2);
-  transform: translateY(-4px);
+    0 10px 25px -5px rgba(0, 0, 0, 0.3),
+    0 8px 10px -6px rgba(0, 0, 0, 0.1),
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.08);
+  transform: translateY(-2px);
 }
 
-/* Custom Scrollbar */
-::-webkit-scrollbar { width: 6px; height: 6px; }
-::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.4); }
-::-webkit-scrollbar-thumb { background: var(--color-meteorix-blue); border-radius: 10px; box-shadow: 0 0 10px var(--color-meteorix-blue); }
-::-webkit-scrollbar-thumb:hover { background: #ffffff; }
-
-/* Scan Overlay Effect - HIGH CONTRAST */
-.scan-overlay {
-  background-image: repeating-linear-gradient(transparent, transparent 1px, rgba(0, 212, 255, 0.015) 1px, rgba(0, 212, 255, 0.015) 2px);
-  pointer-events: none;
-  position: fixed;
-  inset: 0;
-  z-index: 50;
-  opacity: 0.6;
+/* Clean Custom Scrollbar */
+::-webkit-scrollbar { 
+  width: 6px; 
+  height: 6px; 
+}
+::-webkit-scrollbar-track { 
+  background: transparent; 
+}
+::-webkit-scrollbar-thumb { 
+  background: rgba(255, 255, 255, 0.1); 
+  border-radius: 10px; 
+}
+::-webkit-scrollbar-thumb:hover { 
+  background: rgba(255, 255, 255, 0.2); 
 }
 
-/* Background Gradients */
-.bg-meteorix-gradient {
-  background: transparent;
+/* Hide scrollbar for clean horizontal lists */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
 }
-
-.bg-grid-meteorix {
-  background-image: 
-    linear-gradient(rgba(0, 212, 255, 0.05) 1px, transparent 1px), 
-    linear-gradient(90deg, rgba(0, 212, 255, 0.05) 1px, transparent 1px);
-  background-size: 60px 60px;
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }

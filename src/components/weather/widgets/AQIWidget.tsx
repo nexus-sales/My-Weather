@@ -51,10 +51,10 @@ export default function AQIWidget({ aqiValue = 42 }: AQIWidgetProps) {
         {/* Content */}
         <div className="relative z-10 flex items-center justify-between">
            <div className="flex flex-col">
-              <span className="text-4xl font-orbitron font-black text-white drop-shadow-md">
+              <span className="text-4xl font-outfit font-black text-white drop-shadow-md">
                 {aqiValue}
               </span>
-              <span className="text-[10px] font-orbitron tracking-widest uppercase mt-[-4px]" style={{ color }}>
+              <span className="text-[10px] font-outfit tracking-widest uppercase mt-[-4px]" style={{ color }}>
                 {status}
               </span>
            </div>
@@ -65,13 +65,13 @@ export default function AQIWidget({ aqiValue = 42 }: AQIWidgetProps) {
         </div>
 
         <div className="mt-auto relative z-10">
-           <span className="text-[7px] font-mono text-white/50 uppercase tracking-widest">{message}</span>
+           <span className="text-[7px] font-inter text-xs text-white/50 uppercase tracking-widest">{message}</span>
            
            {/* Color Scale Bar */}
            <div className="h-1.5 w-full bg-gradient-to-r from-[#00ff88] via-[#ffcc00] to-[#ff3e3e] mt-2 rounded-full overflow-hidden relative">
               {/* Indicator Arrow */}
               <div 
-                className="absolute top-0 bottom-0 w-1 bg-white shadow-[0_0_5px_white]" 
+                className="absolute top-0 bottom-0 w-1 bg-white shadow-sm" 
                 style={{ left: `${Math.min((aqiValue / 200) * 100, 95)}%` }}
               />
            </div>

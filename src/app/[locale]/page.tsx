@@ -31,17 +31,18 @@ export default function HomePage() {
   ] as const;
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-meteorix-bg text-foreground bg-meteorix-gradient flex flex-col">
+    <div className="relative min-h-screen overflow-hidden flex flex-col font-inter">
       <LocationPrompt />
-      <div className="absolute inset-0 z-0 pointer-events-none bg-grid-meteorix opacity-50" />
-      <div className="scan-overlay" />
+      
+      {/* Background Gradient Base (WeatherBackground will sit above this if used, otherwise this is the default deep state) */}
+      <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-zinc-900 via-[#09090b] to-[#09090b]"></div>
 
-      <header className="relative z-40 flex items-center justify-between px-4 md:px-8 py-4 border-b border-meteorix-border bg-meteorix-bg/80 backdrop-blur-xl">
+      <header className="relative z-40 flex items-center justify-between px-6 py-5 border-b border-white/5 bg-zinc-950/40 backdrop-blur-2xl supports-[backdrop-filter]:bg-zinc-950/20">
         <div className="flex items-center gap-4">
-          <h1 className="text-xl font-black tracking-widest text-meteorix-blue animate-pulse-glow font-orbitron">
+          <h1 className="text-xl font-medium tracking-tight text-white font-outfit">
             {t('title')}
           </h1>
-          <div className="hidden lg:block text-[8px] font-orbitron tracking-[0.2em] text-white/30 border-l border-white/10 pl-4 uppercase">
+          <div className="hidden lg:block text-xs font-medium text-zinc-500 border-l border-white/10 pl-4 uppercase tracking-wider">
             {t('controlCenter')}
           </div>
         </div>
@@ -55,52 +56,55 @@ export default function HomePage() {
         </div>
       </header>
 
-      <nav className="relative z-30 flex items-center justify-center px-4 md:px-8 border-b border-white/10 bg-black/40 backdrop-blur-xl overflow-x-auto no-scrollbar">
-        {tabs.map((tab) => (
-          <button
-            key={tab.id}
-            onClick={() => setActiveTab(tab.id)}
-            className={`flex items-center gap-2 px-6 py-4 border-b-2 transition-all whitespace-nowrap ${
-              activeTab === tab.id
-                ? 'border-meteorix-blue text-meteorix-blue bg-meteorix-blue/10 shadow-[inset_0_-10px_20px_-10px_rgba(0,212,255,0.2)]'
-                : 'border-transparent text-white/40 hover:text-white/80 hover:bg-white/5'
-            }`}
-          >
-            <tab.icon size={14} className={activeTab === tab.id ? 'animate-pulse text-meteorix-blue' : ''} />
-            <span className="text-[10px] font-bold tracking-[0.2em] uppercase">{tab.label}</span>
-          </button>
-        ))}
+      {/* Premium Segmented Controls (Tabs) */}
+      <nav className="relative z-30 flex items-center justify-center px-4 md:px-8 py-3 border-b border-white/5 bg-black/20 backdrop-blur-xl overflow-x-auto no-scrollbar">
+        <div className="flex bg-black/40 p-1 rounded-full border border-white/5">
+          {tabs.map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className={`flex items-center gap-2 px-5 py-2 rounded-full transition-all duration-300 ease-out whitespace-nowrap ${
+                activeTab === tab.id
+                  ? 'bg-white/10 text-white shadow-sm'
+                  : 'text-zinc-400 hover:text-zinc-200 hover:bg-white/5'
+              }`}
+            >
+              <tab.icon size={16} className={activeTab === tab.id ? 'text-blue-400' : ''} />
+              <span className="text-xs font-medium tracking-wide">{tab.label}</span>
+            </button>
+          ))}
+        </div>
       </nav>
 
-      <div className="md:hidden relative z-20 px-8 py-4 bg-meteorix-bg/20 backdrop-blur-sm border-b border-white/5">
+      <div className="md:hidden relative z-20 px-6 py-4 bg-zinc-950/40 backdrop-blur-xl border-b border-white/5">
         <SearchBar />
       </div>
 
-      <main className="relative z-10 flex-1 flex flex-col items-center px-4 md:px-8 py-6 md:py-12 animate-fadein overflow-y-auto">
+      <main className="relative z-10 flex-1 flex flex-col items-center px-4 md:px-8 py-8 md:py-12 animate-fadein overflow-y-auto">
         <div className="max-w-[1500px] w-full px-4 md:px-0">
           {isLoading ? (
-            <div className="flex flex-col items-center gap-4 py-32">
-              <div className="w-12 h-12 border-4 border-meteorix-blue/30 border-t-meteorix-blue rounded-full animate-spin" />
-              <div className="text-xs font-orbitron tracking-widest text-meteorix-blue/50 uppercase animate-blink">{t('loading')}</div>
+            <div className="flex flex-col items-center justify-center gap-6 py-32">
+              <div className="w-10 h-10 border-[3px] border-zinc-800 border-t-blue-500 rounded-full animate-spin" />
+              <div className="text-sm font-medium tracking-widest text-zinc-500 uppercase">{t('loading')}</div>
             </div>
           ) : error ? (
-            <div className="text-red-400 bg-red-950/20 border border-red-900/50 p-6 rounded-2xl text-center font-orbitron text-xs tracking-widest uppercase">
+            <div className="text-red-400 bg-red-950/20 border border-red-900/30 p-6 rounded-2xl text-center text-sm font-medium max-w-md mx-auto">
               {t('connectionError')}
             </div>
           ) : weather && (
-            <>
+            <div className="animate-slideup">
               {activeTab === 'dashboard' && <DashboardView weather={weather} cityName={cityName} />}
               {activeTab === 'radar' && <RadarView />}
               {activeTab === 'ai' && <AetherChat weather={weather} cityName={cityName} />}
               {activeTab === 'charts' && <ChartsView weather={weather} />}
               {activeTab === 'history' && <HistoryView />}
               {activeTab === 'stations' && <StationsView weather={weather} />}
-            </>
+            </div>
           )}
         </div>
       </main>
 
-      <footer className="relative z-10 mt-auto pb-12 text-center text-[10px] opacity-20 tracking-[0.5em] font-bold uppercase">
+      <footer className="relative z-10 mt-auto pb-8 pt-4 text-center text-xs text-zinc-600 font-medium tracking-widest uppercase">
         {t('footer')}
       </footer>
     </div>

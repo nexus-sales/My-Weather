@@ -18,7 +18,7 @@ export default function PressureWidget({ pressure, title }: PressureWidgetProps)
   const angle = (progress * 240) - 120;
 
   return (
-    <WidgetWrapper title={title} icon={<Gauge size={14} className="text-meteorix-blue" />}>
+    <WidgetWrapper title={title} icon={<Gauge size={14} className="text-blue-400" />}>
       <div className="relative flex flex-col items-center justify-center w-full h-full">
         <div className="relative w-36 h-36 flex items-center justify-center">
           {/* Professional Barometer Face */}
@@ -79,7 +79,7 @@ export default function PressureWidget({ pressure, title }: PressureWidgetProps)
           >
             <div className="relative w-full h-full flex items-center justify-center">
               {/* Pointer */}
-              <div className="absolute top-[15%] w-[1.5px] h-[35%] bg-gradient-to-t from-meteorix-blue to-white shadow-[0_0_10px_rgba(0,212,255,0.5)] rounded-full" />
+              <div className="absolute top-[15%] w-[1.5px] h-[35%] bg-gradient-to-t from-blue-400 to-white shadow-sm rounded-full" />
               {/* Balance part */}
               <div className="absolute bottom-[40%] w-[1px] h-[10%] bg-white opacity-20" />
             </div>
@@ -87,12 +87,12 @@ export default function PressureWidget({ pressure, title }: PressureWidgetProps)
 
           {/* Hub Cap */}
           <div className="absolute w-4 h-4 rounded-full bg-[#030b1a] border border-white/20 shadow-xl flex items-center justify-center">
-            <div className="w-1 h-1 rounded-full bg-meteorix-blue animate-pulse" />
+            <div className="w-1 h-1 rounded-full bg-blue-400 animate-pulse" />
           </div>
 
           {/* Digital Readout Overlaid at bottom */}
           <div className="absolute bottom-6 flex flex-col items-center bg-black/40 backdrop-blur-sm px-2 py-0.5 rounded border border-white/5">
-            <span className="text-sm font-orbitron font-bold text-white drop-shadow-glow">
+            <span className="text-sm font-outfit font-bold text-white drop-shadow-glow">
               {pressure.toFixed(1)}
             </span>
           </div>

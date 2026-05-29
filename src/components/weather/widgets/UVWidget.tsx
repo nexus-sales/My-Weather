@@ -77,7 +77,7 @@ export default function UVWidget({ index, title }: UVWidgetProps) {
 
           {/* Central Digital Value */}
           <div className="absolute bottom-0 flex flex-col items-center">
-            <span className="text-4xl font-orbitron font-black text-white drop-shadow-glow leading-none">
+            <span className="text-4xl font-outfit font-black text-white drop-shadow-glow leading-none">
               {Math.round(index)}
             </span>
           </div>
@@ -90,21 +90,21 @@ export default function UVWidget({ index, title }: UVWidgetProps) {
              style={{ borderColor: `${status.color}40`, backgroundColor: `${status.color}10` }}
            >
              <ShieldAlert size={10} style={{ color: status.color }} />
-             <span className="text-[8px] font-orbitron uppercase tracking-widest" style={{ color: status.color }}>
+             <span className="text-[8px] font-outfit uppercase tracking-widest" style={{ color: status.color }}>
                {status.label}
              </span>
            </div>
            
             <div className="flex flex-col items-end">
              <span className="text-[6px] text-white/30 uppercase tracking-widest">Protección</span>
-             <span className="text-[9px] font-orbitron text-white/60 uppercase">{status.risk}</span>
+             <span className="text-[9px] font-outfit text-white/60 uppercase">{status.risk}</span>
            </div>
         </div>
 
         {/* Solar Radiation */}
         <div className="absolute top-2 right-2 flex flex-col items-end text-right pointer-events-none">
-          <span className="text-[6px] font-mono text-yellow-400/60 uppercase tracking-widest">Radiación Solar</span>
-          <span className="text-[10px] font-orbitron font-bold text-yellow-400">
+          <span className="text-[6px] font-inter text-xs text-yellow-400/60 uppercase tracking-widest">Radiación Solar</span>
+          <span className="text-[10px] font-outfit font-bold text-yellow-400">
             {Math.round(index * 80)} <span className="text-[6px] text-yellow-400/50">W/m²</span>
           </span>
         </div>

@@ -28,8 +28,9 @@ export default function DashboardView({ weather, cityName }: DashboardViewProps)
   const intensity = Math.min(1, weather.current.precip / 10 + 0.2);
 
   return (
-    <div className="space-y-8 animate-fadein">
+    <div className="flex flex-col gap-6 animate-fadein pb-8">
       <WeatherBackground condition={condition} intensity={intensity} />
+      
       {/* Quick Access Favorites */}
       <FavoritesBar />
 
@@ -39,53 +40,54 @@ export default function DashboardView({ weather, cityName }: DashboardViewProps)
       {/* Intelligence Strip */}
       <IntelligenceStrip data={intelligence} />
 
-      {/* Main Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        <div className="md:col-span-1 min-w-0">
+      {/* Bento Grid Layout */}
+      <div className="grid grid-cols-1 md:grid-cols-12 gap-6 auto-rows-min">
+        
+        {/* Hero Card: Current Weather */}
+        <div className="md:col-span-4 lg:col-span-3 min-w-0 h-full">
           <CurrentWeatherCard weather={weather.current} cityName={cityName} />
         </div>
-        <div className="md:col-span-1 lg:col-span-2 min-w-0">
+        
+        {/* Main Chart */}
+        <div className="md:col-span-8 lg:col-span-9 min-w-0 h-full">
           <HourlyChart data={weather.hourly} />
         </div>
-      </div>
 
-      {/* Advanced Telemetry Widgets */}
-      <div className="space-y-6">
-        <div className="flex items-center gap-4 pl-1">
-          <div className="flex items-center gap-2">
-             <div className="w-1.5 h-1.5 bg-meteorix-blue animate-ping rounded-full" />
-             <h2 className="text-[12px] font-orbitron font-black tracking-[0.5em] text-white/80 uppercase">
+        {/* Telemetry Widgets (Span full width inside their own grid) */}
+        <div className="col-span-1 md:col-span-12">
+          <div className="flex items-center gap-3 mb-4 pl-1">
+             <div className="w-2 h-2 bg-blue-400 rounded-full" />
+             <h2 className="text-sm font-medium tracking-widest text-zinc-400 uppercase font-outfit">
                {t('telemetryTitle')}
              </h2>
           </div>
-          <div className="flex-1 h-[1px] bg-gradient-to-r from-meteorix-blue/40 to-transparent" />
-          <div className="hidden md:flex gap-1">
-             {[...Array(4)].map((_, i) => (
-               <div key={i} className="w-4 h-1 bg-white/5 rounded-full" />
-             ))}
-          </div>
+          <WidgetGrid weather={weather} />
         </div>
-        <WidgetGrid weather={weather} />
+
+        {/* 7-Day Forecast */}
+        <div className="col-span-1 md:col-span-12 lg:col-span-8 min-w-0">
+          <Forecast7Days daily={weather.daily} hourly={weather.hourly} />
+        </div>
+
+        {/* Model Comparison */}
+        <div className="col-span-1 md:col-span-12 lg:col-span-4 min-w-0">
+          <ModelComparison lat={coords.lat} lon={coords.lon} ecmwfData={weather} />
+        </div>
+
       </div>
-
-      {/* Advanced Model Comparison */}
-      <ModelComparison lat={coords.lat} lon={coords.lon} ecmwfData={weather} />
-
-      {/* 7-Day Forecast */}
-      <Forecast7Days daily={weather.daily} hourly={weather.hourly} />
       
-      {/* HUD Footer (Dashboard Specific) */}
-      <div className="pt-8 border-t border-white/5 flex flex-wrap gap-x-8 gap-y-4 justify-center md:justify-start">
+      {/* Clean HUD Footer */}
+      <div className="pt-8 mt-4 border-t border-white/5 flex flex-wrap gap-x-6 gap-y-3 justify-center md:justify-start">
         <div className="flex items-center gap-2">
-          <div className="w-1.5 h-1.5 rounded-full bg-meteorix-green animate-pulse" />
-          <span className="text-[8px] font-orbitron tracking-[0.2em] text-white/30 uppercase">{t('satelliteStable')}</span>
+          <div className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+          <span className="text-[10px] font-medium tracking-wider text-zinc-500 uppercase">{t('satelliteStable')}</span>
         </div>
         <div className="flex items-center gap-2">
-          <div className="w-1.5 h-1.5 rounded-full bg-meteorix-blue" />
-          <span className="text-[8px] font-orbitron tracking-[0.2em] text-white/30 uppercase">{t('model')}</span>
+          <div className="w-1.5 h-1.5 rounded-full bg-blue-400" />
+          <span className="text-[10px] font-medium tracking-wider text-zinc-500 uppercase">{t('model')}</span>
         </div>
         <div className="flex items-center gap-2">
-          <span className="text-[8px] font-orbitron tracking-[0.2em] text-white/30 uppercase">{t('lastSync', { time: new Date(weather.current.time).toLocaleTimeString() })}</span>
+          <span className="text-[10px] font-medium tracking-wider text-zinc-500 uppercase">{t('lastSync', { time: new Date(weather.current.time).toLocaleTimeString() })}</span>
         </div>
       </div>
     </div>

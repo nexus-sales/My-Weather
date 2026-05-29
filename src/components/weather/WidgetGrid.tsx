@@ -20,6 +20,8 @@ import MarineWidget from './widgets/MarineWidget';
 import SurfWidget from './widgets/SurfWidget';
 import DewPointWidget from './widgets/DewPointWidget';
 import StormRiskWidget from './widgets/StormRiskWidget';
+import SolarEnergyWidget from './widgets/SolarEnergyWidget';
+import PhotographyWidget from './widgets/PhotographyWidget';
 import { useIntelligence } from '@/hooks/useIntelligence';
 
 interface WidgetGridProps {
@@ -31,14 +33,14 @@ export default function WidgetGrid({ weather }: WidgetGridProps) {
   const intelligence = useIntelligence(weather);
 
   return (
-    <div className="flex flex-col gap-8">
+    <div className="flex flex-col gap-10">
       {/* Group 1: Primary Telemetry */}
       <section className="space-y-4">
-        <div className="flex items-center gap-2 opacity-40 pl-1">
-          <div className="w-1 h-3 bg-meteorix-blue rounded-full" />
-          <h4 className="text-[9px] font-orbitron font-black tracking-[0.3em] uppercase">Primary Telemetry / Surface</h4>
+        <div className="flex items-center gap-2 pl-2">
+          <div className="w-1.5 h-1.5 bg-blue-400 rounded-full" />
+          <h4 className="text-[11px] font-outfit font-semibold tracking-widest text-zinc-400 uppercase">Primary Telemetry / Surface</h4>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <WindWidget speed={weather.current.windSpeed} direction={weather.current.windDir} title={t('wind')} />
           <SunWidget sunrise={weather.daily.sunrise[0]} sunset={weather.daily.sunset[0]} currentTime={weather.current.time} title={`${t('sunrise')} / ${t('sunset')}`} />
           <RainWidget amount={weather.current.precip} title={t('precipitation')} />
@@ -48,11 +50,11 @@ export default function WidgetGrid({ weather }: WidgetGridProps) {
 
       {/* Group 2: Atmospheric Physics */}
       <section className="space-y-4">
-        <div className="flex items-center gap-2 opacity-40 pl-1">
-          <div className="w-1 h-3 bg-meteorix-orange rounded-full" />
-          <h4 className="text-[9px] font-orbitron font-black tracking-[0.3em] uppercase">Atmospheric Physics / Static</h4>
+        <div className="flex items-center gap-2 pl-2">
+          <div className="w-1.5 h-1.5 bg-indigo-400 rounded-full" />
+          <h4 className="text-[11px] font-outfit font-semibold tracking-widest text-zinc-400 uppercase">Atmospheric Physics / Static</h4>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <PressureWidget pressure={weather.current.pressure} title={t('pressure')} />
           <HumidityWidget humidity={weather.current.humidity} temp={weather.current.temp} title={t('humidity')} />
           <VisibilityWidget visibility={weather.current.visibility} title={t('visibility') || 'Visibilidad'} />
@@ -62,9 +64,9 @@ export default function WidgetGrid({ weather }: WidgetGridProps) {
 
       {/* Group 3: Environmental Intelligence */}
       <section className="space-y-4">
-        <div className="flex items-center gap-2 opacity-40 pl-1">
-          <div className="w-1 h-3 bg-meteorix-green rounded-full" />
-          <h4 className="text-[9px] font-orbitron font-black tracking-[0.3em] uppercase">Environmental Intelligence / Bio-Risk</h4>
+        <div className="flex items-center gap-2 pl-2">
+          <div className="w-1.5 h-1.5 bg-emerald-400 rounded-full" />
+          <h4 className="text-[11px] font-outfit font-semibold tracking-widest text-zinc-400 uppercase">Environmental Intelligence / Bio-Risk</h4>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <CloudWidget coverage={weather.current.cloudCover} title="Cobertura Nubosa" />
@@ -76,9 +78,9 @@ export default function WidgetGrid({ weather }: WidgetGridProps) {
 
       {/* Group 4: Advanced Metrics & Climate */}
       <section className="space-y-4">
-        <div className="flex items-center gap-2 opacity-40 pl-1">
-          <div className="w-1 h-3 bg-meteorix-blue rounded-full" />
-          <h4 className="text-[9px] font-orbitron font-black tracking-[0.3em] uppercase">Specialized Metrics / Climate Monitoring</h4>
+        <div className="flex items-center gap-2 pl-2">
+          <div className="w-1.5 h-1.5 bg-violet-400 rounded-full" />
+          <h4 className="text-[11px] font-outfit font-semibold tracking-widest text-zinc-400 uppercase">Specialized Metrics / Climate Monitoring</h4>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <DewPointWidget temp={weather.current.temp} humidity={weather.current.humidity} title="Punto de Rocío" />
@@ -91,6 +93,8 @@ export default function WidgetGrid({ weather }: WidgetGridProps) {
             windDir={weather.current.windDir} 
             title="Surf Quality" 
           />
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <StormRiskWidget 
             risk={intelligence.storms.risk} 
             cape={intelligence.storms.cape} 
@@ -100,7 +104,19 @@ export default function WidgetGrid({ weather }: WidgetGridProps) {
         </div>
       </section>
 
-      {/* Group 5: Base Console */}
+      {/* Group 5: Lifestyle & Energy (NEW) */}
+      <section className="space-y-4">
+        <div className="flex items-center gap-2 pl-2">
+          <div className="w-1.5 h-1.5 bg-amber-400 rounded-full" />
+          <h4 className="text-[11px] font-outfit font-semibold tracking-widest text-zinc-400 uppercase">Lifestyle & Energy</h4>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <SolarEnergyWidget cloudCover={weather.current.cloudCover} uvIndex={weather.current.uvIndex} sunrise={weather.daily.sunrise[0]} sunset={weather.daily.sunset[0]} />
+          <PhotographyWidget sunrise={weather.daily.sunrise[0]} sunset={weather.daily.sunset[0]} />
+        </div>
+      </section>
+
+      {/* Group 6: Base Console */}
       <section className="mt-4">
         <StationConsoleWidget outdoorTemp={weather.current.temp} outdoorHum={weather.current.humidity} />
       </section>

@@ -33,7 +33,7 @@ export default function SunWidget({ sunrise, sunset, currentTime, title }: SunWi
   const isNight = now < start || now > end;
 
   return (
-    <WidgetWrapper title={title} icon={isNight ? <Moon size={14} /> : <CloudSun size={14} className="text-meteorix-orange animate-pulse" />}>
+    <WidgetWrapper title={title} icon={isNight ? <Moon size={14} /> : <CloudSun size={14} className="text-orange-400 animate-pulse" />}>
       <div className="relative w-full h-full flex flex-col items-center">
         {/* Sky Telemetry Arc */}
         <div className="relative w-full h-28 mt-1">
@@ -41,8 +41,8 @@ export default function SunWidget({ sunrise, sunset, currentTime, title }: SunWi
             <defs>
               {/* Day Sky Gradient */}
               <linearGradient id="sky-gradient" x1="0%" y1="100%" x2="0%" y2="0%">
-                <stop offset="0%" stopColor="rgba(0, 212, 255, 0)" />
-                <stop offset="100%" stopColor="rgba(0, 212, 255, 0.05)" />
+                <stop offset="0%" stopColor="rgba(96, 165, 250, 0)" />
+                <stop offset="100%" stopColor="rgba(96, 165, 250, 0.05)" />
               </linearGradient>
               {/* Sun Glow */}
               <radialGradient id="sun-glow-pro">
@@ -95,7 +95,7 @@ export default function SunWidget({ sunrise, sunset, currentTime, title }: SunWi
                 <circle r="3.5" fill="#ff8c35" stroke="white" strokeWidth="0.5" strokeOpacity="0.5" />
               </g>
             ) : (
-              <circle cx="50" cy={centerY + 10} r="2" fill="#00d4ff" opacity="0.2" />
+              <circle cx="50" cy={centerY + 10} r="2" fill="#60a5fa" opacity="0.2" />
             )}
 
             <defs>
@@ -110,24 +110,24 @@ export default function SunWidget({ sunrise, sunset, currentTime, title }: SunWi
           {/* Precision Labels */}
           <div className="absolute top-[88%] left-[10%] -translate-x-1/2 flex flex-col items-center">
             <span className="text-[6px] text-white/20 uppercase">Amanecer</span>
-            <span className="text-[9px] font-mono text-white/40">{dSunrise.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+            <span className="text-[9px] font-inter text-xs text-white/40">{dSunrise.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
           </div>
           <div className="absolute top-[88%] right-[10%] translate-x-1/2 flex flex-col items-center">
             <span className="text-[6px] text-white/20 uppercase">Ocaso</span>
-            <span className="text-[9px] font-mono text-white/40">{dSunset.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+            <span className="text-[9px] font-inter text-xs text-white/40">{dSunset.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
           </div>
         </div>
 
         {/* Telemetry Footer */}
         <div className="mt-3 w-full flex items-center justify-between px-4">
            <div className="flex flex-col">
-             <span className="text-[10px] font-orbitron text-white/80 leading-none">
+             <span className="text-[10px] font-outfit text-white/80 leading-none">
                {isNight ? 'NOCHE' : `${Math.round(currentProgress * 100)}% DIA`}
              </span>
              <span className="text-[6px] text-white/20 uppercase tracking-widest mt-1">Status Solar</span>
            </div>
            <div className="flex flex-col items-end">
-             <span className="text-[10px] font-mono text-meteorix-orange">
+             <span className="text-[10px] font-inter text-xs text-orange-400">
                {dNow.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
              </span>
              <span className="text-[6px] text-white/20 uppercase tracking-widest mt-1">Reloj Local</span>
