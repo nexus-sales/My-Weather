@@ -22,6 +22,8 @@ import DewPointWidget from './widgets/DewPointWidget';
 import StormRiskWidget from './widgets/StormRiskWidget';
 import SolarEnergyWidget from './widgets/SolarEnergyWidget';
 import PhotographyWidget from './widgets/PhotographyWidget';
+import ThermalComfortWidget from './widgets/ThermalComfortWidget';
+import StargazingWidget from './widgets/StargazingWidget';
 import { useIntelligence } from '@/hooks/useIntelligence';
 
 interface WidgetGridProps {
@@ -104,7 +106,7 @@ export default function WidgetGrid({ weather }: WidgetGridProps) {
         </div>
       </section>
 
-      {/* Group 5: Lifestyle & Energy (NEW) */}
+      {/* Group 5: Lifestyle & Energy */}
       <section className="space-y-4">
         <div className="flex items-center gap-2 pl-2">
           <div className="w-1.5 h-1.5 bg-amber-400 rounded-full" />
@@ -113,6 +115,8 @@ export default function WidgetGrid({ weather }: WidgetGridProps) {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <SolarEnergyWidget cloudCover={weather.current.cloudCover} uvIndex={weather.current.uvIndex} sunrise={weather.daily.sunrise[0]} sunset={weather.daily.sunset[0]} />
           <PhotographyWidget sunrise={weather.daily.sunrise[0]} sunset={weather.daily.sunset[0]} />
+          <ThermalComfortWidget temp={weather.current.temp} humidity={weather.current.humidity} windSpeed={weather.current.windSpeed} />
+          <StargazingWidget cloudCover={weather.current.cloudCover} moonPhase={intelligence.lunar.phase} moonPhaseName={intelligence.lunar.phaseKey} rain={weather.current.precip} />
         </div>
       </section>
 
