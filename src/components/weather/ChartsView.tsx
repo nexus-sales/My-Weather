@@ -34,12 +34,12 @@ export default function ChartsView({ weather }: ChartsViewProps) {
 
   return (
     <div className="space-y-8 animate-fadein">
-      <div className="flex flex-col gap-2">
-        <h2 className="text-xl font-bold font-orbitron tracking-widest text-white uppercase flex items-center gap-3">
-          <BarChart3 className="text-meteorix-blue" />
+      <div className="flex flex-col gap-2 pl-2">
+        <h2 className="text-2xl font-bold font-outfit tracking-tight text-white flex items-center gap-3">
+          <BarChart3 className="text-blue-400" size={22} />
           {t('title')}
         </h2>
-        <p className="text-xs text-white/40 tracking-wider">{t('subtitle')}</p>
+        <p className="text-xs text-zinc-400 font-inter">{t('subtitle')}</p>
       </div>
 
       <div className="grid grid-cols-1 gap-6">
@@ -50,8 +50,8 @@ export default function ChartsView({ weather }: ChartsViewProps) {
           data={chartData}
           dataKey1="temp"
           dataKey2="cloud"
-          color1="#00d4ff"
-          color2="#6366f1"
+          color1="#3b82f6"
+          color2="#818cf8"
           label1={t('temp')}
           label2={t('cloud')}
           unit1="°C"
@@ -64,7 +64,7 @@ export default function ChartsView({ weather }: ChartsViewProps) {
           icon={<Droplets size={16} />}
           data={chartData}
           dataKey1="precip"
-          color1="#4d7fff"
+          color1="#60a5fa"
           label1={t('precip')}
           unit1="%"
         />
@@ -89,38 +89,39 @@ interface ChartCardProps {
 
 function ChartCard({ title, icon, data, dataKey1, dataKey2, color1, color2, label1, label2, unit1, unit2 }: ChartCardProps) {
   return (
-    <div className="meteorix-card rounded-3xl p-6">
+    <div className="glass-panel p-6">
       <div className="flex items-center gap-3 mb-6">
-        <div className="p-2 rounded-lg bg-meteorix-blue/10 text-meteorix-blue border border-meteorix-blue/20">
+        <div className="p-2 rounded-xl bg-white/5 text-zinc-300 border border-white/5">
           {icon}
         </div>
-        <h3 className="text-[10px] font-bold tracking-[0.2em] text-white/70 uppercase font-orbitron">{title}</h3>
+        <h3 className="text-[10px] font-outfit font-semibold tracking-widest text-zinc-400 uppercase">{title}</h3>
       </div>
       
-      <div className="h-auto min-h-[250px] w-full">
-        <ResponsiveContainer width="100%" height="100%" aspect={2.5}>
+      <div className="h-auto min-h-[280px] w-full">
+        <ResponsiveContainer width="100%" height={280}>
           <AreaChart data={data}>
             <defs>
               <linearGradient id={`grad-${dataKey1}`} x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor={color1} stopOpacity={0.2} />
+                <stop offset="5%" stopColor={color1} stopOpacity={0.25} />
                 <stop offset="95%" stopColor={color1} stopOpacity={0} />
               </linearGradient>
               {dataKey2 && color2 && (
                 <linearGradient id={`grad-${dataKey2}`} x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor={color2} stopOpacity={0.1} />
+                  <stop offset="5%" stopColor={color2} stopOpacity={0.15} />
                   <stop offset="95%" stopColor={color2} stopOpacity={0} />
                 </linearGradient>
               )}
             </defs>
-            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.05)" />
-            <XAxis dataKey="time" axisLine={false} tickLine={false} tick={{ fill: 'rgba(255,255,255,0.3)', fontSize: 9 }} interval={5} />
-            <YAxis axisLine={false} tickLine={false} tick={{ fill: 'rgba(255,255,255,0.3)', fontSize: 9 }} />
+            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.03)" />
+            <XAxis dataKey="time" axisLine={false} tickLine={false} tick={{ fill: 'rgba(255,255,255,0.3)', fontSize: 9, fontFamily: 'var(--font-inter)' }} interval={4} />
+            <YAxis axisLine={false} tickLine={false} tick={{ fill: 'rgba(255,255,255,0.3)', fontSize: 9, fontFamily: 'var(--font-inter)' }} />
             <Tooltip 
-              contentStyle={{ backgroundColor: '#040d22', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px' }}
-              itemStyle={{ fontSize: '10px', fontFamily: 'Orbitron' }}
+              contentStyle={{ backgroundColor: 'rgba(20, 20, 25, 0.95)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '16px', backdropFilter: 'blur(16px)' }}
+              itemStyle={{ fontSize: '10px', fontFamily: 'var(--font-inter)', color: '#fafafa' }}
+              labelStyle={{ fontSize: '9px', fontFamily: 'var(--font-outfit)', color: '#a1a1aa', textTransform: 'uppercase', letterSpacing: '0.05em' }}
             />
             <Area type="monotone" dataKey={dataKey1} stroke={color1} fill={`url(#grad-${dataKey1})`} strokeWidth={2} />
-            {dataKey2 && color2 && <Area type="monotone" dataKey={dataKey2} stroke={color2} fill={`url(#grad-${dataKey2})`} strokeWidth={1} strokeDasharray="5 5" />}
+            {dataKey2 && color2 && <Area type="monotone" dataKey={dataKey2} stroke={color2} fill={`url(#grad-${dataKey2})`} strokeWidth={1.5} strokeDasharray="4 4" />}
           </AreaChart>
         </ResponsiveContainer>
       </div>

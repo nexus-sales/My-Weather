@@ -25,24 +25,24 @@ export default function HistoryView() {
 
   return (
     <div className="space-y-8 animate-fadein">
-      <div className="flex flex-col gap-2">
-        <h2 className="text-xl font-bold font-orbitron tracking-widest text-white uppercase flex items-center gap-3">
-          <History className="text-meteorix-blue" />
+      <div className="flex flex-col gap-2 pl-2">
+        <h2 className="text-2xl font-bold font-outfit tracking-tight text-white flex items-center gap-3">
+          <History className="text-blue-400" size={22} />
           {t('title')}
         </h2>
-        <p className="text-xs text-white/40 tracking-wider">{t('subtitle')}</p>
+        <p className="text-xs text-zinc-400 font-inter">{t('subtitle')}</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {data?.daily.time.map((date, i) => (
-          <div key={date} className="meteorix-card rounded-2xl p-6 transition-all group">
-            <div className="text-[10px] font-bold text-white/50 uppercase mb-4 tracking-widest border-b border-white/10 pb-2">
+          <div key={date} className="glass-panel p-6 transition-all group">
+            <div className="text-[10px] font-outfit font-semibold text-zinc-400 uppercase mb-4 tracking-widest border-b border-white/5 pb-2">
               {new Date(date).toLocaleDateString([], { weekday: 'long', day: 'numeric', month: 'short' })}
             </div>
             <div className="space-y-4">
-               <HistoryRow icon={<Thermometer size={12} />} label={t('maxMin')} value={`${data.daily.tempMax[i]}° / ${data.daily.tempMin[i]}°`} color="text-white" />
-               <HistoryRow icon={<Droplets size={12} />} label={t('rain')} value={`${data.daily.precipSum[i]} mm`} color="text-meteorix-blue" />
-               <HistoryRow icon={<Wind size={12} />} label={t('wind')} value={`${Math.round(data.daily.windMax[i])} km/h`} color="text-white/40" />
+               <HistoryRow icon={<Thermometer size={12} />} label={t('maxMin')} value={`${data.daily.tempMax[i]}° / ${data.daily.tempMin[i]}°`} color="text-white font-medium" />
+               <HistoryRow icon={<Droplets size={12} />} label={t('rain')} value={`${data.daily.precipSum[i]} mm`} color="text-blue-400 font-medium" />
+               <HistoryRow icon={<Wind size={12} />} label={t('wind')} value={`${Math.round(data.daily.windMax[i])} km/h`} color="text-zinc-300" />
             </div>
           </div>
         ))}
@@ -62,10 +62,10 @@ function HistoryRow({ icon, label, value, color }: HistoryRowProps) {
   return (
     <div className="flex items-center justify-between">
       <div className="flex items-center gap-2">
-        <div className="text-white/20">{icon}</div>
-        <span className="text-[9px] uppercase tracking-tighter text-white/40 font-bold">{label}</span>
+        <div className="text-zinc-500">{icon}</div>
+        <span className="text-[9px] uppercase tracking-wider text-zinc-400 font-medium font-inter">{label}</span>
       </div>
-      <span className={`text-[11px] font-bold font-orbitron ${color}`}>{value}</span>
+      <span className={`text-[11px] font-outfit ${color}`}>{value}</span>
     </div>
   );
 }
