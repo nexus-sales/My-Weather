@@ -5,9 +5,11 @@ import WidgetWrapper from './WidgetWrapper';
 
 interface AQIWidgetProps {
   aqiValue?: number; // Optional AQI, fallback to random if missing for demo
+  dataQuality?: 'observed' | 'estimated' | 'static';
+  source?: string;
 }
 
-export default function AQIWidget({ aqiValue = 42 }: AQIWidgetProps) {
+export default function AQIWidget({ aqiValue = 42, dataQuality, source }: AQIWidgetProps) {
   let status = 'BUENA';
   let color = '#00ff88';
   let message = 'Partículas PM2.5/PM10 en niveles bajos';
@@ -29,7 +31,7 @@ export default function AQIWidget({ aqiValue = 42 }: AQIWidgetProps) {
   }
 
   return (
-    <WidgetWrapper title="Calidad Aire / Calima" icon={<Wind size={14} style={{ color }} />}>
+    <WidgetWrapper title="Calidad Aire / Calima" icon={<Wind size={14} style={{ color }} />} dataQuality={dataQuality} source={source}>
       <div className="relative w-full h-full flex flex-col p-2 overflow-hidden">
         
         {/* Animated Dust Particles (CSS) */}
@@ -39,10 +41,10 @@ export default function AQIWidget({ aqiValue = 42 }: AQIWidgetProps) {
                key={i}
                className="absolute w-1 h-1 rounded-full bg-orange-200/50 blur-[1px]"
                style={{
-                 left: `${Math.random() * 100}%`,
-                 top: `${Math.random() * 100}%`,
-                 animation: `float ${3 + Math.random() * 4}s linear infinite`,
-                 animationDelay: `-${Math.random() * 5}s`
+                 left: `${((i * 17) % 10) * 10}%`,
+                 top: `${((i * 13) % 10) * 10}%`,
+                 animation: `float ${3 + ((i * 7) % 5)}s linear infinite`,
+                 animationDelay: `-${((i * 3) % 6)}s`
                }}
              />
            ))}

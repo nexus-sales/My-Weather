@@ -1,6 +1,6 @@
 'use client';
 
-import { ThermometerSnowflake, Droplets } from 'lucide-react';
+import { ThermometerSnowflake } from 'lucide-react';
 import WidgetWrapper from './WidgetWrapper';
 
 interface DewPointWidgetProps {

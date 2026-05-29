@@ -4,12 +4,21 @@ import { useEffect, useState } from 'react';
 import { Satellite, Navigation, Sparkles } from 'lucide-react';
 import WidgetWrapper from './WidgetWrapper';
 
-export default function SpaceWeatherWidget() {
+interface SpaceWeatherWidgetProps {
+  dataQuality?: 'observed' | 'estimated' | 'static';
+  source?: string;
+}
+
+export default function SpaceWeatherWidget({ dataQuality, source }: SpaceWeatherWidgetProps) {
   // Compute client-side only to prevent SSR/hydration mismatch
   const [dayHash, setDayHash] = useState(0);
   useEffect(() => {
     const now = new Date();
-    setDayHash(now.getDate() + now.getHours());
+    const hash = now.getDate() + now.getHours();
+    const t = setTimeout(() => {
+      setDayHash(hash);
+    }, 0);
+    return () => clearTimeout(t);
   }, []);
 
   const kpIndex = (dayHash % 7) + 1;
@@ -35,7 +44,7 @@ export default function SpaceWeatherWidget() {
   }
 
   return (
-    <WidgetWrapper title="Clima Espacial (NOAA)" icon={<Satellite size={14} style={{ color }} />}>
+    <WidgetWrapper title="Clima Espacial (NOAA)" icon={<Satellite size={14} style={{ color }} />} dataQuality={dataQuality} source={source}>
       <div className="w-full h-full flex flex-col justify-between p-2">
         <div className="flex justify-between items-start">
            <div className="flex flex-col">

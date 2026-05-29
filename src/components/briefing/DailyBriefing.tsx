@@ -24,8 +24,6 @@ export default function DailyBriefing({ weather, cityName }: DailyBriefingProps)
     
     const isRainy = precip > 0.5;
     const isHot = temp > 30;
-    const isCold = temp < 10;
-
     // 1. Sport Score (Ideal: 15-22°C, no rain, low wind)
     let sport = 100;
     if (precip > 0) sport -= precip * 15;

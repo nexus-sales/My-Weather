@@ -13,14 +13,19 @@ const FETCH_HEADERS = {
   'Accept': 'application/json, image/*, */*',
 };
 
+type AemetMeta = {
+  datos?: string;
+  [key: string]: unknown;
+};
+
 /** AEMET returns ISO-8859-15; .json() silently mangles accented chars. */
-const parseAemet = async (res: Response): Promise<any> => {
+const parseAemet = async <T = unknown>(res: Response): Promise<T> => {
   const ct = res.headers.get('content-type') ?? '';
   const charsetMatch = ct.match(/charset=([^\s;,]+)/i);
   const charset = charsetMatch ? charsetMatch[1] : 'utf-8';
   const buf = await res.arrayBuffer();
   const text = new TextDecoder(charset).decode(buf);
-  return JSON.parse(text);
+  return JSON.parse(text) as T;
 };
 
 /**
@@ -31,12 +36,12 @@ const parseAemet = async (res: Response): Promise<any> => {
 const fetchAemetPath = async (
   path: string,
   apiKey: string
-): Promise<{ json: any; datosUrl: string | null; isBinary: boolean } | null> => {
+): Promise<{ json: unknown; datosUrl: string | null; isBinary: boolean } | null> => {
   const url = `${AEMET_BASE}/${path}?api_key=${apiKey}`;
   const metaRes = await fetch(url, { headers: FETCH_HEADERS, next: { revalidate: 600 } });
   if (!metaRes.ok) return null;
 
-  const meta = await parseAemet(metaRes);
+  const meta = await parseAemet<AemetMeta>(metaRes);
   if (!meta.datos) return { json: meta, datosUrl: null, isBinary: false };
 
   const dataRes = await fetch(meta.datos, { headers: FETCH_HEADERS, next: { revalidate: 600 } });

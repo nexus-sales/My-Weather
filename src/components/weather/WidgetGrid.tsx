@@ -72,8 +72,8 @@ export default function WidgetGrid({ weather }: WidgetGridProps) {
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <CloudWidget coverage={weather.current.cloudCover} title="Cobertura Nubosa" />
-          <AQIWidget aqiValue={intelligence.air.aqi} />
-          <SpaceWeatherWidget />
+          <AQIWidget aqiValue={intelligence.air.aqi} dataQuality={intelligence.air.source === 'Open-Meteo Air Quality' ? 'observed' : 'estimated'} source={intelligence.air.source} />
+          <SpaceWeatherWidget dataQuality="estimated" source="Indicador local hasta conectar NOAA/SWPC" />
           <DroneFlightWidget windSpeed={weather.current.windSpeed} visibility={weather.current.visibility} rain={weather.current.precip} />
         </div>
       </section>
@@ -86,8 +86,8 @@ export default function WidgetGrid({ weather }: WidgetGridProps) {
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <DewPointWidget temp={weather.current.temp} humidity={weather.current.humidity} title="Punto de Rocío" />
-          <ClimateAnomalyWidget anomaly={intelligence.climate?.anomaly ?? 0} baseline={intelligence.climate?.baseline ?? 0} title="Registro Histórico" />
-          <MarineWidget waveHeight={intelligence.marine.waveHeight} period={intelligence.marine.period} tideTrend={intelligence.marine.tideTrend} temp={intelligence.marine.temp} title="Estado del Mar" />
+          <ClimateAnomalyWidget anomaly={intelligence.climate?.anomaly ?? 0} baseline={intelligence.climate?.baseline ?? 0} title="Registro Histórico" dataQuality={intelligence.climate ? 'observed' : 'estimated'} source={intelligence.climate ? 'Open-Meteo Archive' : 'Sin histórico disponible'} />
+          <MarineWidget waveHeight={intelligence.marine.waveHeight} period={intelligence.marine.period} tideTrend={intelligence.marine.tideTrend} temp={intelligence.marine.temp} title="Estado del Mar" dataQuality={intelligence.marine.source === 'Open-Meteo Marine' ? 'observed' : 'estimated'} source={intelligence.marine.source} />
           <SurfWidget 
             waveHeight={intelligence.marine.waveHeight} 
             period={intelligence.marine.period} 
@@ -102,6 +102,8 @@ export default function WidgetGrid({ weather }: WidgetGridProps) {
             cape={intelligence.storms.cape} 
             liftedIndex={intelligence.storms.liftedIndex} 
             rifts={intelligence.storms.rifts} 
+            dataQuality="estimated"
+            source="Índice heurístico con meteorología actual"
           />
         </div>
       </section>

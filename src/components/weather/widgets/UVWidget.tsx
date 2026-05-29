@@ -18,8 +18,6 @@ export default function UVWidget({ index, title }: UVWidgetProps) {
   };
 
   const status = getUVStatus(index);
-  const progress = (index / 11) * 100;
-
   return (
     <WidgetWrapper title={title} icon={<Zap size={14} style={{ color: status.color }} className="animate-pulse" />}>
       <div className="relative flex flex-col items-center justify-center w-full h-full">

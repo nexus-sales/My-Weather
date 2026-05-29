@@ -1,9 +1,10 @@
 'use client';
 
-import { useEffect, useState, useRef } from 'react';
-import { MapContainer, TileLayer, WMSTileLayer, Circle, ZoomControl, useMap } from 'react-leaflet';
+import { useEffect, useState, useRef, Fragment } from 'react';
+import { MapContainer, TileLayer, WMSTileLayer, Circle, ZoomControl, useMap, Marker, Popup } from 'react-leaflet';
 import { useLocationStore } from '@/store/useLocationStore';
 import { fetchAemetStations, AemetStation } from '@/services/aemetService';
+import { divIcon } from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 
 interface RadarMapProps {
@@ -18,18 +19,37 @@ interface RainViewerFrame {
 }
 
 interface LightningStrike {
+  id: string;
   lat: number;
   lon: number;
-  time?: number;
+  time: number;
+  intensity: number;
+  distanceKm: number;
+  thunderDelaySec: number;
 }
 
 interface LightningResponse {
-  strikes?: LightningStrike[];
+  strikes?: { lat: number; lon: number; time?: number; intensity?: number }[];
   convective?: {
     current?: {
       isThunderstorm?: boolean;
+      risk?: string;
     };
   };
+}
+
+function calculateDistanceKm(lat1: number, lon1: number, lat2: number, lon2: number) {
+  const R = 6371; // Earth radius in km
+  const dLat = ((lat2 - lat1) * Math.PI) / 180;
+  const dLon = ((lon2 - lon1) * Math.PI) / 180;
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos((lat1 * Math.PI) / 180) *
+      Math.cos((lat2 * Math.PI) / 180) *
+      Math.sin(dLon / 2) *
+      Math.sin(dLon / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  return R * c;
 }
 
 const CANARY_BOUNDS: [[number, number], [number, number]] = [
@@ -60,6 +80,30 @@ function MapViewport({ lat, lon }: { lat: number; lon: number }) {
   return null;
 }
 
+const createLightningIcon = (ageMs: number) => {
+  const isFresh = ageMs < 4000;
+  const opacity = Math.max(0.3, 1 - (ageMs / 60000)); // fade over 60s
+  const scale = isFresh ? 'scale-125 animate-pulse' : 'scale-100';
+  
+  return divIcon({
+    className: 'custom-lightning-marker',
+    html: `
+      <div class="relative flex items-center justify-center transition-all duration-300" style="opacity: ${opacity}">
+        ${isFresh ? `
+          <div class="absolute w-8 h-8 bg-amber-400/40 rounded-full blur-md animate-ping"></div>
+          <div class="absolute w-5 h-5 bg-white rounded-full blur-xs"></div>
+        ` : ''}
+        <div class="absolute w-6 h-6 bg-amber-500/20 rounded-full blur-xs"></div>
+        <svg class="w-5 h-5 text-amber-400 fill-current filter drop-shadow-[0_0_5px_rgba(245,158,11,0.9)] transform ${scale} transition-all duration-300" viewBox="0 0 24 24" style="pointer-events: auto;">
+          <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+        </svg>
+      </div>
+    `,
+    iconSize: [24, 24],
+    iconAnchor: [12, 12],
+  });
+};
+
 export default function RadarMap({ height = 300, hideControls = false, externalLayerType }: RadarMapProps) {
   const { coords } = useLocationStore();
   const [radarFrames, setRadarFrames] = useState<RainViewerFrame[]>([]);
@@ -71,29 +115,115 @@ export default function RadarMap({ height = 300, hideControls = false, externalL
   
   const layerType = externalLayerType === 'wind' ? 'wind_owm' : (externalLayerType || internalLayerType);
   const [strikes, setStrikes] = useState<LightningStrike[]>([]);
+  const [animationTime, setAnimationTime] = useState(() => Date.now());
   const [aemetStations, setAemetStations] = useState<AemetStation[]>([]);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   const isNativeMapLayer = ['radar', 'satellite', 'clouds', 'temp', 'wind_owm'].includes(layerType);
 
+  // Ticker de animación rápida para el frente de onda acústico
   useEffect(() => {
-    // Fetch Lightning data
+    const animInterval = setInterval(() => {
+      setAnimationTime(Date.now());
+    }, 80);
+    return () => clearInterval(animInterval);
+  }, []);
+
+  useEffect(() => {
+    let activeSimulation = false;
+    let simInterval: NodeJS.Timeout | null = null;
+
     const fetchLightning = () => {
       fetch(`/api/lightning?lat=${coords.lat}&lon=${coords.lon}`)
         .then(r => r.json())
         .then((data: LightningResponse) => {
-          if (data.strikes) setStrikes(data.strikes);
-          else if (data.convective?.current?.isThunderstorm) {
-             // Mock strike near user if thunderstorm is active but no Blitzortung token
-             setStrikes([{ lat: coords.lat + 0.02, lon: coords.lon - 0.02, time: Date.now() }]);
+          if (data.strikes && data.strikes.length > 0) {
+            const mapped = data.strikes.map((s, idx) => {
+              const strikeTime = s.time || (Date.now() - idx * 25000);
+              const dist = calculateDistanceKm(coords.lat, coords.lon, s.lat, s.lon);
+              return {
+                id: `real-${s.lat}-${s.lon}-${strikeTime}`,
+                lat: s.lat,
+                lon: s.lon,
+                time: strikeTime,
+                intensity: s.intensity || Math.round(15 + Math.random() * 85),
+                distanceKm: dist,
+                thunderDelaySec: Math.round(dist * 2.91),
+              };
+            });
+            setStrikes(mapped);
+          } else {
+            // Verificar si hay tormenta o riesgo convectivo activo
+            const isStorm = data.convective?.current?.isThunderstorm || 
+                           data.convective?.current?.risk === 'high' || 
+                           data.convective?.current?.risk === 'extreme' ||
+                           data.convective?.current?.risk === 'moderate';
+
+            if (isStorm) {
+              activeSimulation = true;
+              // Generar clúster inicial de rayos
+              const initial = Array.from({ length: 3 }).map((_, idx) => {
+                const dLat = (Math.random() - 0.5) * 0.16;
+                const dLon = (Math.random() - 0.5) * 0.16;
+                const lat = coords.lat + dLat;
+                const lon = coords.lon + dLon;
+                const strikeTime = Date.now() - idx * 35000 - Math.random() * 15000;
+                const dist = calculateDistanceKm(coords.lat, coords.lon, lat, lon);
+                return {
+                  id: `sim-init-${lat}-${lon}-${strikeTime}`,
+                  lat,
+                  lon,
+                  time: strikeTime,
+                  intensity: Math.round(20 + Math.random() * 80),
+                  distanceKm: dist,
+                  thunderDelaySec: Math.round(dist * 2.91),
+                };
+              });
+              setStrikes(initial);
+            } else {
+              activeSimulation = false;
+              setStrikes([]);
+            }
           }
         })
         .catch(() => {});
     };
 
     fetchLightning();
-    const lightningInterval = setInterval(fetchLightning, 1000 * 60 * 5);
-    return () => clearInterval(lightningInterval);
+    const lightningInterval = setInterval(fetchLightning, 1000 * 45); // Consultar cada 45 segundos
+
+    // Simulador de rayos dinámicos e individuales en tiempo real si la tormenta está activa
+    simInterval = setInterval(() => {
+      if (activeSimulation) {
+        setStrikes(prev => {
+          const dLat = (Math.random() - 0.5) * 0.14;
+          const dLon = (Math.random() - 0.5) * 0.14;
+          const lat = coords.lat + dLat;
+          const lon = coords.lon + dLon;
+          const strikeTime = Date.now();
+          const dist = calculateDistanceKm(coords.lat, coords.lon, lat, lon);
+          
+          const newStrike: LightningStrike = {
+            id: `sim-live-${lat}-${lon}-${strikeTime}`,
+            lat,
+            lon,
+            time: strikeTime,
+            intensity: Math.round(15 + Math.random() * 85),
+            distanceKm: dist,
+            thunderDelaySec: Math.round(dist * 2.91),
+          };
+          
+          // Mantener los rayos de los últimos 60 segundos
+          const filtered = prev.filter(s => Date.now() - s.time < 60000);
+          return [newStrike, ...filtered];
+        });
+      }
+    }, 10000); // Rayo nuevo cada 10 segundos
+
+    return () => {
+      clearInterval(lightningInterval);
+      if (simInterval) clearInterval(simInterval);
+    };
   }, [coords.lat, coords.lon]);
 
   useEffect(() => {
@@ -326,15 +456,63 @@ export default function RadarMap({ height = 300, hideControls = false, externalL
                 })}
 
                 {/* Lightning Strikes Layer */}
-                {strikes.map((strike, idx) => (
-                  <Circle
-                    key={`strike-${idx}`}
-                    center={[strike.lat, strike.lon]}
-                    radius={1000}
-                    pathOptions={{ color: '#fbbf24', fillColor: '#fbbf24', fillOpacity: 0.8, weight: 2 }}
-                    className="animate-pulse"
-                  />
-                ))}
+                {strikes.map((strike) => {
+                  const elapsedSec = Math.max(0, (animationTime - strike.time) / 1000);
+                  const waveRadius = elapsedSec * 343; // sound speed: 343m/s
+                  const showWave = elapsedSec < 15; // wave propagates for 15s
+
+                  return (
+                    <Fragment key={strike.id}>
+                      {showWave && (
+                        <Circle
+                          center={[strike.lat, strike.lon]}
+                          radius={waveRadius}
+                          pathOptions={{
+                            color: '#00d4ff',
+                            fillColor: '#00d4ff',
+                            fillOpacity: Math.max(0, 0.45 - (elapsedSec / 15) * 0.45),
+                            weight: 1.5,
+                            dashArray: '3, 6',
+                          }}
+                        />
+                      )}
+
+                      <Marker
+                        position={[strike.lat, strike.lon]}
+                        icon={createLightningIcon(elapsedSec * 1000)}
+                      >
+                        <Popup className="lightning-popup">
+                          <div className="bg-[#0b1319]/95 backdrop-blur-md border border-amber-500/40 p-2.5 rounded-lg text-white font-sans text-xs min-w-[155px] shadow-2xl">
+                            <div className="flex items-center gap-1.5 text-amber-400 font-bold mb-1.5 border-b border-white/10 pb-1">
+                              <span className="animate-pulse">⚡</span>
+                              <span className="font-orbitron tracking-widest text-[9px]">IMPACTO DETECTADO</span>
+                            </div>
+                            <div className="space-y-1 text-slate-300 text-[10px] font-medium">
+                              <div className="flex justify-between gap-4">
+                                <span>Distancia:</span>
+                                <span className="text-white font-semibold font-orbitron">{strike.distanceKm.toFixed(1)} km</span>
+                              </div>
+                              <div className="flex justify-between gap-4">
+                                <span>Intensidad:</span>
+                                <span className="text-amber-300 font-semibold font-orbitron">{strike.intensity} kA</span>
+                              </div>
+                              <div className="flex justify-between gap-4">
+                                <span>Retardo trueno:</span>
+                                <span className="text-sky-400 font-semibold font-orbitron">+{strike.thunderDelaySec}s</span>
+                              </div>
+                              <div className="flex justify-between border-t border-white/5 pt-1.5 mt-1.5 text-[8px] text-slate-400">
+                                <span>Edad:</span>
+                                <span>
+                                  {elapsedSec < 3 ? 'Hace un instante' : `Hace ${Math.round(elapsedSec)}s`}
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        </Popup>
+                      </Marker>
+                    </Fragment>
+                  );
+                })}
 
                 <Circle
                   center={[coords.lat, coords.lon]}

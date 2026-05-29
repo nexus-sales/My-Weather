@@ -3,7 +3,7 @@
 import React from 'react';
 import { WeatherData } from '@/services/weatherService';
 import { useTranslations } from 'next-intl';
-import { BarChart3, Cloud, Droplets, Wind } from 'lucide-react';
+import { BarChart3, Cloud, Droplets } from 'lucide-react';
 import {
   Area,
   AreaChart,
@@ -17,6 +17,13 @@ import {
 interface ChartsViewProps {
   weather: WeatherData;
 }
+
+type ChartPoint = {
+  time: string;
+  temp: number;
+  cloud: number;
+  precip: number;
+};
 
 export default function ChartsView({ weather }: ChartsViewProps) {
   const t = useTranslations('Charts');
@@ -76,7 +83,7 @@ export default function ChartsView({ weather }: ChartsViewProps) {
 interface ChartCardProps {
   title: string;
   icon: React.ReactNode;
-  data: any[];
+  data: ChartPoint[];
   dataKey1: string;
   dataKey2?: string;
   color1: string;
@@ -120,8 +127,8 @@ function ChartCard({ title, icon, data, dataKey1, dataKey2, color1, color2, labe
               itemStyle={{ fontSize: '10px', fontFamily: 'var(--font-inter)', color: '#fafafa' }}
               labelStyle={{ fontSize: '9px', fontFamily: 'var(--font-outfit)', color: '#a1a1aa', textTransform: 'uppercase', letterSpacing: '0.05em' }}
             />
-            <Area type="monotone" dataKey={dataKey1} stroke={color1} fill={`url(#grad-${dataKey1})`} strokeWidth={2} />
-            {dataKey2 && color2 && <Area type="monotone" dataKey={dataKey2} stroke={color2} fill={`url(#grad-${dataKey2})`} strokeWidth={1.5} strokeDasharray="4 4" />}
+            <Area type="monotone" dataKey={dataKey1} name={label1} unit={unit1} stroke={color1} fill={`url(#grad-${dataKey1})`} strokeWidth={2} />
+            {dataKey2 && color2 && <Area type="monotone" dataKey={dataKey2} name={label2} unit={unit2} stroke={color2} fill={`url(#grad-${dataKey2})`} strokeWidth={1.5} strokeDasharray="4 4" />}
           </AreaChart>
         </ResponsiveContainer>
       </div>

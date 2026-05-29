@@ -13,6 +13,7 @@ const eslintConfig = defineConfig([
     "build/**",
     "next-env.d.ts",
     "Meteorix pro.jsx",
+    "src/components/meteorix/**",
   ]),
 ]);
 

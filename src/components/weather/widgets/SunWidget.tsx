@@ -1,6 +1,6 @@
 'use client';
 
-import { Sun, Moon, CloudSun } from 'lucide-react';
+import { Moon, CloudSun } from 'lucide-react';
 import WidgetWrapper from './WidgetWrapper';
 
 interface SunWidgetProps {

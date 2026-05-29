@@ -60,7 +60,10 @@ export default function HourlyChart({ data }: HourlyChartProps) {
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
-    setIsMounted(true);
+    const t = setTimeout(() => {
+      setIsMounted(true);
+    }, 0);
+    return () => clearTimeout(t);
   }, []);
 
   const chartData = data.time?.slice(0, 24).map((time, i) => {

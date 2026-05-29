@@ -26,6 +26,7 @@ export interface IntelligenceData {
     pm10: number;
     pm25: number;
     status: string;
+    source: string;
   };
   marine: {
     waveHeight: number;
@@ -156,7 +157,7 @@ export const useIntelligence = (weather: WeatherData | undefined): IntelligenceD
   const today = new Date();
   const dateKey = `${today.getFullYear()}-${today.getMonth()}-${today.getDate()}-${today.getHours()}`;
 
-  return useMemo(() => {
+  {
     // Use the stable dateKey instead of new Date() inside the memo
     const lunarDate = new Date();
     const lunar = getLunarData(lunarDate, locale);
@@ -165,7 +166,7 @@ export const useIntelligence = (weather: WeatherData | undefined): IntelligenceD
       return {
         alerts: { count: 0, level: 'none', details: [] },
         storms: { risk: 0, cape: 0, liftedIndex: 0, maxGusts: 0, rifts: locale === 'en' ? 'No risk' : 'Sin riesgo' },
-        air: { aqi: 0, pm10: 0, pm25: 0, status: locale === 'en' ? 'Loading' : 'Cargando' },
+        air: { aqi: 0, pm10: 0, pm25: 0, status: locale === 'en' ? 'Loading' : 'Cargando', source: 'N/A' },
         marine: { waveHeight: 0, period: 0, temp: 0, seaLevel: 0, tideTrend: 'steady', source: 'Open-Meteo Marine' },
         lunar,
         aemet: { capabilities: [] },
@@ -248,6 +249,7 @@ export const useIntelligence = (weather: WeatherData | undefined): IntelligenceD
         status: airQuality 
           ? (airQuality.aqi < 50 ? (locale === 'en' ? 'Excellent' : 'Excelente') : (locale === 'en' ? 'Moderate' : 'Moderado'))
           : (locale === 'en' ? 'Excellent' : 'Excelente'),
+        source: airQuality ? 'Open-Meteo Air Quality' : locale === 'en' ? 'Local estimate' : 'Estimacion local',
       },
       marine: {
         waveHeight: marineData?.waveHeight ?? (isWindy ? 2.4 : 0.8),
@@ -290,5 +292,5 @@ export const useIntelligence = (weather: WeatherData | undefined): IntelligenceD
         baseline: climateData
       } : undefined
     };
-  }, [weather, aemetAlerts, aemetRadar, aemetStations, aemetCoastal, marineData, metEireannData, airQuality, climateData, isIreland, isSpain, isLoadingAemet, isLoadingMarine, isLoadingMetEireann, isLoadingRadar, isLoadingStations, isLoadingCoastal, isLoadingAir, isLoadingClimate, locale, coords.lat, coords.lon, nearestStation, dateKey]);
+  }
 };

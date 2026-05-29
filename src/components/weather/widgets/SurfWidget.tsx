@@ -95,7 +95,7 @@ export default function SurfWidget({ waveHeight, period, windSpeed, windDir, tit
               <span className="text-[10px] font-inter text-xs text-white/80">{energy}kJ</span>
            </div>
            <div className="flex flex-col text-right">
-              <span className="text-[6px] font-outfit text-white/40 uppercase">Viento</span>
+              <span className="text-[6px] font-outfit text-white/40 uppercase">Viento {Math.round(windDir)}°</span>
               <span className="text-[10px] font-inter text-xs text-white/80">{windSpeed.toFixed(0)}km/h</span>
            </div>
         </div>

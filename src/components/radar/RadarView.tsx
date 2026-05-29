@@ -1,7 +1,6 @@
 'use client';
 
 import { useTranslations } from 'next-intl';
-import { useLocationStore } from '@/store/useLocationStore';
 import { useUIStore } from '@/store/useUIStore';
 import { Cloud, CloudRain, Maximize2, Satellite, Thermometer, Wind } from 'lucide-react';
 import dynamic from 'next/dynamic';
@@ -28,11 +27,7 @@ const radarModes = [
 
 export default function RadarView() {
   const t = useTranslations('Radar');
-  const { coords } = useLocationStore();
   const { radarLayer, setRadarLayer } = useUIStore();
-
-  // Map the generic store state to the RadarMap specific types
-  const activeLayer = radarLayer as any;
 
   return (
     <div className="w-full flex flex-col gap-6 animate-fadein h-full min-h-[600px]">
@@ -64,7 +59,7 @@ export default function RadarView() {
         <RadarMap 
           height="100%" 
           hideControls={true} 
-          externalLayerType={radarLayer}
+          externalLayerType={radarLayer as 'wind' | 'radar' | 'isobars' | 'satellite' | 'clouds' | 'temp' | 'wind_owm'}
         />
       </div>
     </div>

@@ -14,18 +14,24 @@ export default function StationConsoleWidget({ outdoorTemp, outdoorHum }: Statio
   const indoorTemp = parseFloat((outdoorTemp * 0.3 + 18).toFixed(1));
   const indoorHum = Math.min(65, Math.max(30, outdoorHum - 10));
 
-  // Battery and Solar — stable values derived from hour, not Math.random()
-  const { voltage, batteryLevel, levelLabel } = useMemo(() => {
+  // Battery and Solar — stable values derived from hour
+  const { voltage, batteryLevel } = useMemo(() => {
     const hour = new Date().getHours();
     const isSunny = hour >= 8 && hour <= 20;
     const solarFactor = isSunny ? Math.sin(((hour - 8) / 12) * Math.PI) : 0;
     const v = isSunny ? (4.0 + solarFactor * 0.2).toFixed(1) : '3.8';
     const bat = Math.round(Math.min(100, 85 + solarFactor * 15));
-    return { voltage: v, batteryLevel: bat, levelLabel: `${bat}%` };
+    return { voltage: v, batteryLevel: bat };
   }, []);
 
   return (
-    <WidgetWrapper title="Consola Base / Interior TFT" icon={<Cpu size={14} className="text-blue-400" />} className="h-auto pb-4">
+    <WidgetWrapper
+      title="Consola de Estación"
+      icon={<Cpu size={14} className="text-blue-400" />}
+      className="h-auto pb-4"
+      dataQuality="estimated"
+      source="Valores interiores derivados hasta conectar una estación física"
+    >
       <div className="w-full flex flex-col md:flex-row items-center justify-between gap-6 px-4">
         
         {/* Indoor Sensors */}
@@ -57,7 +63,7 @@ export default function StationConsoleWidget({ outdoorTemp, outdoorHum }: Statio
              {/* Bubble */}
              <div className="w-6 h-6 bg-[#00ff88] rounded-full shadow-sm opacity-90" />
            </div>
-           <span className="text-[10px] font-inter text-xs text-[#00ff88] uppercase mt-3 tracking-widest bg-[#00ff88]/10 px-3 py-1 rounded-full border border-[#00ff88]/20">Instalación {(99.8 + Math.random() * 0.2).toFixed(1)}% Nivelada</span>
+           <span className="text-[10px] font-inter text-xs text-[#00ff88] uppercase mt-3 tracking-widest bg-[#00ff88]/10 px-3 py-1 rounded-full border border-[#00ff88]/20">Instalación {(99.8 + (outdoorHum % 3) * 0.1).toFixed(1)}% Nivelada</span>
         </div>
 
         {/* Right section: Solar Panel & Battery */}

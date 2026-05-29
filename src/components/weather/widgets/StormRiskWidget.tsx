@@ -1,6 +1,6 @@
 'use client';
 
-import { Zap, Activity, ShieldAlert } from 'lucide-react';
+import { Zap, ShieldAlert } from 'lucide-react';
 import WidgetWrapper from './WidgetWrapper';
 
 interface StormRiskWidgetProps {
@@ -8,15 +8,17 @@ interface StormRiskWidgetProps {
   cape: number;
   liftedIndex: number;
   rifts: string;
+  dataQuality?: 'observed' | 'estimated' | 'static';
+  source?: string;
 }
 
-export default function StormRiskWidget({ risk, cape, liftedIndex, rifts }: StormRiskWidgetProps) {
+export default function StormRiskWidget({ risk, cape, liftedIndex, rifts, dataQuality, source }: StormRiskWidgetProps) {
   // Color based on risk level
   const color = risk > 70 ? '#ff3e3e' : risk > 40 ? '#fbbf24' : '#00ff88';
   const isHighRisk = risk > 60;
 
   return (
-    <WidgetWrapper title="Riesgo de Tormenta / Convección" icon={<Zap size={14} style={{ color }} className={isHighRisk ? 'animate-bounce' : ''} />}>
+    <WidgetWrapper title="Riesgo de Tormenta / Convección" icon={<Zap size={14} style={{ color }} className={isHighRisk ? 'animate-bounce' : ''} />} dataQuality={dataQuality} source={source}>
       <div className="w-full h-full flex flex-col justify-between p-2">
         <div className="flex items-center justify-between">
           <div className="flex flex-col">

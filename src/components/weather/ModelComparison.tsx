@@ -4,7 +4,7 @@ import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { fetchDWDData } from '@/services/dwdService';
 import { WeatherData } from '@/services/weatherService';
-import { Layers, CheckCircle2, AlertCircle, Info } from 'lucide-react';
+import { Layers, Info } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 
 interface ModelComparisonProps {

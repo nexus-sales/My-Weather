@@ -11,7 +11,7 @@ export async function GET() {
       radar: data.radar.past,
       satellite: data.satellite.past
     });
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: 'Failed to fetch RainViewer data' }, { status: 500 });
   }
 }

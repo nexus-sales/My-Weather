@@ -4,7 +4,7 @@ import React from 'react';
 import { useTranslations } from 'next-intl';
 import { useIntelligence } from '@/hooks/useIntelligence';
 import { WeatherData } from '@/services/weatherService';
-import { Satellite, MapPin, Radio, Activity } from 'lucide-react';
+import { Satellite, Radio, Activity } from 'lucide-react';
 
 interface StationsViewProps {
   weather: WeatherData;

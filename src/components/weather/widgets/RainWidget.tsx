@@ -27,8 +27,8 @@ export default function RainWidget({ amount, title }: RainWidgetProps) {
                   className="absolute w-[1px] h-3 bg-blue-400/40 animate-fall"
                   style={{ 
                     left: `${i * 25}%`, 
-                    animationDuration: `${0.5 + Math.random()}s`,
-                    animationDelay: `${Math.random()}s` 
+                    animationDuration: `${0.5 + ((i * 13) % 7) / 10}s`,
+                    animationDelay: `${((i * 19) % 11) / 10}s` 
                   }}
                 />
               ))}

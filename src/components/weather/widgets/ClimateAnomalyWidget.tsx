@@ -7,15 +7,17 @@ interface ClimateAnomalyWidgetProps {
   anomaly: number;
   baseline: number;
   title: string;
+  dataQuality?: 'observed' | 'estimated' | 'static';
+  source?: string;
 }
 
-export default function ClimateAnomalyWidget({ anomaly, baseline, title }: ClimateAnomalyWidgetProps) {
+export default function ClimateAnomalyWidget({ anomaly, baseline, title, dataQuality, source }: ClimateAnomalyWidgetProps) {
   const isWarmer = anomaly > 0;
   const color = isWarmer ? '#ff3e3e' : '#60a5fa';
   const Icon = isWarmer ? TrendingUp : TrendingDown;
 
   return (
-    <WidgetWrapper title={title} icon={<History size={14} className="text-white/70" />}>
+    <WidgetWrapper title={title} icon={<History size={14} className="text-white/70" />} dataQuality={dataQuality} source={source}>
       <div className="w-full h-full flex flex-col justify-between p-2">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center relative overflow-hidden">

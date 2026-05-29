@@ -130,7 +130,7 @@ export async function GET(request: NextRequest) {
       strikes: strikes.status === 'fulfilled' ? strikes.value : null,
       blitzortungActive: !!process.env.BLITZORTUNG_TOKEN,
     });
-  } catch (error) {
+  } catch {
     // Audit-safe error logging (don't log the full error object which might contain request info)
     console.error('Lightning API: Fetch error');
     return NextResponse.json({ error: 'Lightning API error' }, { status: 502 });

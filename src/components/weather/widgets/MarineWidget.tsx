@@ -9,15 +9,16 @@ interface MarineWidgetProps {
   tideTrend: 'rising' | 'falling' | 'steady';
   temp: number;
   title: string;
+  dataQuality?: 'observed' | 'estimated' | 'static';
+  source?: string;
 }
 
-export default function MarineWidget({ waveHeight, period, tideTrend, temp, title }: MarineWidgetProps) {
+export default function MarineWidget({ waveHeight, period, tideTrend, temp, title, dataQuality, source }: MarineWidgetProps) {
   const TrendIcon = tideTrend === 'rising' ? ArrowUpRight : tideTrend === 'falling' ? ArrowDownRight : Anchor;
   const trendLabel = tideTrend === 'rising' ? 'Subiendo' : tideTrend === 'falling' ? 'Bajando' : 'Estable';
-  const color = '#0ea5e9'; // Marine Blue
 
   return (
-    <WidgetWrapper title={title} icon={<Waves size={14} className="text-sky-400" />}>
+    <WidgetWrapper title={title} icon={<Waves size={14} className="text-sky-400" />} dataQuality={dataQuality} source={source}>
       <div className="w-full h-full flex flex-col justify-between p-2">
         <div className="flex justify-between items-start">
            <div className="flex flex-col">
@@ -51,7 +52,7 @@ export default function MarineWidget({ waveHeight, period, tideTrend, temp, titl
                   className="absolute bottom-0 w-1 bg-sky-400/30" 
                   style={{ 
                     left: `${i * 25}%`, 
-                    height: `${40 + Math.random() * 60}%`,
+                    height: `${40 + ((i * 17) % 61)}%`,
                     animation: `wave-bounce ${2 + i}s infinite alternate ease-in-out` 
                   }} 
                 />

@@ -17,7 +17,6 @@ export default function WeatherBackground({ condition, intensity }: WeatherBackg
     if (!ctx) return;
 
     let animationFrameId: number;
-    let particles: any[] = [];
 
     const resize = () => {
       canvas.width = window.innerWidth;
@@ -72,6 +71,8 @@ export default function WeatherBackground({ condition, intensity }: WeatherBackg
         ctx.fill();
       }
     }
+
+    let particles: Particle[] = [];
 
     const init = () => {
       particles = [];

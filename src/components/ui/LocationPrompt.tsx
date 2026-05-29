@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { MapPin, ShieldAlert, Navigation2, X } from 'lucide-react';
+import { MapPin, Navigation2, X } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useLocationStore } from '@/store/useLocationStore';
 import { getCityFromCoords } from '@/services/geoService';
@@ -13,6 +13,8 @@ export default function LocationPrompt() {
   const { setCoords, setCityName } = useLocationStore();
 
   useEffect(() => {
+    let timer: NodeJS.Timeout | null = null;
+    
     // Check if permission was already granted or denied
     if ('permissions' in navigator) {
       navigator.permissions.query({ name: 'geolocation' }).then((status) => {
@@ -29,18 +31,21 @@ export default function LocationPrompt() {
           );
         } else if (status.state === 'prompt') {
           // If it's the first time, wait a bit and show our custom prompt
-          const timer = setTimeout(() => setShow(true), 1500);
-          return () => clearTimeout(timer);
+          timer = setTimeout(() => setShow(true), 1500);
         }
       });
     } else {
       // Fallback for browsers without permissions API
       const hasAsked = localStorage.getItem('nexus-location-asked');
       if (!hasAsked) {
-        setShow(true);
+        timer = setTimeout(() => setShow(true), 0);
       }
     }
-  }, []);
+    
+    return () => {
+      if (timer) clearTimeout(timer);
+    };
+  }, [setCityName, setCoords]);
 
   const handleAllow = () => {
     setIsRequesting(true);
