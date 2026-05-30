@@ -30,6 +30,8 @@ export interface AemetStation {
   ubi: string;
   ta: number; // air temp
   vvm?: number; // wind speed
+  vv?: number; // wind speed as returned by AEMET observations
+  vmax?: number; // max wind speed
   dv?: number; // wind dir
   hr?: number; // humidity
   pres?: number; // pressure
@@ -96,20 +98,34 @@ export const fetchAemetStations = async (): Promise<AemetStation[]> => {
     if (!Array.isArray(rawData)) return [];
 
     // Map and parse AEMET's weird coordinate format
-    return rawData.map((s: AemetStation) => ({
+    const stations = rawData.map((s: AemetStation) => ({
       idema: s.idema,
       lat: typeof s.lat === 'string' ? dmsToDecimal(s.lat) : s.lat,
       lon: typeof s.lon === 'string' ? dmsToDecimal(s.lon) : s.lon,
       alt: s.alt,
       ubi: s.ubi,
       ta: s.ta,
-      vvm: s.vvm,
+      vvm: s.vvm ?? s.vv,
+      vv: s.vv,
+      vmax: s.vmax,
       dv: s.dv,
       hr: s.hr,
       pres: s.pres,
       prec: s.prec,
       fint: s.fint
     }));
+
+    const latestByStation = new Map<string, AemetStation>();
+    stations.forEach((station) => {
+      if (!station.idema || !Number.isFinite(station.lat) || !Number.isFinite(station.lon)) return;
+
+      const current = latestByStation.get(station.idema);
+      if (!current || new Date(station.fint).getTime() > new Date(current.fint).getTime()) {
+        latestByStation.set(station.idema, station);
+      }
+    });
+
+    return [...latestByStation.values()];
   } catch {
     return [];
   }

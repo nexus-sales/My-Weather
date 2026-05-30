@@ -59,7 +59,7 @@ export default function RadarView() {
         <RadarMap 
           height="100%" 
           hideControls={true} 
-          externalLayerType={radarLayer as 'wind' | 'radar' | 'isobars' | 'satellite' | 'clouds' | 'temp' | 'wind_owm'}
+          externalLayerType={radarLayer}
         />
       </div>
     </div>

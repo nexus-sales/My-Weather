@@ -30,8 +30,8 @@
   "Radar": {
     "modes": {
       "rain": "Radar Precip.",
-      "wind": "Dinámica Viento",
-      "temp": "Mapa Térmico",
+      "wind": "Viento real",
+      "temp": "Mapa térmico",
       "clouds": "Nubosidad",
       "satellite": "Satélite HD"
     },
@@ -243,8 +243,10 @@
     "reference": "Estacion de Referencia",
     "syncing": "Sincronizando...",
     "outOfRange": "Fuera de Cobertura AEMET",
+    "noStations": "No hay estaciones cercanas disponibles.",
     "temp": "Temperatura",
     "wind": "Viento",
+    "rain": "Lluvia",
     "humidity": "Humedad",
     "pressure": "Presion",
     "lastObs": "Ultima Obs",

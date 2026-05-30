@@ -19,7 +19,7 @@ export async function GET(
   const url = `https://tile.openweathermap.org/map/${layer}/${z}/${x}/${y}.png?appid=${apiKey}`;
 
   try {
-    const res = await fetch(url);
+    const res = await fetch(url, { signal: AbortSignal.timeout(8000) });
     if (!res.ok) return new NextResponse('Tile fetch error', { status: res.status });
 
     const buffer = await res.arrayBuffer();

@@ -38,13 +38,13 @@ const fetchAemetPath = async (
   apiKey: string
 ): Promise<{ json: unknown; datosUrl: string | null; isBinary: boolean } | null> => {
   const url = `${AEMET_BASE}/${path}?api_key=${apiKey}`;
-  const metaRes = await fetch(url, { headers: FETCH_HEADERS, next: { revalidate: 600 } });
+  const metaRes = await fetch(url, { headers: FETCH_HEADERS, cache: 'no-store' });
   if (!metaRes.ok) return null;
 
   const meta = await parseAemet<AemetMeta>(metaRes);
   if (!meta.datos) return { json: meta, datosUrl: null, isBinary: false };
 
-  const dataRes = await fetch(meta.datos, { headers: FETCH_HEADERS, next: { revalidate: 600 } });
+  const dataRes = await fetch(meta.datos, { headers: FETCH_HEADERS, cache: 'no-store' });
   if (!dataRes.ok) return null;
 
   const dataCt = dataRes.headers.get('content-type') ?? '';

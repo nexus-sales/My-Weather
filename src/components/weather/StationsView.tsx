@@ -3,8 +3,10 @@
 import React from 'react';
 import { useTranslations } from 'next-intl';
 import { useIntelligence } from '@/hooks/useIntelligence';
+import { usePWSNearby } from '@/hooks/usePWS';
+import { useLocationStore } from '@/store/useLocationStore';
 import { WeatherData } from '@/services/weatherService';
-import { Satellite, Radio, Activity } from 'lucide-react';
+import { Satellite, Radio, Activity, MapPin, Gauge, Wifi } from 'lucide-react';
 
 interface StationsViewProps {
   weather: WeatherData;
@@ -12,8 +14,19 @@ interface StationsViewProps {
 
 export default function StationsView({ weather }: StationsViewProps) {
   const t = useTranslations('Stations');
+  const { coords } = useLocationStore();
   const intelligence = useIntelligence(weather);
   const { aemet } = intelligence;
+  const pwsNearby = usePWSNearby(8);
+  const nearbyAemetStations = React.useMemo(() => {
+    return [...(aemet.stations ?? [])]
+      .map((station) => ({
+        ...station,
+        distanceKm: distanceKm(coords.lat, coords.lon, station.lat, station.lon),
+      }))
+      .sort((a, b) => a.distanceKm - b.distanceKm)
+      .slice(0, 18);
+  }, [aemet.stations, coords.lat, coords.lon]);
 
   return (
     <div className="space-y-8 animate-fadein">
@@ -90,6 +103,65 @@ export default function StationsView({ weather }: StationsViewProps) {
             </div>
          </div>
       </div>
+
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
+        <StationListPanel
+          title="AEMET oficiales cercanas"
+          subtitle="Red oficial. Observaciones puntuales, no modelo interpolado."
+          icon={<Satellite size={16} />}
+          isLoading={intelligence.loadStates.stations}
+          emptyText={t('noStations')}
+        >
+          {nearbyAemetStations.map((station) => (
+            <StationRow
+              key={station.idema}
+              name={station.ubi}
+              source={`AEMET · ${station.idema}`}
+              distance={`${station.distanceKm.toFixed(1)} km`}
+              metrics={[
+                { label: t('temp'), value: formatNumber(station.ta, '°C') },
+                { label: t('wind'), value: formatWindFromMs(station.vvm) },
+                { label: 'Racha', value: formatWindFromMs(station.vmax) },
+                { label: t('humidity'), value: formatNumber(station.hr, '%') },
+                { label: t('pressure'), value: formatNumber(station.pres, ' hPa') },
+                { label: t('rain'), value: formatNumber(station.prec, ' mm') },
+                { label: 'Dir.', value: formatDirection(station.dv) },
+                { label: 'Alt.', value: formatNumber(station.alt, ' m') },
+              ]}
+              observedAt={station.fint}
+            />
+          ))}
+        </StationListPanel>
+
+        <StationListPanel
+          title="PWS Weather Underground"
+          subtitle="Estaciones personales cercanas cuando la API lo permite."
+          icon={<Wifi size={16} />}
+          isLoading={pwsNearby.isLoading}
+          errorText={pwsNearby.isError ? 'Weather Underground no ha devuelto estaciones cercanas. Revisa la clave o los permisos PWS.' : undefined}
+          emptyText="No hay PWS cercanas disponibles para esta zona."
+        >
+          {(pwsNearby.data ?? []).map((station) => (
+            <StationRow
+              key={station.stationID}
+              name={station.neighborhood || station.stationID}
+              source={`WU/PWS · ${station.stationID}`}
+              distance={`${distanceKm(coords.lat, coords.lon, station.lat, station.lon).toFixed(1)} km`}
+              metrics={[
+                { label: t('temp'), value: formatNumber(station.metric?.temp, '°C') },
+                { label: t('wind'), value: formatNumber(station.metric?.windSpeed, ' km/h') },
+                { label: 'Racha', value: formatNumber(station.metric?.windGust, ' km/h') },
+                { label: t('humidity'), value: formatNumber(station.humidity, '%') },
+                { label: t('pressure'), value: formatNumber(station.metric?.pressure, ' hPa') },
+                { label: t('rain'), value: formatNumber(station.metric?.precipRate, ' mm/h') },
+                { label: 'Dir.', value: formatDirection(station.winddir) },
+                { label: 'UV', value: formatNumber(station.uv, '') },
+              ]}
+              observedAt={station.obsTimeUtc}
+            />
+          ))}
+        </StationListPanel>
+      </div>
     </div>
   );
 }
@@ -101,4 +173,127 @@ function StationMetric({ label, value, color = 'text-white' }: { label: string; 
        <div className={`text-2xl font-bold font-outfit ${color}`}>{value}</div>
     </div>
   );
+}
+
+function StationListPanel({
+  title,
+  subtitle,
+  icon,
+  isLoading,
+  errorText,
+  emptyText,
+  children,
+}: {
+  title: string;
+  subtitle: string;
+  icon: React.ReactNode;
+  isLoading?: boolean;
+  errorText?: string;
+  emptyText: string;
+  children: React.ReactNode;
+}) {
+  const hasItems = React.Children.count(children) > 0;
+
+  return (
+    <div className="glass-panel p-6">
+      <div className="flex items-start justify-between gap-4 mb-5">
+        <div>
+          <h3 className="text-sm font-outfit font-semibold text-white uppercase tracking-widest flex items-center gap-2">
+            <span className="text-blue-400">{icon}</span>
+            {title}
+          </h3>
+          <p className="text-[10px] text-zinc-500 mt-1 font-inter">{subtitle}</p>
+        </div>
+        <Gauge size={16} className="text-zinc-600" />
+      </div>
+
+      {isLoading ? (
+        <div className="py-10 text-center text-[10px] uppercase tracking-widest text-zinc-500">Sincronizando estaciones...</div>
+      ) : errorText ? (
+        <div className="rounded-xl border border-amber-400/20 bg-amber-400/10 p-4 text-xs text-amber-100">{errorText}</div>
+      ) : hasItems ? (
+        <div className="divide-y divide-white/5 max-h-[620px] overflow-y-auto pr-2">{children}</div>
+      ) : (
+        <div className="rounded-xl border border-white/5 bg-white/[0.03] p-4 text-xs text-zinc-400">{emptyText}</div>
+      )}
+    </div>
+  );
+}
+
+function StationRow({
+  name,
+  source,
+  distance,
+  metrics,
+  observedAt,
+}: {
+  name: string;
+  source: string;
+  distance: string;
+  metrics: { label: string; value: string }[];
+  observedAt?: string;
+}) {
+  return (
+    <div className="py-4 first:pt-0 last:pb-0">
+      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
+        <div className="min-w-0">
+          <div className="text-sm font-semibold text-white truncate">{name}</div>
+          <div className="mt-1 flex items-center gap-2 text-[9px] uppercase tracking-widest text-zinc-500">
+            <MapPin size={11} />
+            <span>{source}</span>
+            <span className="text-zinc-700">/</span>
+            <span>{distance}</span>
+          </div>
+          {observedAt && (
+            <div className="mt-1 text-[9px] uppercase tracking-widest text-zinc-600">
+              Obs. {formatObservedTime(observedAt)}
+            </div>
+          )}
+        </div>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 min-w-[360px]">
+          {metrics.map((metric) => (
+            <div key={metric.label} className="rounded-lg bg-white/[0.04] border border-white/5 px-3 py-2">
+              <div className="text-[8px] uppercase tracking-widest text-zinc-500">{metric.label}</div>
+              <div className="text-xs font-bold text-zinc-100 mt-1">{metric.value}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function distanceKm(lat1: number, lon1: number, lat2: number, lon2: number) {
+  const radius = 6371;
+  const dLat = ((lat2 - lat1) * Math.PI) / 180;
+  const dLon = ((lon2 - lon1) * Math.PI) / 180;
+  const a =
+    Math.sin(dLat / 2) ** 2 +
+    Math.cos((lat1 * Math.PI) / 180) *
+      Math.cos((lat2 * Math.PI) / 180) *
+      Math.sin(dLon / 2) ** 2;
+  return radius * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+}
+
+function formatNumber(value: number | undefined | null, suffix: string) {
+  return typeof value === 'number' && Number.isFinite(value) ? `${Math.round(value * 10) / 10}${suffix}` : '--';
+}
+
+function formatWindFromMs(value: number | undefined | null) {
+  return typeof value === 'number' && Number.isFinite(value) ? `${Math.round(value * 3.6)} km/h` : '--';
+}
+
+function formatDirection(value: number | undefined | null) {
+  return typeof value === 'number' && Number.isFinite(value) ? `${Math.round(value)}°` : '--';
+}
+
+function formatObservedTime(value: string) {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return value;
+  return date.toLocaleString([], {
+    day: '2-digit',
+    month: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+  });
 }

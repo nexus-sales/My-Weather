@@ -30,7 +30,7 @@
   "Radar": {
     "modes": {
       "rain": "Precipitation",
-      "wind": "Wind",
+      "wind": "Observed wind",
       "temp": "Temperature",
       "clouds": "Clouds",
       "satellite": "Satellite"
@@ -241,8 +241,10 @@
     "reference": "Reference Station",
     "syncing": "Syncing...",
     "outOfRange": "Out of AEMET Coverage",
+    "noStations": "No nearby stations available.",
     "temp": "Temperature",
     "wind": "Wind",
+    "rain": "Rain",
     "humidity": "Humidity",
     "pressure": "Pressure",
     "lastObs": "Last Obs",
