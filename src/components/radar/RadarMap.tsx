@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState, useRef, Fragment } from 'react';
-import { MapContainer, TileLayer, Circle, ZoomControl, useMap, Marker, Popup } from 'react-leaflet';
+import { MapContainer, TileLayer, WMSTileLayer, Circle, ZoomControl, useMap, Marker, Popup } from 'react-leaflet';
 import { useLocationStore } from '@/store/useLocationStore';
 import { fetchAemetStations, AemetStation } from '@/services/aemetService';
 import { divIcon } from 'leaflet';
@@ -58,6 +58,7 @@ const CANARY_BOUNDS: [[number, number], [number, number]] = [
   [27.45, -18.45],
   [29.65, -13.05],
 ];
+const CANARY_CENTER: [number, number] = [28.35, -15.85];
 
 function isInCanaryArea(lat: number, lon: number) {
   return lat >= 27 && lat <= 30 && lon >= -19 && lon <= -12;
@@ -68,10 +69,8 @@ function MapViewport({ lat, lon }: { lat: number; lon: number }) {
 
   useEffect(() => {
     if (isInCanaryArea(lat, lon)) {
-      map.fitBounds(CANARY_BOUNDS, {
+      map.setView(CANARY_CENTER, 7, {
         animate: false,
-        padding: [34, 34],
-        maxZoom: 7,
       });
       return;
     }
@@ -241,7 +240,9 @@ export default function RadarMap({ height = 300, hideControls = false, externalL
 
   useEffect(() => {
     const controller = new AbortController();
-    const timeout = window.setTimeout(() => controller.abort(), 10000);
+    const timeout = window.setTimeout(() => {
+      controller.abort(new DOMException('RainViewer request timed out', 'AbortError'));
+    }, 10000);
 
     fetch('/api/rainviewer', { signal: controller.signal })
       .then(r => {
@@ -264,6 +265,7 @@ export default function RadarMap({ height = 300, hideControls = false, externalL
         }
       })
       .catch(err => {
+        if (err instanceof DOMException && err.name === 'AbortError') return;
         console.error('RainViewer error:', err);
         setTimelineStatus('error');
       });
@@ -279,12 +281,14 @@ export default function RadarMap({ height = 300, hideControls = false, externalL
 
     return () => {
       window.clearTimeout(timeout);
-      controller.abort();
+      if (!controller.signal.aborted) {
+        controller.abort(new DOMException('RadarMap unmounted', 'AbortError'));
+      }
     };
   }, []);
 
   useEffect(() => {
-    const frameCount = (layerType === 'satellite' || layerType === 'clouds') ? satelliteFrames.length : layerType === 'radar' ? radarFrames.length : 0;
+    const frameCount = layerType === 'radar' ? radarFrames.length : 0;
     if (isPlaying && frameCount > 0) {
       timerRef.current = setInterval(() => {
         setCurrentFrameIndex(prev => (prev + 1) % frameCount);
@@ -304,23 +308,30 @@ export default function RadarMap({ height = 300, hideControls = false, externalL
     }
 
     const controller = new AbortController();
-    const timeout = window.setTimeout(() => controller.abort(), 8000);
+    const timeout = window.setTimeout(() => {
+      controller.abort(new DOMException('OpenWeatherMap check timed out', 'AbortError'));
+    }, 8000);
     setOwmStatus('checking');
 
     fetch(`/api/owm?lat=${coords.lat}&lon=${coords.lon}&type=weather`, { signal: controller.signal })
       .then((res) => {
         setOwmStatus(res.ok ? 'ready' : 'error');
       })
-      .catch(() => setOwmStatus('error'))
+      .catch((err) => {
+        if (err instanceof DOMException && err.name === 'AbortError') return;
+        setOwmStatus('error');
+      })
       .finally(() => window.clearTimeout(timeout));
 
     return () => {
       window.clearTimeout(timeout);
-      controller.abort();
+      if (!controller.signal.aborted) {
+        controller.abort(new DOMException('RadarMap layer changed', 'AbortError'));
+      }
     };
   }, [coords.lat, coords.lon, layerType]);
 
-  const activeFrames = (layerType === 'satellite' || layerType === 'clouds') ? satelliteFrames : radarFrames;
+  const activeFrames = radarFrames;
   const displayedFrameIndex = activeFrames.length > 0 ? Math.min(currentFrameIndex, activeFrames.length - 1) : 0;
   const currentFrame = activeFrames[displayedFrameIndex];
   const timeString = currentFrame ? new Date(currentFrame.time * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '';
@@ -364,14 +375,14 @@ export default function RadarMap({ height = 300, hideControls = false, externalL
             </button>
           </div>
 
-        {((layerType === 'radar' || layerType === 'satellite' || layerType === 'clouds') && currentFrame) && (
+        {(layerType === 'radar' && currentFrame) && (
           <div className="bg-black/80 backdrop-blur-md border border-white/10 px-3 py-1.5 rounded-lg flex items-center gap-3 w-fit pointer-events-auto shadow-xl">
             <button onClick={() => setIsPlaying(!isPlaying)} className="text-meteorix-blue hover:text-white transition-colors">
               {isPlaying ? '⏸' : '▶'}
             </button>
             <div className="flex flex-col">
               <span className="text-[10px] font-orbitron font-bold text-white tracking-widest">{timeString}</span>
-              <span className="text-[6px] text-white/40 uppercase tracking-tighter">{layerType === 'radar' ? 'Radar LIVE Pro' : 'Nubes satélite LIVE'}</span>
+              <span className="text-[6px] text-white/40 uppercase tracking-tighter">Radar LIVE Pro</span>
             </div>
           </div>
         )}
@@ -395,10 +406,10 @@ export default function RadarMap({ height = 300, hideControls = false, externalL
                 <MapViewport lat={coords.lat} lon={coords.lon} />
 
                 {/* Base Map dynamic change */}
-                {(layerType === 'satellite' || layerType === 'clouds') ? (
+                {['satellite', 'clouds', 'temp', 'wind'].includes(layerType) ? (
                   <TileLayer
-                    url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
-                    attribution='&copy; Esri'
+                    url="https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png"
+                    subdomains="abcd"
                     maxZoom={12}
                   />
                 ) : (
@@ -420,47 +431,60 @@ export default function RadarMap({ height = 300, hideControls = false, externalL
                   />
                 )}
 
-                {currentFrame && (layerType === 'satellite' || layerType === 'clouds') && (
-                  <TileLayer
-                    key={`sat-clouds-${currentFrame.time}`}
-                    url={`${host}${currentFrame.path}/256/{z}/{x}/{y}/2/1_1.png`}
-                    opacity={layerType === 'clouds' ? 0.9 : 0.85}
+                {layerType === 'satellite' && (
+                  <WMSTileLayer
+                    url="/api/eumetsat/wms"
+                    layers="msg_fes:rgb_natural"
+                    format="image/png"
+                    transparent={true}
+                    opacity={1}
                     zIndex={20}
                     maxZoom={12}
-                    maxNativeZoom={7}
+                  />
+                )}
+
+                {layerType === 'clouds' && (
+                  <WMSTileLayer
+                    url="/api/eumetsat/wms"
+                    layers="mtg_fd:rgb_cloudphase"
+                    format="image/png"
+                    transparent={true}
+                    opacity={1}
+                    zIndex={20}
+                    maxZoom={12}
                   />
                 )}
 
                 {layerType === 'temp' && (
                   <TileLayer
                     url="/api/tiles/owm/temp_new/{z}/{x}/{y}"
-                    opacity={0.55}
+                    opacity={0.9}
                     zIndex={20}
                     maxZoom={12}
-                    maxNativeZoom={7}
+                    maxNativeZoom={10}
                   />
                 )}
 
                 {layerType === 'wind' && (
                   <TileLayer
                     url="/api/tiles/owm/wind_new/{z}/{x}/{y}"
-                    opacity={0.56}
+                    opacity={0.9}
                     zIndex={20}
                     maxZoom={12}
-                    maxNativeZoom={7}
+                    maxNativeZoom={10}
                   />
                 )}
 
                 {/* Keep labels readable over both satellite and analytic overlays. */}
                 <TileLayer
                   url={
-                    layerType === 'satellite' || layerType === 'clouds'
-                      ? 'https://{s}.basemaps.cartocdn.com/rastertiles/light_only_labels/{z}/{x}/{y}{r}.png'
+                    ['satellite', 'clouds', 'temp', 'wind'].includes(layerType)
+                      ? 'https://{s}.basemaps.cartocdn.com/dark_only_labels/{z}/{x}/{y}{r}.png'
                       : 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager_only_labels/{z}/{x}/{y}{r}.png'
                   }
                   subdomains="abcd"
                   zIndex={100}
-                  opacity={layerType === 'satellite' || layerType === 'clouds' ? 0.9 : 0.75}
+                  opacity={['satellite', 'clouds', 'temp', 'wind'].includes(layerType) ? 0.95 : 0.75}
                 />
 
                 {/* AEMET stations stay subtle so they do not masquerade as radar returns. */}
@@ -566,7 +590,7 @@ export default function RadarMap({ height = 300, hideControls = false, externalL
                 <ZoomControl position="bottomright" />
               </MapContainer>
 
-              {(layerType === 'radar' || layerType === 'satellite' || layerType === 'clouds') && timelineStatus !== 'ready' && (
+              {layerType === 'radar' && timelineStatus !== 'ready' && (
                 <div className="absolute inset-x-4 top-4 z-[1000] rounded-lg border border-amber-400/30 bg-black/80 px-4 py-3 text-xs text-amber-100 shadow-xl">
                   {timelineStatus === 'loading'
                     ? 'Cargando fotogramas meteorologicos reales...'
@@ -582,7 +606,7 @@ export default function RadarMap({ height = 300, hideControls = false, externalL
                 </div>
               )}
 
-              {(layerType === 'radar' || layerType === 'satellite' || layerType === 'clouds') && activeFrames.length > 0 && (
+              {layerType === 'radar' && activeFrames.length > 0 && (
                 <div className="absolute bottom-4 left-4 right-12 z-[1000] h-1 bg-white/10 rounded-full overflow-hidden pointer-events-none">
                   <div 
                     className="h-full bg-meteorix-blue shadow-[0_0_10px_#00d4ff] transition-all duration-300" 
