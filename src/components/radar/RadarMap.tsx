@@ -405,8 +405,15 @@ export default function RadarMap({ height = 300, hideControls = false, externalL
               >
                 <MapViewport lat={coords.lat} lon={coords.lon} />
 
-                {/* Base Map dynamic change */}
-                {['satellite', 'clouds', 'temp', 'wind'].includes(layerType) ? (
+                {/* Base Map — satellite mode uses real imagery so MSG gaps don't appear black */}
+                {layerType === 'satellite' ? (
+                  <TileLayer
+                    url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
+                    maxZoom={12}
+                    maxNativeZoom={10}
+                    attribution="Esri"
+                  />
+                ) : ['clouds', 'temp', 'wind'].includes(layerType) ? (
                   <TileLayer
                     url="https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png"
                     subdomains="abcd"
@@ -434,24 +441,28 @@ export default function RadarMap({ height = 300, hideControls = false, externalL
                 {layerType === 'satellite' && (
                   <WMSTileLayer
                     url="/api/eumetsat/wms"
-                    layers="msg_fes:rgb_natural"
+                    layers="msg_fes:rgb_naturalenhncd"
+                    version="1.1.1"
                     format="image/png"
                     transparent={true}
-                    opacity={1}
+                    opacity={0.92}
                     zIndex={20}
                     maxZoom={12}
+                    maxNativeZoom={8}
                   />
                 )}
 
                 {layerType === 'clouds' && (
                   <WMSTileLayer
                     url="/api/eumetsat/wms"
-                    layers="mtg_fd:rgb_cloudphase"
+                    layers="msg_fes:wv062"
+                    version="1.1.1"
                     format="image/png"
                     transparent={true}
-                    opacity={1}
+                    opacity={0.80}
                     zIndex={20}
                     maxZoom={12}
+                    maxNativeZoom={8}
                   />
                 )}
 
@@ -475,16 +486,18 @@ export default function RadarMap({ height = 300, hideControls = false, externalL
                   />
                 )}
 
-                {/* Keep labels readable over both satellite and analytic overlays. */}
+                {/* Etiquetas de ciudades — blancas en satélite/análisis, oscuras en radar */}
                 <TileLayer
                   url={
-                    ['satellite', 'clouds', 'temp', 'wind'].includes(layerType)
+                    layerType === 'satellite'
+                      ? 'https://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}{r}.png'
+                      : ['clouds', 'temp', 'wind'].includes(layerType)
                       ? 'https://{s}.basemaps.cartocdn.com/dark_only_labels/{z}/{x}/{y}{r}.png'
                       : 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager_only_labels/{z}/{x}/{y}{r}.png'
                   }
                   subdomains="abcd"
                   zIndex={100}
-                  opacity={['satellite', 'clouds', 'temp', 'wind'].includes(layerType) ? 0.95 : 0.75}
+                  opacity={layerType === 'satellite' ? 0.85 : ['clouds', 'temp', 'wind'].includes(layerType) ? 0.95 : 0.75}
                 />
 
                 {/* AEMET stations stay subtle so they do not masquerade as radar returns. */}
