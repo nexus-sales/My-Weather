@@ -13,7 +13,7 @@ interface RadarMapProps {
   externalLayerType?: RadarLayer;
 }
 
-type RadarLayer = 'radar' | 'satellite' | 'clouds' | 'temp' | 'wind';
+type RadarLayer = 'radar' | 'satellite' | 'clouds' | 'temp' | 'wind' | 'lightning';
 
 interface RainViewerFrame {
   time: number;
@@ -127,7 +127,7 @@ export default function RadarMap({ height = 300, hideControls = false, externalL
   const [aemetStations, setAemetStations] = useState<AemetStation[]>([]);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
-  const isNativeMapLayer = ['radar', 'satellite', 'clouds', 'temp', 'wind'].includes(layerType);
+  const isNativeMapLayer = ['radar', 'satellite', 'clouds', 'temp', 'wind', 'lightning'].includes(layerType);
 
   // Ticker de animación rápida para el frente de onda acústico
   useEffect(() => {
@@ -369,11 +369,17 @@ export default function RadarMap({ height = 300, hideControls = false, externalL
             >
               TERMICA
             </button>
-            <button 
-              onClick={() => setInternalLayerType('wind')} 
+            <button
+              onClick={() => setInternalLayerType('wind')}
               className={`px-3 py-1.5 rounded-md text-[10px] font-orbitron font-bold tracking-wider transition-all ${layerType === 'wind' ? 'bg-meteorix-blue text-white shadow-[0_0_15px_rgba(0,212,255,0.4)]' : 'text-white/40 hover:text-white hover:bg-white/5'}`}
             >
               VIENTO
+            </button>
+            <button
+              onClick={() => setInternalLayerType('lightning')}
+              className={`px-3 py-1.5 rounded-md text-[10px] font-orbitron font-bold tracking-wider transition-all ${layerType === 'lightning' ? 'bg-meteorix-blue text-white shadow-[0_0_15px_rgba(0,212,255,0.4)]' : 'text-white/40 hover:text-white hover:bg-white/5'}`}
+            >
+              RAYOS SAT
             </button>
           </div>
 
@@ -415,7 +421,7 @@ export default function RadarMap({ height = 300, hideControls = false, externalL
                     maxNativeZoom={10}
                     attribution="Esri"
                   />
-                ) : ['clouds', 'temp', 'wind'].includes(layerType) ? (
+                ) : ['clouds', 'temp', 'wind', 'lightning'].includes(layerType) ? (
                   <TileLayer
                     url="https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png"
                     subdomains="abcd"
@@ -468,6 +474,21 @@ export default function RadarMap({ height = 300, hideControls = false, externalL
                   />
                 )}
 
+                {layerType === 'lightning' && (
+                  <WMSTileLayer
+                    url="/api/eumetsat/wms"
+                    layers="mtg_fd:li_afa"
+                    styles="mtg_li_afa"
+                    version="1.1.1"
+                    format="image/png"
+                    transparent={true}
+                    opacity={0.85}
+                    zIndex={20}
+                    maxZoom={12}
+                    maxNativeZoom={8}
+                  />
+                )}
+
                 {layerType === 'temp' && (
                   <TileLayer
                     url="/api/tiles/owm/temp_new/{z}/{x}/{y}"
@@ -493,13 +514,13 @@ export default function RadarMap({ height = 300, hideControls = false, externalL
                   url={
                     layerType === 'satellite'
                       ? 'https://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}{r}.png'
-                      : ['clouds', 'temp', 'wind'].includes(layerType)
+                      : ['clouds', 'temp', 'wind', 'lightning'].includes(layerType)
                       ? 'https://{s}.basemaps.cartocdn.com/dark_only_labels/{z}/{x}/{y}{r}.png'
                       : 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager_only_labels/{z}/{x}/{y}{r}.png'
                   }
                   subdomains="abcd"
                   zIndex={100}
-                  opacity={layerType === 'satellite' ? 0.85 : ['clouds', 'temp', 'wind'].includes(layerType) ? 0.95 : 0.75}
+                  opacity={layerType === 'satellite' ? 0.85 : ['clouds', 'temp', 'wind', 'lightning'].includes(layerType) ? 0.95 : 0.75}
                 />
 
                 {/* AEMET stations stay subtle so they do not masquerade as radar returns. */}
