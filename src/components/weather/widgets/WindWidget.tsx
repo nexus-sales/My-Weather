@@ -6,11 +6,14 @@ import WidgetWrapper from './WidgetWrapper';
 interface WindWidgetProps {
   speed: number;
   direction: number;
+  gusts?: number;
   title: string;
 }
 
-export default function WindWidget({ speed, direction, title }: WindWidgetProps) {
+export default function WindWidget({ speed, direction, gusts, title }: WindWidgetProps) {
   const duration = speed > 0 ? Math.max(0.4, 25 / speed) : 0;
+  // Gusts noticeably above sustained speed = more relevant to flag than a static "stable" label.
+  const isGusty = typeof gusts === 'number' && gusts > speed * 1.3 && gusts - speed > 5;
   
   // Directions for the compass
   const directions = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'];
@@ -102,8 +105,14 @@ export default function WindWidget({ speed, direction, title }: WindWidgetProps)
                <div className="w-1 h-1 rounded-full bg-orange-400 animate-ping" />
                <span className="text-[8px] font-inter text-xs text-white/50">{direction}° {directions[Math.round(direction/45)%8]}</span>
             </div>
-            <div className="w-[1px] h-2 bg-white/10" />
-            <span className="text-[8px] font-outfit text-emerald-400 uppercase tracking-tighter">Estable</span>
+            {typeof gusts === 'number' && (
+              <>
+                <div className="w-[1px] h-2 bg-white/10" />
+                <span className={`text-[8px] font-outfit uppercase tracking-tighter ${isGusty ? 'text-orange-400' : 'text-emerald-400'}`}>
+                  Rachas {gusts.toFixed(0)}
+                </span>
+              </>
+            )}
           </div>
         </div>
       </div>

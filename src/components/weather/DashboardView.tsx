@@ -9,6 +9,7 @@ import DailyBriefing from '../briefing/DailyBriefing';
 import ModelComparison from './ModelComparison';
 import FavoritesBar from './FavoritesBar';
 import WidgetGrid from './WidgetGrid';
+import OfficialAlerts from './OfficialAlerts';
 import { useIntelligence } from '@/hooks/useIntelligence';
 import { useTranslations } from 'next-intl';
 import WeatherBackground from '../ui/WeatherBackground';
@@ -36,6 +37,9 @@ export default function DashboardView({ weather, cityName }: DashboardViewProps)
 
       {/* Intelligent Daily Briefing */}
       <DailyBriefing weather={weather} cityName={cityName} />
+
+      {/* Official Meteoalarm Alerts (ES, DE, FR, IT, PT, NL, BE) */}
+      <OfficialAlerts />
 
       {/* Intelligence Strip */}
       <IntelligenceStrip data={intelligence} />

@@ -11,7 +11,10 @@ const COUNTRY_FEEDS: Record<string, string> = {
 };
 
 function extractTag(xml: string, tag: string): string {
-  const re = new RegExp(`<(?:[^:>]+:)?${tag}[^>]*>([\\s\\S]*?)<\/(?:[^:>]+:)?${tag}>`, 'i');
+  // (?=[\s>]) pins the tag name to a real boundary so e.g. tag="id" doesn't
+  // also match <cap:identifier> — confirmed live: without it, `id` swallowed
+  // everything up to the entry's real </id>, dragging in unrelated tags.
+  const re = new RegExp(`<(?:[^:>]+:)?${tag}(?=[\\s>])[^>]*>([\\s\\S]*?)<\/(?:[^:>]+:)?${tag}>`, 'i');
   const match = xml.match(re);
   if (!match) return '';
   return match[1].replace(/<!\[CDATA\[([\s\S]*?)\]\]>/g, '$1').trim();
@@ -50,10 +53,10 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    const res = await fetch(feedUrl, {
-      next: { revalidate: 1800 },
-      headers: { Accept: 'application/atom+xml, application/xml, text/xml' },
-    });
+    // Note: feeds.meteoalarm.org returns 406 Not Acceptable if an Accept header
+    // with multiple/qualified values is sent — confirmed live, do not add one back
+    // without testing against the real feed first.
+    const res = await fetch(feedUrl, { next: { revalidate: 1800 } });
 
     if (!res.ok) {
       return NextResponse.json(

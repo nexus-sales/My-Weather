@@ -1,11 +1,22 @@
 import { NextRequest, NextResponse } from 'next/server';
 
+// Whitelist: only these OWM tile layers may be requested through this proxy.
+const ALLOWED_LAYERS = new Set([
+  'clouds_new', 'precipitation_new', 'pressure_new', 'wind_new', 'temp_new',
+]);
+
+const isTileCoord = (v: string) => /^\d+$/.test(v);
+
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ layer: string; z: string; x: string; y: string }> }
 ) {
   const { layer, z, x, y } = await params;
   const apiKey = process.env.OPENWEATHERMAP_API_KEY;
+
+  if (!ALLOWED_LAYERS.has(layer) || ![z, x, y].every(isTileCoord)) {
+    return new NextResponse('Forbidden', { status: 403 });
+  }
 
   if (!apiKey) {
     // Return a transparent 1x1 PNG to avoid console errors if key is missing
@@ -15,7 +26,6 @@ export async function GET(
     });
   }
 
-  // OWM Tile layers: clouds_new, precipitation_new, pressure_new, wind_new, temp_new
   const url = `https://tile.openweathermap.org/map/${layer}/${z}/${x}/${y}.png?appid=${apiKey}`;
 
   try {

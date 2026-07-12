@@ -1,22 +1,3 @@
-export interface AemetAviso {
-  id: string;
-  nivel: 'amarillo' | 'naranja' | 'rojo' | 'verde';
-  descripcion: string;
-  comienzo: string;
-  fin: string;
-  provincia: string;
-}
-
-interface AemetAvisoApiItem {
-  id?: string;
-  nivel?: AemetAviso['nivel'];
-  descripcion?: string;
-  texto?: string;
-  comienzo?: string;
-  fin?: string;
-  provincia?: string;
-}
-
 export interface AemetRadar {
   nombre: string;
   url: string;
@@ -55,28 +36,6 @@ const dmsToDecimal = (dms: string): number => {
   let dec = parseInt(d) + parseInt(m) / 60 + parseInt(s) / 3600;
   if (dir === 'S' || dir === 'W') dec = -dec;
   return dec;
-};
-
-export const fetchAemetAlerts = async (): Promise<AemetAviso[]> => {
-  try {
-    const res = await fetch('/api/aemet?path=avisos_cap/ultimoelaborado/area/esp');
-    if (!res.ok) return [];
-    
-    const data = await res.json();
-    if (!Array.isArray(data)) return [];
-
-    return (data as AemetAvisoApiItem[]).map((item) => ({
-      id: item.id || crypto.randomUUID(),
-      nivel: item.nivel || 'amarillo',
-      descripcion: item.descripcion || item.texto || 'Aviso meteorológico',
-      comienzo: item.comienzo || '',
-      fin: item.fin || '',
-      provincia: item.provincia || 'España'
-    }));
-  } catch (error) {
-    console.error('Error fetching AEMET alerts:', error);
-    return [];
-  }
 };
 
 export const fetchAemetRadar = async (): Promise<AemetRadar[]> => {

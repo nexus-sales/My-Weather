@@ -13,6 +13,7 @@ import MoonWidget from './widgets/MoonWidget';
 import StationConsoleWidget from './widgets/StationConsoleWidget';
 import DroneFlightWidget from './widgets/DroneFlightWidget';
 import AQIWidget from './widgets/AQIWidget';
+import PollenWidget from './widgets/PollenWidget';
 import SpaceWeatherWidget from './widgets/SpaceWeatherWidget';
 import CloudWidget from './widgets/CloudWidget';
 import ClimateAnomalyWidget from './widgets/ClimateAnomalyWidget';
@@ -25,6 +26,8 @@ import PhotographyWidget from './widgets/PhotographyWidget';
 import ThermalComfortWidget from './widgets/ThermalComfortWidget';
 import StargazingWidget from './widgets/StargazingWidget';
 import { useIntelligence } from '@/hooks/useIntelligence';
+import { useSpaceWeather } from '@/hooks/useSpaceWeather';
+import { useLocationStore } from '@/store/useLocationStore';
 
 interface WidgetGridProps {
   weather: WeatherData;
@@ -33,6 +36,8 @@ interface WidgetGridProps {
 export default function WidgetGrid({ weather }: WidgetGridProps) {
   const t = useTranslations('Dashboard');
   const intelligence = useIntelligence(weather);
+  const { coords } = useLocationStore();
+  const { data: spaceWeather } = useSpaceWeather(coords.lat, coords.lon);
 
   return (
     <div className="flex flex-col gap-10">
@@ -43,7 +48,7 @@ export default function WidgetGrid({ weather }: WidgetGridProps) {
           <h4 className="text-[11px] font-outfit font-semibold tracking-widest text-zinc-400 uppercase">Primary Telemetry / Surface</h4>
         </div>
         <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <WindWidget speed={weather.current.windSpeed} direction={weather.current.windDir} title={t('wind')} />
+          <WindWidget speed={weather.current.windSpeed} direction={weather.current.windDir} gusts={weather.current.gusts} title={t('wind')} />
           <SunWidget sunrise={weather.daily.sunrise[0]} sunset={weather.daily.sunset[0]} currentTime={weather.current.time} title={`${t('sunrise')} / ${t('sunset')}`} />
           <RainWidget amount={weather.current.precip} title={t('precipitation')} />
           <UVWidget index={weather.current.uvIndex} title={t('uv_index')} />
@@ -73,8 +78,23 @@ export default function WidgetGrid({ weather }: WidgetGridProps) {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <CloudWidget coverage={weather.current.cloudCover} title="Cobertura Nubosa" />
           <AQIWidget aqiValue={intelligence.air.aqi} dataQuality={intelligence.air.source === 'Open-Meteo Air Quality' ? 'observed' : 'estimated'} source={intelligence.air.source} />
-          <SpaceWeatherWidget dataQuality="estimated" source="Indicador local hasta conectar NOAA/SWPC" />
+          <SpaceWeatherWidget
+            kpIndex={spaceWeather?.kpIndex ?? null}
+            flareClass={spaceWeather?.flareClass ?? null}
+            auroraProbability={spaceWeather?.auroraProbability ?? null}
+            dataQuality="observed"
+            source="NOAA SWPC"
+          />
           <DroneFlightWidget windSpeed={weather.current.windSpeed} visibility={weather.current.visibility} rain={weather.current.precip} />
+          {intelligence.air.pollen && (
+            <PollenWidget
+              alder={intelligence.air.pollen.alder}
+              birch={intelligence.air.pollen.birch}
+              grass={intelligence.air.pollen.grass}
+              dataQuality="observed"
+              source="Open-Meteo Air Quality"
+            />
+          )}
         </div>
       </section>
 

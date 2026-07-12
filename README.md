@@ -16,7 +16,7 @@ El proyecto nacio como prototipo monolitico en `Meteorix pro.jsx` y esta migrand
 
 - **Zustand stores**: `useLocationStore` (coords, favoritos, historial), `useUIStore` (tab activa, capa radar), `usePWSStore` (estaciones favoritas, seleccion, auto-refresh).
 - **Servicios tipados**: `weatherService` (Open-Meteo ECMWF + historico 7 dias), `geoService` (Nominatim busqueda + geocodificacion inversa).
-- **Hooks TanStack Query**: `useWeather` (10 min), `useWeatherHistory` (inmutable), `usePWSNearby` + `usePWSStation` (5 min), `useAlerts` (30 min).
+- **Hooks TanStack Query**: `useWeather` (10 min), `useWeatherHistory` (inmutable), `usePWSNearby` + `usePWSStation` (5 min), `useAlerts` (resuelve el pais desde las coordenadas y consulta Meteoalarm solo si esta cubierto — ES/DE/FR/IT/PT/NL/BE — cache 30 min).
 - **Geolocalizacion automatica**: `useGeolocation` con `navigator.geolocation`, geocodificacion inversa y fallback a Madrid.
 - **Route Handlers (proxies server-side)** — las API keys nunca llegan al cliente:
 
@@ -32,6 +32,11 @@ El proyecto nacio como prototipo monolitico en `Meteorix pro.jsx` y esta migrand
 | `/api/wu` | Weather Underground — estaciones PWS cercanas | `WEATHER_UNDERGROUND_API_KEY` |
 | `/api/tomorrow` | Tomorrow.io — FWI, polenes, condicion de conduccion | `TOMORROW_API_KEY` |
 | `/api/owm` | OpenWeatherMap — segunda fuente GFS para comparacion de modelos | `OPENWEATHERMAP_API_KEY` |
+| `/api/tiles/owm/[layer]/[z]/[x]/[y]` | Tiles de nubes/viento OWM para el radar Leaflet (whitelist de capa + coordenadas numericas) | `OPENWEATHERMAP_API_KEY` |
+| `/api/eumetsat/wms` | EUMETSAT WMS — satelite MSG/MTG (whitelist de capa, token OAuth cacheado en servidor) | `EUMETSAT_CONSUMER_KEY` + `EUMETSAT_CONSUMER_SECRET` |
+| `/api/met-eireann` | Met Éireann — forecast oficial para Irlanda | Sin clave |
+| `/api/rainviewer` | RainViewer — metadata del ultimo frame de radar/satelite | Sin clave |
+| `/api/ai` | AETHER AI — chat meteorologico via Anthropic Claude | `ANTHROPIC_API_KEY` (+ `ANTHROPIC_MODEL` opcional) |
 
 ### Fase 3 — Refactor de componentes (En progreso)
 
@@ -41,7 +46,9 @@ El proyecto nacio como prototipo monolitico en `Meteorix pro.jsx` y esta migrand
 - **Sensores de Telemetría Avanzada**: 8 widgets interactivos con animaciones (Viento, Sol, Lluvia, UV, Presión, Humedad, Visibilidad y Fase Lunar).
 - Base responsive para movil/tablet/desktop con navegacion inferior en pantallas pequenas.
 - PWA inicial: `manifest`, iconos SVG, `theme-color` y service worker propio.
-- Pendiente: modulos AETHER AI, Analisis, Historico y Estaciones PWS.
+- **AETHER AI**: chat interactivo (`AetherChat` + `/api/ai`) implementado end-to-end. El *Daily Briefing* es un scorecard heuristico local (deporte/ruta/foto/playa/jardin), no un resumen generado por el LLM.
+- **Modulo Analisis** (`ChartsView`) y **Modulo Historico** (`HistoryView`) wireados y funcionales sobre datos reales; **Estaciones PWS** (`StationsView`) combina estaciones AEMET cercanas con Weather Underground — el embed Netatmo previsto en el roadmap original no esta implementado.
+- Multi-ciudad y favoritos (`FavoritesBar` sobre `useLocationStore`) implementado.
 
 ### Fase 5 — Calidad y radar interactivo (Completada 2026-04-27)
 
@@ -64,6 +71,13 @@ El proyecto nacio como prototipo monolitico en `Meteorix pro.jsx` y esta migrand
   - Importado con `dynamic(() => import(...), { ssr: false })` para evitar errores de SSR con la API del DOM de Leaflet.
 - **`/api/rainviewer`**: proxy server-side que obtiene el path del ultimo frame de radar de `api.rainviewer.com/public/weather-maps.json` (revalida cada 5 min). Se mantiene como alternativa futura; actualmente el componente usa el GIF AEMET.
 - **Dependencias nuevas**: `leaflet@1.9.4`, `react-leaflet@5.0.0`, `@types/leaflet`.
+
+### Fase 6 — Auditoria tecnica y de seguridad (Completada 2026-07-12)
+
+- **Limpieza**: eliminado `src/components/meteorix/` (10 archivos, ~960 lineas de UI paralela sin usar — confirmado con `grep` en todo el repo antes de borrar, no solo `src/`). Quitados los excludes de `tsconfig.json`/`eslint.config.mjs` que ya no apuntaban a nada.
+- **Seguridad**: `/api/tiles/owm/[layer]/[z]/[x]/[y]` ahora valida `layer` contra una whitelist y `z/x/y` como numericos (mismo patron que `/api/aemet` y `/api/eumetsat/wms`) — antes reenviaba la clave de OpenWeatherMap para cualquier valor sin validar. `next` actualizado a `16.2.10` (cierra 8 CVEs conocidas, 1 de severidad alta) y `next-intl` parcheado via `npm audit fix`.
+- **Alertas oficiales Meteoalarm conectadas**: `useAlerts` ya no depende de un pais fijo — resuelve el pais desde las coordenadas actuales (reverse geocoding, cache 6h) y solo consulta Meteoalarm si esta entre los 7 paises cubiertos (ES/DE/FR/IT/PT/NL/BE). Nuevo componente `OfficialAlerts` en el dashboard: no renderiza nada fuera de esos paises, muestra un aviso de "sin avisos" cuando no hay riesgo, y los 5 avisos mas severos (ordenados por severidad CAP) cuando los hay. Antes, la ruta `/api/meteoalarm` y el hook existian pero ningun componente los usaba.
+- Pendiente: rate limiting compartido (store, no memoria local) sobre `/api/*` antes del primer despliegue publico con claves reales — no urgente mientras el proyecto siga sin desplegarse.
 
 ## Stack
 
@@ -122,33 +136,41 @@ src/
   app/
     [locale]/      # rutas localizadas (layout + page)
     api/           # Route Handlers — proxies server-side
-      aemet/       airquality/  dwd/      lightning/
-      marine/      meteoalarm/  nws/      owm/
-      tomorrow/    wu/
+      aemet/       airquality/  ai/          dwd/
+      eumetsat/    lightning/   marine/      met-eireann/
+      meteoalarm/  nws/         owm/         rainviewer/
+      tiles/owm/   tomorrow/    wu/
   components/
-    radar/         # RadarView (Windy embed)
-    ui/            # SearchBar, LocaleSwitcher
-    weather/       # Forecast7Days, HourlyChart
+    ai/            # AetherChat (chat con Claude)
+    briefing/      # DailyBriefing (scorecard heuristico)
+    pwa/           # ServiceWorkerRegister
+    radar/         # RadarView + RadarMap (Leaflet + overlay AEMET)
+    ui/            # SearchBar, LocaleSwitcher, LocationPrompt, WeatherBackground
+    weather/       # DashboardView, ChartsView, HistoryView, StationsView,
+                   # OfficialAlerts, FavoritesBar, widgets/ (17 sensores)
   hooks/           # useWeather, useWeatherHistory, useGeolocation,
-                   # usePWS, useAlerts
+                   # usePWS, useAlerts, useIntelligence
   i18n/            # configuracion next-intl
   lib/             # weatherUtils (codigos WMO)
   providers/       # QueryProvider (TanStack Query)
-  services/        # weatherService, geoService
+  services/        # weatherService, geoService, aemetService, dwdService,
+                   # marineService, metEireannService, astroService, aiService
   store/           # useLocationStore, useUIStore, usePWSStore
 ```
 
 ## Roadmap
 
 - [ ] Completar el dashboard modular (extraer hero card a componente).
-- [ ] Modulo Analisis — 8 graficas profesionales con Recharts.
-- [ ] Modulo Historico — ultimos 7 dias con estadisticas.
-- [ ] Modulo Estaciones PWS — Netatmo embed + WU con clave + modo demo.
-- [ ] AETHER AI — briefing diario automatico + chat interactivo con Claude.
-- [ ] Multi-ciudad y favoritos — UI sobre `useLocationStore`.
+- [ ] Modulo Analisis — ampliar `ChartsView` a las 8 graficas profesionales previstas (hoy: 1 grafico combinado temp/nubes/precip).
+- [x] Modulo Historico — `HistoryView`, ultimos 7 dias con estadisticas.
+- [ ] Modulo Estaciones PWS — `StationsView` combina AEMET + Weather Underground; falta el embed Netatmo y el modo demo.
+- [x] AETHER AI — chat interactivo con Claude (`AetherChat` + `/api/ai`). El briefing diario sigue siendo heuristico local, no generado por el LLM.
+- [x] Multi-ciudad y favoritos — `FavoritesBar` sobre `useLocationStore`.
 - [x] Alertas inteligentes personalizadas: lluvia cercana, viento fuerte, UV alto, bajada/subida brusca de temperatura, presion cayendo rapido (Integrado visualmente en los nuevos sensores).
+- [x] Avisos oficiales Meteoalarm (ES/DE/FR/IT/PT/NL/BE) — `OfficialAlerts` en el dashboard, resuelve el pais desde las coordenadas.
 - [x] PWA base — manifest, iconos, theme color, service worker y cache inicial.
 - [x] **Meteorix Pro v5.0 Dashboard**: Rediseño completo del núcleo central, HUD dinámico y suite de 8 sensores de telemetría avanzada (Fase 4 completada con excelencia).
+- [ ] Rate limiting compartido sobre `/api/*` — antes del primer despliegue publico con claves reales.
 - [ ] PWA avanzada — instalacion guiada, pantalla offline propia, cache por tipo de dato y validacion Lighthouse.
 - [ ] Responsive avanzado — optimizar tablet/desktop con layouts especificos por modulo.
 - [ ] Supabase — favoritos sincronizados, historial y alertas persistentes.

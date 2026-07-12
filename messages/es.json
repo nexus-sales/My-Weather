@@ -186,6 +186,12 @@
     "placeholder": "Pregunta sobre la situacion sinoptica...",
     "powered": "Desarrollado con Claude 3.5 Sonnet para analisis meteorologico"
   },
+  "Alerts": {
+    "eyebrow": "Avisos oficiales",
+    "title": "{count} avisos activos en {country}",
+    "none": "Sin avisos oficiales activos en {country}",
+    "more": "+{count} avisos mas en meteoalarm.org"
+  },
   "Briefing": {
     "title": "Nexus Intelligence Briefing",
     "situation": "Situacion en {city}",

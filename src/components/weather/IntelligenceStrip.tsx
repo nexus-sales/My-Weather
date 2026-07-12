@@ -5,6 +5,7 @@ import dynamic from 'next/dynamic';
 import { useLocale, useTranslations } from 'next-intl';
 import { CheckCircle2, ChevronDown, ChevronUp, CloudSun, DatabaseZap, Moon, ShieldAlert, Waves, Wind, Zap } from 'lucide-react';
 import { IntelligenceData } from '@/hooks/useIntelligence';
+import { ALERTS_COUNTRY_NAMES } from '@/hooks/useAlerts';
 
 const RadarMap = dynamic(() => import('@/components/radar/RadarMap'), {
   ssr: false,
@@ -80,7 +81,14 @@ export default function IntelligenceStrip({ data }: IntelligenceStripProps) {
           {activeCard === 'alerts' && !data.loadStates.alerts && (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <h4 className="text-[10px] tracking-widest text-meteorix-orange font-bold mb-4 uppercase">{t('alertsTitle')}</h4>
+                <h4 className="text-[10px] tracking-widest text-meteorix-orange font-bold mb-4 uppercase">
+                  {t('alertsTitle')}
+                  {data.alerts.country && (
+                    <span className="text-white/30 normal-case tracking-normal">
+                      {' '}— {ALERTS_COUNTRY_NAMES[data.alerts.country]?.[locale === 'en' ? 'en' : 'es'] ?? data.alerts.country.toUpperCase()}
+                    </span>
+                  )}
+                </h4>
                 <div className="space-y-2">
                   {data.alerts.details.length > 0 ? data.alerts.details.map((detail, index) => (
                     <div key={index} className="text-xs text-white/60 bg-white/5 p-3 rounded-lg border border-white/5 flex items-center gap-2">

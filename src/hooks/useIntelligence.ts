@@ -2,17 +2,20 @@ import { useMemo } from 'react';
 import { useLocale } from 'next-intl';
 import { useQuery } from '@tanstack/react-query';
 import { WeatherData, fetchAirQuality, fetchHistoricalAnomaly } from '@/services/weatherService';
-import { fetchAemetAlerts, fetchAemetCoastalForecast, fetchAemetRadar, fetchAemetStations, AemetStation, AemetCoastal } from '@/services/aemetService';
+import { fetchAemetCoastalForecast, fetchAemetRadar, fetchAemetStations, AemetStation, AemetCoastal } from '@/services/aemetService';
 import { getLunarData, LunarData } from '@/services/astroService';
 import { fetchMarineData } from '@/services/marineService';
 import { fetchMetEireannForecast, isIrelandCoords, MetEireannForecast } from '@/services/metEireannService';
 import { useLocationStore } from '@/store/useLocationStore';
+import { useAlerts } from '@/hooks/useAlerts';
 
 export interface IntelligenceData {
   alerts: {
     count: number;
     level: 'none' | 'yellow' | 'orange' | 'red';
     details: string[];
+    /** ISO country code these alerts cover (Meteoalarm has no finer geographic filter) — null if outside coverage. */
+    country: string | null;
   };
   storms: {
     risk: number;
@@ -27,6 +30,7 @@ export interface IntelligenceData {
     pm25: number;
     status: string;
     source: string;
+    pollen: { alder: number; birch: number; grass: number } | null;
   };
   marine: {
     waveHeight: number;
@@ -79,13 +83,10 @@ export const useIntelligence = (weather: WeatherData | undefined): IntelligenceD
 
   const isSpain = coords.lat >= 27 && coords.lat <= 44 && coords.lon >= -19 && coords.lon <= 5;
 
-  const { data: aemetAlerts, isLoading: isLoadingAemet } = useQuery({
-    // Include coords so alerts refresh when the user changes city
-    queryKey: ['aemet-alerts', coords.lat, coords.lon],
-    queryFn: fetchAemetAlerts,
-    refetchInterval: 1000 * 60 * 30,
-    enabled: !!weather && isSpain,
-  });
+  // Official government alerts via Meteoalarm (redistributes AEMET's own warnings for
+  // Spain, plus 6 more EU countries) — AEMET's own avisos_cap endpoint returns a gzipped
+  // tar archive that the /api/aemet proxy can't parse, so it's unusable as a source here.
+  const { data: officialAlerts, isLoading: isLoadingAlerts, country: alertsCountry } = useAlerts(coords.lat, coords.lon);
 
   const { data: aemetRadar, isLoading: isLoadingRadar } = useQuery({
     queryKey: ['aemet-radar'],
@@ -164,9 +165,9 @@ export const useIntelligence = (weather: WeatherData | undefined): IntelligenceD
 
     if (!weather) {
       return {
-        alerts: { count: 0, level: 'none', details: [] },
+        alerts: { count: 0, level: 'none', details: [], country: null },
         storms: { risk: 0, cape: 0, liftedIndex: 0, maxGusts: 0, rifts: locale === 'en' ? 'No risk' : 'Sin riesgo' },
-        air: { aqi: 0, pm10: 0, pm25: 0, status: locale === 'en' ? 'Loading' : 'Cargando', source: 'N/A' },
+        air: { aqi: 0, pm10: 0, pm25: 0, status: locale === 'en' ? 'Loading' : 'Cargando', source: 'N/A', pollen: null },
         marine: { waveHeight: 0, period: 0, temp: 0, seaLevel: 0, tideTrend: 'steady', source: 'Open-Meteo Marine' },
         lunar,
         aemet: { capabilities: [] },
@@ -189,21 +190,21 @@ export const useIntelligence = (weather: WeatherData | undefined): IntelligenceD
     const isRainy = weather.current.precip > 0.5;
     const isWindy = weather.current.windSpeed > 30;
     const humidity = weather.current.humidity;
-    const officialAlerts = aemetAlerts || [];
-    const alertsCount = officialAlerts.length > 0 ? officialAlerts.length : (isRainy ? 1 : 0) + (isWindy ? 1 : 0);
+    const meteoalarmAlerts = officialAlerts ?? [];
+    const alertsCount = meteoalarmAlerts.length > 0 ? meteoalarmAlerts.length : (isRainy ? 1 : 0) + (isWindy ? 1 : 0);
 
     let alertLevel: 'none' | 'yellow' | 'orange' | 'red' = 'none';
-    if (officialAlerts.length > 0) {
-      const levels = officialAlerts.map((a) => a.nivel);
-      if (levels.includes('rojo')) alertLevel = 'red';
-      else if (levels.includes('naranja')) alertLevel = 'orange';
-      else if (levels.includes('amarillo')) alertLevel = 'yellow';
+    if (meteoalarmAlerts.length > 0) {
+      const severities = meteoalarmAlerts.map((a) => a.severity);
+      if (severities.includes('Extreme')) alertLevel = 'red';
+      else if (severities.includes('Severe')) alertLevel = 'orange';
+      else alertLevel = 'yellow'; // Moderate / Minor
     } else {
       alertLevel = alertsCount > 1 ? 'orange' : alertsCount > 0 ? 'yellow' : 'none';
     }
 
-    const alertDetails = officialAlerts.length > 0
-      ? officialAlerts.map((a) => `${a.provincia}: ${a.descripcion}`)
+    const alertDetails = meteoalarmAlerts.length > 0
+      ? meteoalarmAlerts.map((a) => `${a.area}: ${a.event || a.title}`)
       : [
           ...(isRainy ? [locale === 'en' ? 'Heavy precipitation risk (heuristic)' : 'Riesgo de precipitaciones intensas (heuristica)'] : []),
           ...(isWindy ? [locale === 'en' ? 'Wind gusts above 30 km/h (heuristic)' : 'Rachas de viento superiores a 30 km/h (heuristica)'] : []),
@@ -230,6 +231,7 @@ export const useIntelligence = (weather: WeatherData | undefined): IntelligenceD
         count: alertsCount,
         level: alertLevel,
         details: alertDetails,
+        country: meteoalarmAlerts.length > 0 ? alertsCountry ?? null : null,
       },
       storms: {
         risk: Math.round(dynamicStormRisk),
@@ -250,6 +252,7 @@ export const useIntelligence = (weather: WeatherData | undefined): IntelligenceD
           ? (airQuality.aqi < 50 ? (locale === 'en' ? 'Excellent' : 'Excelente') : (locale === 'en' ? 'Moderate' : 'Moderado'))
           : (locale === 'en' ? 'Excellent' : 'Excelente'),
         source: airQuality ? 'Open-Meteo Air Quality' : locale === 'en' ? 'Local estimate' : 'Estimacion local',
+        pollen: airQuality?.pollen ?? null,
       },
       marine: {
         waveHeight: marineData?.waveHeight ?? (isWindy ? 2.4 : 0.8),
@@ -277,7 +280,7 @@ export const useIntelligence = (weather: WeatherData | undefined): IntelligenceD
           : (locale === 'en' ? 'Moderate Divergence' : 'Divergencia Moderada'),
       },
       loadStates: {
-        alerts: isLoadingAemet,
+        alerts: isLoadingAlerts,
         marine: isLoadingMarine,
         metEireann: isLoadingMetEireann,
         radar: isLoadingRadar,

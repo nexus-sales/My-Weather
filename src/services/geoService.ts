@@ -58,14 +58,25 @@ export const searchCities = async (query: string): Promise<CityResult[]> => {
 
 export const getCityFromCoords = async (lat: number, lon: number): Promise<string> => {
   const url = `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`;
-  
+
   const res = await fetch(url);
   if (!res.ok) return 'Unknown Location';
-  
+
   const data = (await res.json()) as NominatimReverseResponse;
   const address = data.address ?? {};
   const city = address.city || address.town || address.village || address.hamlet || address.suburb || address.county || 'Ubicación';
   const country = address.country_code?.toUpperCase() || '';
-  
+
   return `${city}${country ? `, ${country}` : ''}`;
+};
+
+/** ISO 3166-1 alpha-2 country code (lowercase) for a coordinate, or null if it can't be resolved. */
+export const getCountryCode = async (lat: number, lon: number): Promise<string | null> => {
+  const url = `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`;
+
+  const res = await fetch(url);
+  if (!res.ok) return null;
+
+  const data = (await res.json()) as NominatimReverseResponse;
+  return data.address?.country_code?.toLowerCase() ?? null;
 };

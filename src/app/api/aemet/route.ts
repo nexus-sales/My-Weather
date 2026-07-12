@@ -124,7 +124,8 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ url: result.datosUrl });
     }
     return NextResponse.json(result.json);
-  } catch {
+  } catch (e) {
+    console.error('[AEMET Proxy] error:', e);
     return NextResponse.json({ error: 'Failed to reach AEMET API' }, { status: 502 });
   }
 }

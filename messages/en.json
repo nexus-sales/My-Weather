@@ -186,6 +186,12 @@
     "placeholder": "Ask about the synoptic situation...",
     "powered": "Powered by Claude 3.5 Sonnet for meteorological analysis"
   },
+  "Alerts": {
+    "eyebrow": "Official alerts",
+    "title": "{count} active alerts in {country}",
+    "none": "No active official alerts in {country}",
+    "more": "+{count} more at meteoalarm.org"
+  },
   "Briefing": {
     "title": "Nexus Intelligence Briefing",
     "situation": "Situation in {city}",
