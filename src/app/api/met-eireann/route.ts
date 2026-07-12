@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 
+// Plain HTTP is intentional, not an oversight: port 443 on this host doesn't
+// accept connections at all (verified — TLS handshake times out), only 80
+// responds. Revisit if Met Éireann ever adds HTTPS to this legacy endpoint.
 const BASE = 'http://openaccess.pf.api.met.ie/metno-wdb2ts/locationforecast';
 
 export async function GET(request: NextRequest) {

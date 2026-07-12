@@ -4,21 +4,13 @@ import { Camera, Sunrise, Sunset, Clock } from 'lucide-react';
 import WidgetWrapper from './WidgetWrapper';
 
 interface PhotographyWidgetProps {
-  sunrise: string; // e.g. "06:30"
-  sunset: string;  // e.g. "19:45"
+  sunrise: string; // full ISO datetime, e.g. "2026-07-12T07:32"
+  sunset: string;  // full ISO datetime, e.g. "2026-07-12T21:15"
 }
 
 export default function PhotographyWidget({ sunrise, sunset }: PhotographyWidgetProps) {
-  // Parse times to get the Golden/Blue hour windows
-  const parseTime = (timeStr: string) => {
-    const [h, m] = timeStr.split(':').map(Number);
-    const date = new Date();
-    date.setHours(h || 0, m || 0, 0, 0);
-    return date;
-  };
-
-  const sunriseDate = parseTime(sunrise);
-  const sunsetDate = parseTime(sunset);
+  const sunriseDate = new Date(sunrise);
+  const sunsetDate = new Date(sunset);
   const now = new Date();
 
   // Golden Hour: ~45 mins after sunrise, ~45 mins before sunset

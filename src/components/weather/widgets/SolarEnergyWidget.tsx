@@ -16,13 +16,13 @@ export default function SolarEnergyWidget({ cloudCover, uvIndex, sunrise, sunset
   let efficiency = 100 - (cloudCover * 0.8) + (uvIndex * 2);
   efficiency = Math.max(0, Math.min(100, efficiency)); // Clamp between 0-100
 
-  // Check if it's currently night time (roughly)
+  // sunrise/sunset arrive as full ISO datetimes (e.g. "2026-07-12T07:32"), not
+  // "HH:MM" — parse as dates directly, same pattern as SunWidget.tsx.
   const now = new Date();
-  const currentHour = now.getHours();
-  const sunriseHour = parseInt(sunrise.split(':')[0] || '6');
-  const sunsetHour = parseInt(sunset.split(':')[0] || '20');
-  
-  const isNight = currentHour < sunriseHour || currentHour >= sunsetHour;
+  const sunriseDate = new Date(sunrise);
+  const sunsetDate = new Date(sunset);
+
+  const isNight = now < sunriseDate || now >= sunsetDate;
   if (isNight) efficiency = 0;
 
   let statusText = 'Excelente';
