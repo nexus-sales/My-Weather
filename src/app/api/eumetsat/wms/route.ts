@@ -15,7 +15,6 @@ const EUMETVIEW_WMS_URL = 'https://view.eumetsat.int/geoserver/wms';
 
 // MSG layers
 const MSG_LAYERS = new Set([
-  'msg_fes:rgb_natural',
   'msg_fes:rgb_naturalenhncd',
   'msg_fes:wv062',
 ]);
