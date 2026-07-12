@@ -3,7 +3,7 @@
 import React from 'react';
 import { useTranslations } from 'next-intl';
 import { useIntelligence } from '@/hooks/useIntelligence';
-import { usePWSNearby } from '@/hooks/usePWS';
+import { usePWSNearby, WUNotConfiguredError } from '@/hooks/usePWS';
 import { useLocationStore } from '@/store/useLocationStore';
 import { WeatherData } from '@/services/weatherService';
 import { Satellite, Radio, Activity, MapPin, Gauge, Wifi } from 'lucide-react';
@@ -138,7 +138,13 @@ export default function StationsView({ weather }: StationsViewProps) {
           subtitle="Estaciones personales cercanas cuando la API lo permite."
           icon={<Wifi size={16} />}
           isLoading={pwsNearby.isLoading}
-          errorText={pwsNearby.isError ? 'Weather Underground no ha devuelto estaciones cercanas. Revisa la clave o los permisos PWS.' : undefined}
+          errorText={
+            pwsNearby.error instanceof WUNotConfiguredError
+              ? 'Estaciones personales no disponibles: Weather Underground solo emite claves ligadas a una estación (PWS) propia registrada.'
+              : pwsNearby.isError
+              ? 'Weather Underground no ha devuelto estaciones cercanas. Puede ser un fallo temporal de su API.'
+              : undefined
+          }
           emptyText="No hay PWS cercanas disponibles para esta zona."
         >
           {(pwsNearby.data ?? []).map((station) => (

@@ -29,6 +29,16 @@ export interface PWSObservation {
   qcStatus: number;
 }
 
+// Distinguishable from a real fetch failure: Weather Underground only issues
+// keys tied to an active, registered Personal Weather Station — without one,
+// there is no key to configure, and this is a permanent state, not an outage.
+export class WUNotConfiguredError extends Error {
+  constructor() {
+    super('Weather Underground API key not configured');
+    this.name = 'WUNotConfiguredError';
+  }
+}
+
 const fetchPWSNearby = async (lat: number, lon: number, limit: number): Promise<PWSObservation[]> => {
   const params = new URLSearchParams({
     endpoint: 'observations/nearby',
@@ -36,6 +46,7 @@ const fetchPWSNearby = async (lat: number, lon: number, limit: number): Promise<
     limit: limit.toString(),
   });
   const res = await fetch(`/api/wu?${params}`);
+  if (res.status === 503) throw new WUNotConfiguredError();
   if (!res.ok) throw new Error('Failed to fetch PWS stations');
   const data = await res.json();
   return data.observations ?? [];
@@ -47,10 +58,16 @@ const fetchPWSById = async (stationId: string): Promise<PWSObservation | null> =
     stationId,
   });
   const res = await fetch(`/api/wu?${params}`);
+  if (res.status === 503) throw new WUNotConfiguredError();
   if (!res.ok) throw new Error(`Failed to fetch station ${stationId}`);
   const data = await res.json();
   return data.observations?.[0] ?? null;
 };
+
+// Don't burn retries on a permanent "not configured" state — only retry real,
+// possibly-transient failures.
+const retryUnlessNotConfigured = (failureCount: number, error: Error) =>
+  !(error instanceof WUNotConfiguredError) && failureCount < 3;
 
 export const usePWSNearby = (limit = 15) => {
   const { coords } = useLocationStore();
@@ -62,6 +79,7 @@ export const usePWSNearby = (limit = 15) => {
     enabled: !!coords.lat && !!coords.lon,
     staleTime: 5 * 60 * 1000,
     refetchInterval: autoRefresh ? refreshIntervalMin * 60 * 1000 : false,
+    retry: retryUnlessNotConfigured,
   });
 };
 
@@ -74,5 +92,6 @@ export const usePWSStation = (stationId: string | null) => {
     enabled: !!stationId,
     staleTime: 5 * 60 * 1000,
     refetchInterval: autoRefresh ? refreshIntervalMin * 60 * 1000 : false,
+    retry: retryUnlessNotConfigured,
   });
 };

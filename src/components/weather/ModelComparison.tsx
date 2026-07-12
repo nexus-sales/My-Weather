@@ -3,6 +3,7 @@
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { fetchDWDData } from '@/services/dwdService';
+import { fetchUKMOData } from '@/services/ukmoService';
 import { WeatherData, fetchWeatherFromOWM, fetchWeatherFromTomorrow } from '@/services/weatherService';
 import { Layers, Info } from 'lucide-react';
 import { useTranslations } from 'next-intl';
@@ -29,6 +30,13 @@ export default function ModelComparison({ lat, lon, ecmwfData }: ModelComparison
     queryKey: ['model-comparison-dwd', lat, lon],
     queryFn: () => fetchDWDData(lat, lon, 'icon_eu'),
     staleTime: 1000 * 60 * 30,
+  });
+
+  const { data: ukmoData, isLoading: isLoadingUkmo } = useQuery({
+    queryKey: ['model-comparison-ukmo', lat, lon],
+    queryFn: () => fetchUKMOData(lat, lon),
+    staleTime: 1000 * 60 * 30,
+    retry: false,
   });
 
   // Independent model reads (not the fallback chain) — same functions that
@@ -65,9 +73,14 @@ export default function ModelComparison({ lat, lon, ecmwfData }: ModelComparison
   };
   const primarySource = primarySourceLabel[ecmwfData.source ?? 'open-meteo'];
 
+  const ukmo = ukmoData?.current;
+
   const cards: ModelCard[] = [
     { name: primarySource.name, subtitle: primarySource.subtitle, color: '#00d4ff', temp: ecmwf.temp, windSpeed: ecmwf.windSpeed, precip: ecmwf.precip },
     { name: 'DWD ICON-EU', subtitle: 'European Precision', color: '#ff8c35', temp: icon?.temperature_2m, windSpeed: icon?.wind_speed_10m, precip: icon?.precipitation },
+    // Never the primary/fallback source (unlike OWM/Tomorrow below), so it
+    // always renders its own card — no "skip if already shown" check needed.
+    { name: 'UK Met Office', subtitle: 'UKV / UKMO Seamless', color: '#f43f5e', temp: ukmo?.temperature_2m, windSpeed: ukmo?.wind_speed_10m, precip: ukmo?.precipitation },
   ];
 
   // Skip a model card if it's the same one already shown as primary (fallback kicked in).
@@ -78,7 +91,7 @@ export default function ModelComparison({ lat, lon, ecmwfData }: ModelComparison
     cards.push({ name: 'Tomorrow.io', subtitle: 'NowcastFusion', color: '#34d399', temp: tomorrowData?.current.temp, windSpeed: tomorrowData?.current.windSpeed, precip: tomorrowData?.current.precip });
   }
 
-  const isFetching = isLoadingOwm || isLoadingTomorrow;
+  const isFetching = isLoadingOwm || isLoadingTomorrow || isLoadingUkmo;
 
   const temps = cards.map((c) => c.temp).filter((v): v is number => typeof v === 'number');
   const diffTemp = temps.length > 1 ? Math.max(...temps) - Math.min(...temps) : 0;
