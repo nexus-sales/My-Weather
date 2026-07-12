@@ -501,6 +501,10 @@ export default function RadarMap({ height = 300, hideControls = false, externalL
                   />
                 )}
 
+                {/* wv062 has no real alpha channel: an empty/no-signal tile (dry
+                    air) comes back solid black instead of transparent. Low
+                    opacity keeps the map visible under a "nothing to show"
+                    tile — real moisture patterns still show through. */}
                 {layerType === 'clouds' && (
                   <WMSTileLayer
                     url="/api/eumetsat/wms"
@@ -508,13 +512,15 @@ export default function RadarMap({ height = 300, hideControls = false, externalL
                     version="1.1.1"
                     format="image/png"
                     transparent={true}
-                    opacity={0.80}
+                    opacity={0.35}
                     zIndex={20}
                     maxZoom={12}
                     maxNativeZoom={8}
                   />
                 )}
 
+                {/* Same issue as wv062, opposite color: an empty tile (no
+                    flashes detected) comes back solid white, not transparent. */}
                 {layerType === 'lightning' && (
                   <WMSTileLayer
                     url="/api/eumetsat/wms"
@@ -523,7 +529,7 @@ export default function RadarMap({ height = 300, hideControls = false, externalL
                     version="1.1.1"
                     format="image/png"
                     transparent={true}
-                    opacity={0.85}
+                    opacity={0.4}
                     zIndex={20}
                     maxZoom={12}
                     maxNativeZoom={8}
