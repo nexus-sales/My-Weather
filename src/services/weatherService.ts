@@ -211,7 +211,7 @@ interface OWMForecastEntry {
   rain?: { '3h'?: number };
 }
 
-async function fetchWeatherFromOWM(lat: number, lon: number, units: string): Promise<WeatherData> {
+export async function fetchWeatherFromOWM(lat: number, lon: number, units: string): Promise<WeatherData> {
   const base = `/api/owm?lat=${lat}&lon=${lon}`;
   const [currentRes, forecastRes] = await Promise.all([
     fetch(`${base}&type=weather`),
@@ -332,7 +332,7 @@ interface TomorrowDailyEntry {
   };
 }
 
-async function fetchWeatherFromTomorrow(lat: number, lon: number, units: string): Promise<WeatherData> {
+export async function fetchWeatherFromTomorrow(lat: number, lon: number, units: string): Promise<WeatherData> {
   const base = `/api/tomorrow?lat=${lat}&lon=${lon}`;
   const [realtimeRes, hourlyRes, dailyRes] = await Promise.all([
     fetch(`${base}&type=realtime`),

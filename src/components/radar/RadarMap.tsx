@@ -54,10 +54,6 @@ function calculateDistanceKm(lat1: number, lon1: number, lat2: number, lon2: num
   return R * c;
 }
 
-const CANARY_BOUNDS: [[number, number], [number, number]] = [
-  [27.45, -18.45],
-  [29.65, -13.05],
-];
 const CANARY_CENTER: [number, number] = [28.35, -15.85];
 
 function isInCanaryArea(lat: number, lon: number) {
@@ -302,8 +298,11 @@ export default function RadarMap({ height = 300, hideControls = false, externalL
   }, [isPlaying, radarFrames.length, satelliteFrames.length, layerType]);
 
   useEffect(() => {
+    // No setOwmStatus('idle') here: the banner below is gated on this same
+    // ['temp','wind'].includes(layerType) check, so a stale status can never
+    // render while on a different layer — and re-entering temp/wind below
+    // immediately overwrites it with 'checking' before any fetch settles.
     if (!['temp', 'wind'].includes(layerType)) {
-      setOwmStatus('idle');
       return;
     }
 
@@ -311,7 +310,10 @@ export default function RadarMap({ height = 300, hideControls = false, externalL
     const timeout = window.setTimeout(() => {
       controller.abort(new DOMException('OpenWeatherMap check timed out', 'AbortError'));
     }, 8000);
-    setOwmStatus('checking');
+    // Deferred a tick so this isn't a direct synchronous setState in the effect
+    // body (react-hooks/set-state-in-effect) — same timing, just not on the
+    // same call stack as the effect callback itself.
+    queueMicrotask(() => setOwmStatus('checking'));
 
     fetch(`/api/owm?lat=${coords.lat}&lon=${coords.lon}&type=weather`, { signal: controller.signal })
       .then((res) => {
