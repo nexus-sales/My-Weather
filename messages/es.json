@@ -33,8 +33,15 @@
       "wind": "Viento real",
       "temp": "Mapa térmico",
       "clouds": "Nubosidad",
-      "satellite": "Satélite HD"
+      "satellite": "Satélite HD",
+      "lightning": "Rayos SAT",
+      "dust": "Calima / Ceniza volcánica",
+      "fire": "Incendios activos",
+      "fog": "Niebla / Nubes bajas",
+      "cloudphase": "Fase de nubes",
+      "infrared": "Infrarrojo nocturno"
     },
+    "moreLayers": "Más capas",
     "expand": "Expandir",
     "satelliteLink": "Enlace satelital activo",
     "coordinates": "Coordenadas",

@@ -21,11 +21,13 @@ const MSG_LAYERS = new Set([
 
 // MTG Full Disc layers
 const MTG_LAYERS = new Set([
-  'mtg_fd:ir105_hrfi',
-  'mtg_fd:rgb_cloudphase',
-  'mtg_fd:li_afa',           // Accumulated Flash Area (lightning), updates every 5 min
-  'mtg_fd:rgb_dust',         // Dust RGB — Saharan dust / volcanic ash
-  'mtg_fd:rgb_geocolour',    // GeoColour RGB
+  'mtg_fd:ir105_hrfi',           // Raw IR10.5 — usable at night, unlike the visible-light layers
+  'mtg_fd:rgb_cloudphase',       // Cloud Phase RGB — water vs ice clouds (daytime)
+  'mtg_fd:li_afa',               // Accumulated Flash Area (lightning), updates every 5 min
+  'mtg_fd:rgb_dust',             // Dust RGB — Saharan dust / volcanic ash
+  'mtg_fd:rgb_geocolour',        // GeoColour RGB
+  'mtg_fd:rgb_firetemperature',  // Fire Temperature RGB — active fire detection
+  'mtg_fd:rgb_fog',              // Fog / Low Clouds RGB (night microphysics)
 ]);
 
 const ALLOWED_LAYERS = new Set([...MSG_LAYERS, ...MTG_LAYERS]);

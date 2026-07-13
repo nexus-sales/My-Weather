@@ -33,8 +33,15 @@
       "wind": "Observed wind",
       "temp": "Temperature",
       "clouds": "Clouds",
-      "satellite": "Satellite"
+      "satellite": "Satellite",
+      "lightning": "Lightning (SAT)",
+      "dust": "Dust / Volcanic ash",
+      "fire": "Active fires",
+      "fog": "Fog / Low clouds",
+      "cloudphase": "Cloud phase",
+      "infrared": "Night infrared"
     },
+    "moreLayers": "More layers",
     "expand": "Expand",
     "satelliteLink": "Satellite link active",
     "coordinates": "Coordinates",

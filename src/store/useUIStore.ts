@@ -6,7 +6,7 @@ interface UIState {
   isSidebarOpen: boolean;
   
   // Radar
-  radarLayer: 'radar' | 'satellite' | 'clouds' | 'temp' | 'wind';
+  radarLayer: 'radar' | 'satellite' | 'clouds' | 'temp' | 'wind' | 'lightning' | 'dust' | 'fire' | 'fog' | 'cloudphase' | 'infrared';
   
   // Actions
   setActiveTab: (tab: UIState['activeTab']) => void;
