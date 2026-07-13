@@ -33,9 +33,12 @@ El proyecto nacio como prototipo monolitico en `Meteorix pro.jsx` y esta migrand
 | `/api/tomorrow` | Tomorrow.io — FWI, polenes, condicion de conduccion | `TOMORROW_API_KEY` |
 | `/api/owm` | OpenWeatherMap — segunda fuente GFS para comparacion de modelos | `OPENWEATHERMAP_API_KEY` |
 | `/api/tiles/owm/[layer]/[z]/[x]/[y]` | Tiles de nubes/viento OWM para el radar Leaflet (whitelist de capa + coordenadas numericas) | `OPENWEATHERMAP_API_KEY` |
-| `/api/eumetsat/wms` | EUMETSAT WMS — satelite MSG/MTG (whitelist de capa, token OAuth cacheado en servidor) | `EUMETSAT_CONSUMER_KEY` + `EUMETSAT_CONSUMER_SECRET` |
+| `/api/eumetsat/wms` | EUMETSAT WMS — 11 capas MSG/MTG (satelite, nubes, rayos, dust, fuego, niebla, fase de nubes, infrarrojo). Whitelist de capa; el token OAuth es best-effort, no obligatorio — el geoserver es publico | `EUMETSAT_CONSUMER_KEY` + `EUMETSAT_CONSUMER_SECRET` (opcionales) |
+| `/api/eumetsat/timeline` | Lee el `GetCapabilities` real de EUMETSAT y devuelve la hora valida por capa, para fijar el `time` del WMS sin depender del reloj del servidor | Sin clave |
 | `/api/met-eireann` | Met Éireann — forecast oficial para Irlanda | Sin clave |
 | `/api/rainviewer` | RainViewer — metadata del ultimo frame de radar/satelite | Sin clave |
+| `/api/ukmo` | UK Met Office (`ukmo_seamless` via Open-Meteo) — quinto modelo del comparador, mas preciso en Reino Unido/Irlanda | Sin clave |
+| `/api/spaceweather` | NOAA SWPC — indice Kp, clase de fulguracion solar y probabilidad de aurora por coordenadas (OVATION) | Sin clave |
 | `/api/ai` | AETHER AI — chat meteorologico via Anthropic Claude | `ANTHROPIC_API_KEY` (+ `ANTHROPIC_MODEL` opcional) |
 
 ### Fase 3 — Refactor de componentes (En progreso)
