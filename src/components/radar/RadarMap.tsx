@@ -20,6 +20,19 @@ type RadarLayer = 'radar' | 'satellite' | 'clouds' | 'temp' | 'wind' | 'lightnin
 // every branch that needs it.
 const DARK_BASE_LAYERS: RadarLayer[] = ['clouds', 'temp', 'wind', 'lightning', 'dust', 'fire', 'fog', 'cloudphase', 'infrared'];
 
+// layerType -> exact EUMETSAT WMS layer name, for the ones backed by it.
+// radar/temp/wind aren't in here (RainViewer / OWM, not EUMETSAT).
+const EUMETSAT_LAYER_NAMES: Partial<Record<RadarLayer, string>> = {
+  satellite: 'mtg_fd:rgb_geocolour',
+  clouds: 'msg_fes:wv062',
+  lightning: 'mtg_fd:li_afa',
+  dust: 'mtg_fd:rgb_dust',
+  fire: 'mtg_fd:rgb_firetemperature',
+  fog: 'mtg_fd:rgb_fog',
+  cloudphase: 'mtg_fd:rgb_cloudphase',
+  infrared: 'mtg_fd:ir105_hrfi',
+};
+
 // All 11 layers as direct buttons — no dropdown. A hidden "more layers" menu
 // here caused three separate bugs in a row (overflow clipping, trapped
 // stacking context, map remount race) for no real space benefit.
@@ -154,28 +167,44 @@ export default function RadarMap({ height = 300, hideControls = false, externalL
 
   // Leaflet's WMSTileLayer fetches a tile once and never re-requests it just
   // because time passes — only on pan/zoom (new tile coords) or remount.
-  // Remounting the layer via `key` on this value forces a real refetch every
-  // 5 min so the map doesn't silently go stale.
+  // Remounting via `key` on wmsTimeParam forces a real refetch. wmsTimeParam
+  // also pins EUMETSAT's WMS `time` dimension so every tile of the current
+  // layer renders from the exact same satellite pass — otherwise a tile
+  // requested just before a new scan lands can render from a different pass
+  // than its neighbor, producing a visible seam.
   //
-  // NOTE: EUMETSAT's WMS layers do accept an explicit `time` dimension
-  // (confirmed via GetCapabilities) which would also fix a rarer cosmetic
-  // issue — neighboring tiles occasionally rendering from different
-  // satellite passes if a new scan lands mid-viewport-load. Tried pinning
-  // it to Date.now() rounded to 10 min; confirmed live that it 502s against
-  // EUMETSAT's real server. This sandbox's clock doesn't reliably match
-  // real-world time, so a computed timestamp isn't safe to send as an exact
-  // WMS time value — do not reintroduce that without a real-time source.
-  const roundedWmsTime = () => {
-    const tenMin = 10 * 60 * 1000;
-    return new Date(Math.floor(Date.now() / tenMin) * tenMin).toISOString();
-  };
-  const [wmsTimeParam, setWmsTimeParam] = useState(roundedWmsTime);
+  // The value comes from /api/eumetsat/timeline, which reads the real
+  // current default straight from EUMETSAT's own GetCapabilities — NOT from
+  // Date.now(). A locally-computed timestamp was tried and confirmed live to
+  // 502 against EUMETSAT's server: this environment's clock doesn't reliably
+  // match real-world time, so only an authoritative value read back from
+  // the provider itself is safe to send as an exact WMS time value.
+  const eumetsatLayerName = EUMETSAT_LAYER_NAMES[layerType];
+  const [wmsTimeParam, setWmsTimeParam] = useState<string | null>(null);
+
   useEffect(() => {
-    const refreshInterval = setInterval(() => {
-      setWmsTimeParam(roundedWmsTime());
-    }, 5 * 60 * 1000);
-    return () => clearInterval(refreshInterval);
-  }, []);
+    // No reset-to-null branch here: none of the 8 EUMETSAT WMSTileLayer
+    // blocks below render while on a non-EUMETSAT layer (radar/temp/wind),
+    // so a stale wmsTimeParam value is never actually read in that case.
+    if (!eumetsatLayerName) return;
+
+    let cancelled = false;
+    const fetchTimeline = () => {
+      fetch(`/api/eumetsat/timeline?layer=${encodeURIComponent(eumetsatLayerName)}`)
+        .then((res) => (res.ok ? res.json() : null))
+        .then((data) => {
+          if (!cancelled && data?.time) setWmsTimeParam(data.time);
+        })
+        .catch(() => {});
+    };
+
+    fetchTimeline();
+    const refreshInterval = setInterval(fetchTimeline, 5 * 60 * 1000);
+    return () => {
+      cancelled = true;
+      clearInterval(refreshInterval);
+    };
+  }, [eumetsatLayerName]);
 
   // Ticker de animación rápida para el frente de onda acústico
   useEffect(() => {
@@ -283,51 +312,63 @@ export default function RadarMap({ height = 300, hideControls = false, externalL
   }, [coords.lat, coords.lon]);
 
   useEffect(() => {
-    const controller = new AbortController();
-    const timeout = window.setTimeout(() => {
-      controller.abort(new DOMException('RainViewer request timed out', 'AbortError'));
-    }, 10000);
+    // RainViewer publishes new radar frames roughly every 10 min — this used
+    // to only fetch once on mount and never again, so the animation quietly
+    // stopped getting new frames the longer the tab stayed open.
+    let cancelled = false;
 
-    fetch('/api/rainviewer', { signal: controller.signal })
-      .then(r => {
-        if (!r.ok) throw new Error(`RainViewer responded ${r.status}`);
-        return r.json();
-      })
-      .then(data => {
-        if (data.radar && data.radar.length > 0) {
-          setRadarFrames(data.radar);
-          if (data.satellite && data.satellite.length > 0) {
-            setSatelliteFrames(data.satellite);
+    const fetchRainViewer = () => {
+      const controller = new AbortController();
+      const timeout = window.setTimeout(() => {
+        controller.abort(new DOMException('RainViewer request timed out', 'AbortError'));
+      }, 10000);
+
+      fetch('/api/rainviewer', { signal: controller.signal })
+        .then(r => {
+          if (!r.ok) throw new Error(`RainViewer responded ${r.status}`);
+          return r.json();
+        })
+        .then(data => {
+          if (cancelled) return;
+          if (data.radar && data.radar.length > 0) {
+            setRadarFrames(data.radar);
+            if (data.satellite && data.satellite.length > 0) {
+              setSatelliteFrames(data.satellite);
+            }
+            setHost(data.host);
+            setTimelineStatus('ready');
+            // Start 3 frames back for stability (avoiding "Zoom Not Supported" on fresh data)
+            const stableIndex = Math.max(0, data.radar.length - 3);
+            setCurrentFrameIndex(stableIndex);
+          } else {
+            setTimelineStatus('error');
           }
-          setHost(data.host);
-          setTimelineStatus('ready');
-          // Start 3 frames back for stability (avoiding "Zoom Not Supported" on fresh data)
-          const stableIndex = Math.max(0, data.radar.length - 3);
-          setCurrentFrameIndex(stableIndex);
-        } else {
-          setTimelineStatus('error');
-        }
-      })
-      .catch(err => {
-        if (err instanceof DOMException && err.name === 'AbortError') return;
-        console.error('RainViewer error:', err);
-        setTimelineStatus('error');
-      });
+        })
+        .catch(err => {
+          if (err instanceof DOMException && err.name === 'AbortError') return;
+          if (!cancelled) {
+            console.error('RainViewer error:', err);
+            setTimelineStatus('error');
+          }
+        })
+        .finally(() => window.clearTimeout(timeout));
+    };
+
+    fetchRainViewer();
+    const rainViewerInterval = setInterval(fetchRainViewer, 5 * 60 * 1000);
 
     // Fetch AEMET stations for the map
     fetchAemetStations()
       .then(stations => {
         // Filter stations near the current location (optional, but good for performance)
         // For now, show all to give a global view of the network
-        setAemetStations(stations);
+        if (!cancelled) setAemetStations(stations);
       })
       .catch(() => {});
 
     return () => {
-      window.clearTimeout(timeout);
-      if (!controller.signal.aborted) {
-        controller.abort(new DOMException('RadarMap unmounted', 'AbortError'));
-      }
+      cancelled = true;
+      clearInterval(rainViewerInterval);
     };
   }, []);
 
@@ -479,7 +520,7 @@ export default function RadarMap({ height = 300, hideControls = false, externalL
                 {layerType === 'satellite' && (
                   <WMSTileLayer
                     key={`geocolour-${wmsTimeParam}`}
-                    url="/api/eumetsat/wms"
+                    url={wmsTimeParam ? `/api/eumetsat/wms?time=${wmsTimeParam}` : '/api/eumetsat/wms'}
                     layers="mtg_fd:rgb_geocolour"
                     version="1.1.1"
                     format="image/png"
@@ -498,7 +539,7 @@ export default function RadarMap({ height = 300, hideControls = false, externalL
                 {layerType === 'clouds' && (
                   <WMSTileLayer
                     key={`wv062-${wmsTimeParam}`}
-                    url="/api/eumetsat/wms"
+                    url={wmsTimeParam ? `/api/eumetsat/wms?time=${wmsTimeParam}` : '/api/eumetsat/wms'}
                     layers="msg_fes:wv062"
                     version="1.1.1"
                     format="image/png"
@@ -515,7 +556,7 @@ export default function RadarMap({ height = 300, hideControls = false, externalL
                 {layerType === 'lightning' && (
                   <WMSTileLayer
                     key={`liafa-${wmsTimeParam}`}
-                    url="/api/eumetsat/wms"
+                    url={wmsTimeParam ? `/api/eumetsat/wms?time=${wmsTimeParam}` : '/api/eumetsat/wms'}
                     layers="mtg_fd:li_afa"
                     styles="mtg_li_afa"
                     version="1.1.1"
@@ -531,7 +572,7 @@ export default function RadarMap({ height = 300, hideControls = false, externalL
                 {layerType === 'dust' && (
                   <WMSTileLayer
                     key={`dust-${wmsTimeParam}`}
-                    url="/api/eumetsat/wms"
+                    url={wmsTimeParam ? `/api/eumetsat/wms?time=${wmsTimeParam}` : '/api/eumetsat/wms'}
                     layers="mtg_fd:rgb_dust"
                     version="1.1.1"
                     format="image/png"
@@ -546,7 +587,7 @@ export default function RadarMap({ height = 300, hideControls = false, externalL
                 {layerType === 'fire' && (
                   <WMSTileLayer
                     key={`fire-${wmsTimeParam}`}
-                    url="/api/eumetsat/wms"
+                    url={wmsTimeParam ? `/api/eumetsat/wms?time=${wmsTimeParam}` : '/api/eumetsat/wms'}
                     layers="mtg_fd:rgb_firetemperature"
                     version="1.1.1"
                     format="image/png"
@@ -561,7 +602,7 @@ export default function RadarMap({ height = 300, hideControls = false, externalL
                 {layerType === 'fog' && (
                   <WMSTileLayer
                     key={`fog-${wmsTimeParam}`}
-                    url="/api/eumetsat/wms"
+                    url={wmsTimeParam ? `/api/eumetsat/wms?time=${wmsTimeParam}` : '/api/eumetsat/wms'}
                     layers="mtg_fd:rgb_fog"
                     version="1.1.1"
                     format="image/png"
@@ -576,7 +617,7 @@ export default function RadarMap({ height = 300, hideControls = false, externalL
                 {layerType === 'cloudphase' && (
                   <WMSTileLayer
                     key={`cloudphase-${wmsTimeParam}`}
-                    url="/api/eumetsat/wms"
+                    url={wmsTimeParam ? `/api/eumetsat/wms?time=${wmsTimeParam}` : '/api/eumetsat/wms'}
                     layers="mtg_fd:rgb_cloudphase"
                     version="1.1.1"
                     format="image/png"
@@ -591,7 +632,7 @@ export default function RadarMap({ height = 300, hideControls = false, externalL
                 {layerType === 'infrared' && (
                   <WMSTileLayer
                     key={`infrared-${wmsTimeParam}`}
-                    url="/api/eumetsat/wms"
+                    url={wmsTimeParam ? `/api/eumetsat/wms?time=${wmsTimeParam}` : '/api/eumetsat/wms'}
                     layers="mtg_fd:ir105_hrfi"
                     version="1.1.1"
                     format="image/png"
