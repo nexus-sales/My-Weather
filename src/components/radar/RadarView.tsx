@@ -41,12 +41,12 @@ export default function RadarView() {
   return (
     <div className="w-full flex flex-col gap-6 animate-fadein h-full min-h-[600px]">
       <div className="flex items-center justify-between gap-2 bg-meteorix-card border border-meteorix-border p-2 rounded-2xl backdrop-blur-xl">
-        <div className="flex flex-wrap gap-1">
+        <div className="flex flex-nowrap overflow-x-auto no-scrollbar sm:flex-wrap sm:overflow-visible gap-1">
           {radarModes.map((mode) => (
             <button
               key={mode.id}
               onClick={() => setRadarLayer(mode.id)}
-              className={`flex items-center gap-2 px-4 py-2 rounded-xl transition-all whitespace-nowrap ${
+              className={`flex items-center gap-2 px-4 py-2 rounded-xl transition-all whitespace-nowrap shrink-0 ${
                 radarLayer === mode.id
                   ? 'bg-meteorix-blue/20 text-meteorix-blue border border-meteorix-blue/40 shadow-[0_0_15px_rgba(0,212,255,0.1)]'
                   : 'text-white/40 hover:text-white/60 hover:bg-white/5 border border-transparent'
