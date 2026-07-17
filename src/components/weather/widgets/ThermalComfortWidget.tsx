@@ -71,13 +71,13 @@ export default function ThermalComfortWidget({ temp, feelsLike }: ThermalComfort
       <div className="w-full h-full flex flex-col justify-between p-2">
         <div className="flex justify-between items-start">
            <div className="flex flex-col">
-              <span className="text-[10px] font-outfit text-zinc-400 uppercase tracking-widest">SENSACIÓN TÉRMICA</span>
+              <span className="text-[10px] font-outfit text-white/60 uppercase tracking-widest">SENSACIÓN TÉRMICA</span>
               <div className="flex items-baseline gap-1 mt-1">
                 <span className="text-3xl font-outfit font-bold text-white">{finalFeel}°</span>
-                <span className="text-xs text-zinc-400">real {Math.round(temp)}°</span>
+                <span className="text-xs text-white/60">real {Math.round(temp)}°</span>
               </div>
            </div>
-           <span className="text-[8px] font-inter px-2 py-1 rounded bg-zinc-800/80 text-zinc-300 uppercase font-semibold border border-white/5">
+           <span className="text-[8px] font-inter px-2 py-1 rounded bg-zinc-800/80 text-white/80 uppercase font-semibold border border-white/5">
              {sensation}
            </span>
         </div>
@@ -85,7 +85,7 @@ export default function ThermalComfortWidget({ temp, feelsLike }: ThermalComfort
         {/* Comfort Bar */}
         <div className="flex flex-col gap-2 my-4">
            <div className="flex items-center justify-between">
-             <span className="text-[10px] font-inter text-zinc-300">Índice Bioclimático</span>
+             <span className="text-[10px] font-inter text-white/80">Índice Bioclimático</span>
              <span className="text-[10px] font-outfit font-semibold" style={{ color }}>Riesgo {dangerLevel}</span>
            </div>
            
@@ -99,11 +99,11 @@ export default function ThermalComfortWidget({ temp, feelsLike }: ThermalComfort
         </div>
 
         <div className="flex flex-col gap-1 border-t border-white/5 pt-2 mt-auto">
-          <div className="flex items-center gap-1.5 text-zinc-400">
-             <Shirt size={12} className="text-zinc-400" />
-             <span className="text-[10px] font-inter text-zinc-300">{advice}</span>
+          <div className="flex items-center gap-1.5 text-white/60">
+             <Shirt size={12} className="text-white/60" />
+             <span className="text-[10px] font-inter text-white/80">{advice}</span>
           </div>
-          <div className="flex items-center gap-1.5 text-zinc-500 text-[9px] font-inter">
+          <div className="flex items-center gap-1.5 text-white/50 text-[9px] font-inter">
              <Activity size={10} />
              <span>Sensación térmica del proveedor (temp, humedad, viento)</span>
           </div>

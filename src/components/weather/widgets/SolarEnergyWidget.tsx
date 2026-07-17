@@ -48,10 +48,10 @@ export default function SolarEnergyWidget({ cloudCover, uvIndex, sunrise, sunset
       <div className="w-full h-full flex flex-col justify-between p-2">
         <div className="flex justify-between items-start">
            <div className="flex flex-col">
-              <span className="text-[10px] font-outfit text-zinc-400 uppercase tracking-widest">Eficiencia Estimada</span>
+              <span className="text-[10px] font-outfit text-white/60 uppercase tracking-widest">Eficiencia Estimada</span>
               <div className="flex items-baseline gap-1 mt-1">
                 <span className="text-3xl font-outfit font-bold text-white">{Math.round(efficiency)}</span>
-                <span className="text-sm text-zinc-500 font-medium">%</span>
+                <span className="text-sm text-white/50 font-medium">%</span>
               </div>
            </div>
         </div>
@@ -59,7 +59,7 @@ export default function SolarEnergyWidget({ cloudCover, uvIndex, sunrise, sunset
         {/* Efficiency Bar */}
         <div className="flex flex-col gap-2 my-4">
            <div className="flex items-center justify-between">
-             <span className="text-[10px] font-inter text-zinc-300">Generación de Energía</span>
+             <span className="text-[10px] font-inter text-white/80">Generación de Energía</span>
              <span className="text-[10px] font-outfit font-semibold" style={{ color }}>{statusText}</span>
            </div>
            
@@ -72,7 +72,7 @@ export default function SolarEnergyWidget({ cloudCover, uvIndex, sunrise, sunset
         </div>
 
         <div className="flex justify-between items-center border-t border-white/5 pt-2 mt-auto">
-           <div className="flex items-center gap-1.5 text-zinc-400">
+           <div className="flex items-center gap-1.5 text-white/60">
               <BatteryCharging size={12} />
               <span className="text-[9px] font-inter uppercase">Baterías</span>
            </div>

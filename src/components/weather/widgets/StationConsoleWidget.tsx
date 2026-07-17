@@ -27,7 +27,7 @@ export default function StationConsoleWidget({ outdoorTemp, outdoorHum }: Statio
   return (
     <WidgetWrapper
       title="Consola de Estación"
-      icon={<Cpu size={14} className="text-blue-400" />}
+      icon={<Cpu size={14} className="text-meteorix-highlight" />}
       className="h-auto pb-4"
       dataQuality="estimated"
       source="Valores interiores derivados hasta conectar una estación física"
@@ -38,7 +38,7 @@ export default function StationConsoleWidget({ outdoorTemp, outdoorHum }: Statio
         <div className="flex items-center gap-8 bg-black/30 p-4 rounded-xl border border-white/5">
            <div className="flex flex-col">
               <span className="text-[10px] font-outfit text-white/65 uppercase tracking-widest flex items-center gap-2 mb-1">
-                <Thermometer size={12} className="text-blue-400" /> Interior
+                <Thermometer size={12} className="text-meteorix-highlight" /> Interior
               </span>
               <span className="text-3xl font-outfit font-black text-white drop-shadow-md">
                 {indoorTemp}°<span className="text-lg text-white/65">C</span>
@@ -47,7 +47,7 @@ export default function StationConsoleWidget({ outdoorTemp, outdoorHum }: Statio
            
            <div className="flex flex-col text-right">
               <span className="text-[10px] font-outfit text-white/65 uppercase tracking-widest flex items-center justify-end gap-2 mb-1">
-                <Droplets size={12} className="text-blue-400" /> Humedad
+                <Droplets size={12} className="text-meteorix-highlight" /> Humedad
               </span>
               <span className="text-3xl font-outfit font-bold text-white">
                 {indoorHum}<span className="text-lg text-white/65">%</span>

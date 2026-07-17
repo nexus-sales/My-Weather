@@ -65,7 +65,7 @@ export default function PhotographyWidget({ sunrise, sunset }: PhotographyWidget
       <div className="w-full h-full flex flex-col justify-between p-2">
         <div className="flex justify-between items-start">
            <div className="flex flex-col">
-              <span className="text-[10px] font-outfit text-zinc-400 uppercase tracking-widest">Fase Actual</span>
+              <span className="text-[10px] font-outfit text-white/60 uppercase tracking-widest">Fase Actual</span>
               <div className="flex items-baseline gap-2 mt-1">
                 <span className="text-lg font-outfit font-bold text-white leading-tight">{activePhase}</span>
               </div>
@@ -80,29 +80,29 @@ export default function PhotographyWidget({ sunrise, sunset }: PhotographyWidget
         <div className="flex flex-col gap-3 my-3">
            {/* Morning Row */}
            <div className="flex items-center justify-between">
-             <div className="flex items-center gap-2 text-zinc-400">
+             <div className="flex items-center gap-2 text-white/60">
                <Sunrise size={12} className="text-amber-400" />
                <span className="text-[10px] font-inter">Mañana</span>
              </div>
-             <span className="text-[10px] font-outfit text-zinc-300">
+             <span className="text-[10px] font-outfit text-white/80">
                {formatTime(morningBlueHour)} - {formatTime(morningGoldenHourEnd)}
              </span>
            </div>
            
            {/* Evening Row */}
            <div className="flex items-center justify-between">
-             <div className="flex items-center gap-2 text-zinc-400">
+             <div className="flex items-center gap-2 text-white/60">
                <Sunset size={12} className="text-orange-400" />
                <span className="text-[10px] font-inter">Tarde</span>
              </div>
-             <span className="text-[10px] font-outfit text-zinc-300">
+             <span className="text-[10px] font-outfit text-white/80">
                {formatTime(eveningGoldenHourStart)} - {formatTime(eveningBlueHourEnd)}
              </span>
            </div>
         </div>
 
         <div className="flex justify-between items-center border-t border-white/5 pt-2 mt-auto">
-           <div className="flex items-center gap-1.5 text-zinc-500">
+           <div className="flex items-center gap-1.5 text-white/50">
               <Clock size={12} />
               <span className="text-[9px] font-inter uppercase tracking-widest">Calculado por GPS</span>
            </div>

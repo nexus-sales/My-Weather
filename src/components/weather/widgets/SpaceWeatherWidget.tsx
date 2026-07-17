@@ -47,7 +47,7 @@ export default function SpaceWeatherWidget({ kpIndex, flareClass, auroraProbabil
       <div className="w-full h-full flex flex-col justify-between p-2">
         <div className="flex justify-between items-start">
            <div className="flex flex-col">
-              <span className="text-[10px] font-outfit text-zinc-400 uppercase tracking-widest">Actividad Geomagnética</span>
+              <span className="text-[10px] font-outfit text-white/60 uppercase tracking-widest">Actividad Geomagnética</span>
               <div className="flex items-baseline gap-2 mt-1">
                 <span className="text-3xl font-outfit font-bold text-white">{status}</span>
               </div>
@@ -58,8 +58,8 @@ export default function SpaceWeatherWidget({ kpIndex, flareClass, auroraProbabil
         <div className="flex flex-col gap-3 my-4">
            {/* GPS Status */}
            <div className="flex items-center justify-between bg-zinc-800/40 px-3 py-2 rounded-lg border border-white/5">
-             <div className="flex items-center gap-2 text-zinc-300">
-               <Navigation size={14} className="text-blue-400" />
+             <div className="flex items-center gap-2 text-white/80">
+               <Navigation size={14} className="text-meteorix-highlight" />
                <span className="text-xs font-inter">Riesgo para GPS</span>
              </div>
              <span className="text-xs font-semibold font-outfit" style={{ color: gpsRisk === 'Nulo' ? '#34d399' : color }}>
@@ -69,7 +69,7 @@ export default function SpaceWeatherWidget({ kpIndex, flareClass, auroraProbabil
 
            {/* Aurora Status */}
            <div className="flex items-center justify-between bg-zinc-800/40 px-3 py-2 rounded-lg border border-white/5">
-             <div className="flex items-center gap-2 text-zinc-300">
+             <div className="flex items-center gap-2 text-white/80">
                <Sparkles size={14} className="text-violet-400" />
                <span className="text-xs font-inter">Auroras Boreales (aquí)</span>
              </div>
@@ -81,12 +81,12 @@ export default function SpaceWeatherWidget({ kpIndex, flareClass, auroraProbabil
 
         <div className="flex justify-between items-center border-t border-white/5 pt-2 mt-auto">
            <div className="flex flex-col">
-              <span className="text-[9px] font-outfit text-zinc-500 uppercase tracking-widest">Índice Kp actual</span>
-              <span className="text-xs text-zinc-300 font-medium">
+              <span className="text-[9px] font-outfit text-white/50 uppercase tracking-widest">Índice Kp actual</span>
+              <span className="text-xs text-white/80 font-medium">
                 {hasData ? `Nivel ${kp.toFixed(1)} / 9` : 'No disponible'}
               </span>
            </div>
-           <span className="text-[9px] font-inter text-zinc-500 uppercase">
+           <span className="text-[9px] font-inter text-white/50 uppercase">
              {flareClass ? `Clase ${flareClass}` : ''}
            </span>
         </div>

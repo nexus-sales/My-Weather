@@ -32,8 +32,8 @@ export default function WidgetWrapper({ children, title, icon, className, dataQu
       {/* Header */}
       <div className="flex items-start justify-between gap-3 mb-4 opacity-70 group-hover:opacity-100 transition-opacity">
         <div className="flex items-center gap-2.5 min-w-0">
-          {icon && <div className="text-zinc-400 group-hover:text-zinc-200 transition-colors">{icon}</div>}
-          <h3 className="text-xs font-outfit font-medium tracking-wide text-zinc-300 uppercase truncate">
+          {icon && <div className="text-white/60 group-hover:text-white/75 transition-colors">{icon}</div>}
+          <h3 className="text-xs font-outfit font-medium tracking-wide text-white/80 uppercase truncate">
             {title}
           </h3>
         </div>

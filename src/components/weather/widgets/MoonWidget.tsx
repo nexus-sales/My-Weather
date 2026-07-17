@@ -20,7 +20,7 @@ export default function MoonWidget({ data, title }: MoonWidgetProps) {
   // A white circle for the moon, and a black shape for the shadow.
   
   return (
-    <WidgetWrapper title={title} icon={<MoonIcon size={14} className="text-blue-400" />}>
+    <WidgetWrapper title={title} icon={<MoonIcon size={14} className="text-meteorix-highlight" />}>
       <div className="relative flex items-center justify-between w-full px-4 gap-6">
         {/* Realistic Moon Visualization */}
         <div className="relative w-28 h-28 flex items-center justify-center">
@@ -70,8 +70,8 @@ export default function MoonWidget({ data, title }: MoonWidgetProps) {
 
         {/* Info Panel */}
         <div className="flex flex-col items-end flex-1">
-          <div className="px-2 py-1 bg-blue-400/10 border border-blue-400/20 rounded mb-2">
-            <span className="text-[11px] font-outfit text-blue-400 uppercase tracking-widest">
+          <div className="px-2 py-1 bg-meteorix-highlight/10 border border-meteorix-highlight/20 rounded mb-2">
+            <span className="text-[11px] font-outfit text-meteorix-highlight uppercase tracking-widest">
               {t(`lunarPhases.${data.phaseKey}`)}
             </span>
           </div>

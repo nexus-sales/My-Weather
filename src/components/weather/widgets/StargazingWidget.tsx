@@ -62,13 +62,13 @@ export default function StargazingWidget({ cloudCover, moonPhase, moonPhaseName,
       <div className="w-full h-full flex flex-col justify-between p-2">
         <div className="flex justify-between items-start">
            <div className="flex flex-col">
-              <span className="text-[10px] font-outfit text-zinc-400 uppercase tracking-widest">Aptitud del Cielo</span>
+              <span className="text-[10px] font-outfit text-white/60 uppercase tracking-widest">Aptitud del Cielo</span>
               <div className="flex items-baseline gap-1 mt-1">
                 <span className="text-3xl font-outfit font-bold text-white">{score}</span>
-                <span className="text-sm text-zinc-500 font-medium">%</span>
+                <span className="text-sm text-white/50 font-medium">%</span>
               </div>
            </div>
-           <span className="text-[8px] font-inter px-2 py-1 rounded bg-zinc-800/80 text-zinc-300 uppercase font-semibold border border-white/5" style={{ color }}>
+           <span className="text-[8px] font-inter px-2 py-1 rounded bg-zinc-800/80 text-white/80 uppercase font-semibold border border-white/5" style={{ color }}>
              {quality}
            </span>
         </div>
@@ -76,29 +76,29 @@ export default function StargazingWidget({ cloudCover, moonPhase, moonPhaseName,
         {/* Info Grid */}
         <div className="flex flex-col gap-2.5 my-3.5">
            <div className="flex items-center justify-between text-[10px]">
-             <span className="text-zinc-400 font-inter">Transparencia</span>
-             <span className="font-outfit text-zinc-200 font-medium">{transparency}</span>
+             <span className="text-white/60 font-inter">Transparencia</span>
+             <span className="font-outfit text-white/90 font-medium">{transparency}</span>
            </div>
            
            <div className="flex items-center justify-between text-[10px]">
-             <span className="text-zinc-400 font-inter">Fase Lunar</span>
-             <span className="font-outfit text-zinc-200 font-medium truncate max-w-[120px]" title={moonPhaseName}>
+             <span className="text-white/60 font-inter">Fase Lunar</span>
+             <span className="font-outfit text-white/90 font-medium truncate max-w-[120px]" title={moonPhaseName}>
                {moonPhaseName || 'Nueva'}
              </span>
            </div>
 
            <div className="flex items-center justify-between text-[10px]">
-             <span className="text-zinc-400 font-inter font-light">Nubosidad</span>
-             <span className="font-outfit text-zinc-200 font-medium">{Math.round(cloudCover)}%</span>
+             <span className="text-white/60 font-inter font-light">Nubosidad</span>
+             <span className="font-outfit text-white/90 font-medium">{Math.round(cloudCover)}%</span>
            </div>
         </div>
 
         <div className="flex flex-col gap-1 border-t border-white/5 pt-2 mt-auto">
-          <div className="flex items-center gap-1.5 text-zinc-400">
-             <Eye size={12} className="text-zinc-400" />
-             <span className="text-[9px] font-inter text-zinc-300 truncate font-semibold">{highlights}</span>
+          <div className="flex items-center gap-1.5 text-white/60">
+             <Eye size={12} className="text-white/60" />
+             <span className="text-[9px] font-inter text-white/80 truncate font-semibold">{highlights}</span>
           </div>
-          <div className="flex items-center gap-1.5 text-zinc-500 text-[8px] font-inter">
+          <div className="flex items-center gap-1.5 text-white/50 text-[8px] font-inter">
              <Compass size={10} />
              <span>Ventana óptima: 22:00 - 04:00</span>
           </div>
