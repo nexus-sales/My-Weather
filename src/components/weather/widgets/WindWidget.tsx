@@ -1,16 +1,25 @@
 'use client';
 
-import { Wind } from 'lucide-react';
+import { useState } from 'react';
+import { Wind, Navigation } from 'lucide-react';
+import { useLocale } from 'next-intl';
 import WidgetWrapper from './WidgetWrapper';
+import ExpandedWidgetView from './ExpandedWidgetView';
+import type { WeatherData } from '@/services/weatherService';
 
 interface WindWidgetProps {
   speed: number;
   direction: number;
   gusts?: number;
   title: string;
+  daily?: Pick<WeatherData['daily'], 'time' | 'windMax' | 'windGustsMax' | 'windDirDominant'>;
 }
 
-export default function WindWidget({ speed, direction, gusts, title }: WindWidgetProps) {
+const COMPASS_DIRECTIONS = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'];
+
+export default function WindWidget({ speed, direction, gusts, title, daily }: WindWidgetProps) {
+  const locale = useLocale();
+  const [isDetailOpen, setIsDetailOpen] = useState(false);
   // Rounded to the same precision already shown (speed.toFixed(1) below) so
   // trivial float jitter between re-renders doesn't produce a "new" duration
   // string — which would restart the CSS animation from its 0% keyframe and
@@ -19,20 +28,22 @@ export default function WindWidget({ speed, direction, gusts, title }: WindWidge
   const duration = roundedSpeed > 0 ? Math.max(0.4, 25 / roundedSpeed) : 0;
   // Gusts noticeably above sustained speed = more relevant to flag than a static "stable" label.
   const isGusty = typeof gusts === 'number' && gusts > speed * 1.3 && gusts - speed > 5;
-  
-  // Directions for the compass
-  const directions = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'];
 
   return (
-    <WidgetWrapper title={title} icon={<Wind size={14} className="animate-pulse text-blue-400" />}>
+    <>
+    <WidgetWrapper
+      title={title}
+      icon={<Wind size={14} className="animate-pulse text-blue-400" />}
+      onExpand={daily ? () => setIsDetailOpen(true) : undefined}
+    >
       <div className="relative flex flex-col items-center w-full h-full">
         {/* Compass & Telemetry Background */}
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
           <div className="w-28 h-28 rounded-full border border-white/5 bg-zinc-900/40 shadow-inner" />
-          
+
           {/* Direction Markers */}
           <svg viewBox="0 0 100 100" className="absolute w-32 h-32 opacity-20">
-            {directions.map((d, i) => {
+            {COMPASS_DIRECTIONS.map((d, i) => {
               const a = (i * 45 - 90) * (Math.PI / 180);
               return (
                 <text 
@@ -116,7 +127,7 @@ export default function WindWidget({ speed, direction, gusts, title }: WindWidge
           <div className="flex items-center gap-3 mt-1.5 px-3 py-0.5 rounded-full bg-white/5 border border-white/10">
             <div className="flex items-center gap-1">
                <div className="w-1 h-1 rounded-full bg-orange-400 animate-ping" />
-               <span className="text-[10px] font-inter text-white/65">{direction}° {directions[Math.round(direction/45)%8]}</span>
+               <span className="text-[10px] font-inter text-white/65">{direction}° {COMPASS_DIRECTIONS[Math.round(direction/45)%8]}</span>
             </div>
             {typeof gusts === 'number' && (
               <>
@@ -130,5 +141,42 @@ export default function WindWidget({ speed, direction, gusts, title }: WindWidge
         </div>
       </div>
     </WidgetWrapper>
+
+    {daily && (
+      <ExpandedWidgetView
+        isOpen={isDetailOpen}
+        onClose={() => setIsDetailOpen(false)}
+        title={`${title} · 7 dias`}
+        icon={<Wind size={16} />}
+      >
+        <div className="flex flex-col gap-2">
+          {daily.time.map((dateStr, i) => {
+            const date = new Date(dateStr);
+            const dayName = new Intl.DateTimeFormat(locale, { weekday: 'short' }).format(date);
+            const dayDate = new Intl.DateTimeFormat(locale, { day: '2-digit', month: '2-digit' }).format(date);
+            const dirLabel = COMPASS_DIRECTIONS[Math.round(daily.windDirDominant[i] / 45) % 8];
+            return (
+              <div key={dateStr} className="flex items-center justify-between gap-4 px-4 py-3 rounded-xl bg-white/5 border border-white/5">
+                <div className="flex flex-col min-w-[64px]">
+                  <span className="text-xs font-bold text-white capitalize">{dayName}</span>
+                  <span className="text-[10px] text-white/50">{dayDate}</span>
+                </div>
+
+                <div className="flex items-center gap-2 text-meteorix-highlight" title={`${daily.windDirDominant[i]}°`}>
+                  <Navigation size={16} style={{ transform: `rotate(${daily.windDirDominant[i]}deg)` }} />
+                  <span className="text-[10px] font-inter text-white/65 w-6">{dirLabel}</span>
+                </div>
+
+                <div className="flex flex-col items-end min-w-[70px]">
+                  <span className="text-sm font-bold text-white">{daily.windMax[i].toFixed(0)} km/h</span>
+                  <span className="text-[10px] text-white/50">racha {daily.windGustsMax[i].toFixed(0)}</span>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </ExpandedWidgetView>
+    )}
+    </>
   );
 }

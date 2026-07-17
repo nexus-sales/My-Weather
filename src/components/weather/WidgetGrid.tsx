@@ -48,7 +48,7 @@ export default function WidgetGrid({ weather }: WidgetGridProps) {
           <h4 className="text-[11px] font-outfit font-semibold tracking-widest text-white/60 uppercase">Primary Telemetry / Surface</h4>
         </div>
         <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <WindWidget speed={weather.current.windSpeed} direction={weather.current.windDir} gusts={weather.current.gusts} title={t('wind')} />
+          <WindWidget speed={weather.current.windSpeed} direction={weather.current.windDir} gusts={weather.current.gusts} title={t('wind')} daily={weather.daily} />
           <SunWidget sunrise={weather.daily.sunrise[0]} sunset={weather.daily.sunset[0]} currentTime={weather.current.time} title={`${t('sunrise')} / ${t('sunset')}`} />
           <RainWidget amount={weather.current.precip} title={t('precipitation')} />
           <UVWidget index={weather.current.uvIndex} title={t('uv_index')} />

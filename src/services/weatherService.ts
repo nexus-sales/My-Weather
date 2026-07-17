@@ -68,6 +68,9 @@ export interface WeatherData {
     sunrise: string[];
     sunset: string[];
     uvMax: number[];
+    windMax: number[];
+    windGustsMax: number[];
+    windDirDominant: number[];
   };
 }
 
@@ -99,6 +102,8 @@ function toImperial(data: WeatherData): WeatherData {
       tempMax: data.daily.tempMax.map(c2f),
       tempMin: data.daily.tempMin.map(c2f),
       precipSum: data.daily.precipSum.map(mm2in),
+      windMax: data.daily.windMax.map(kmh2mph),
+      windGustsMax: data.daily.windGustsMax.map(kmh2mph),
     },
   };
 }
@@ -139,7 +144,7 @@ async function fetchWeatherFromOpenMeteo(lat: number, lon: number, units: string
   url.searchParams.append('longitude', lon.toString());
   url.searchParams.append('current', 'temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,rain,showers,weather_code,pressure_msl,wind_speed_10m,wind_direction_10m,wind_gusts_10m,uv_index,visibility,cloud_cover');
   url.searchParams.append('hourly', 'temperature_2m,precipitation_probability,weather_code,cloud_cover');
-  url.searchParams.append('daily', 'weather_code,temperature_2m_max,temperature_2m_min,precipitation_sum,precipitation_probability_max,sunrise,sunset,uv_index_max');
+  url.searchParams.append('daily', 'weather_code,temperature_2m_max,temperature_2m_min,precipitation_sum,precipitation_probability_max,sunrise,sunset,uv_index_max,wind_speed_10m_max,wind_gusts_10m_max,wind_direction_10m_dominant');
   url.searchParams.append('timezone', 'auto');
 
   if (units !== 'metric') {
@@ -187,6 +192,9 @@ async function fetchWeatherFromOpenMeteo(lat: number, lon: number, units: string
       sunrise: data.daily.sunrise,
       sunset: data.daily.sunset,
       uvMax: data.daily.uv_index_max,
+      windMax: data.daily.wind_speed_10m_max,
+      windGustsMax: data.daily.wind_gusts_10m_max,
+      windDirDominant: data.daily.wind_direction_10m_dominant,
     },
   };
 }
@@ -204,7 +212,7 @@ interface OWMCurrentResponse {
 interface OWMForecastEntry {
   dt: number;
   main: { temp: number };
-  wind: { speed: number };
+  wind: { speed: number; deg: number; gust?: number };
   weather: [{ id: number }];
   clouds: { all: number };
   pop: number;
@@ -262,6 +270,16 @@ export async function fetchWeatherFromOWM(lat: number, lon: number, units: strin
     sunrise: days.map((_, i) => (i === 0 ? todaySunrise : '')),
     sunset: days.map((_, i) => (i === 0 ? todaySunset : '')),
     uvMax: days.map(() => 0),
+    windMax: days.map(d => msToKmh(Math.max(...byDay.get(d)!.map(e => e.wind.speed)))),
+    windGustsMax: days.map(d => msToKmh(Math.max(...byDay.get(d)!.map(e => e.wind.gust ?? e.wind.speed)))),
+    // OWM has no pre-aggregated "dominant direction" like Open-Meteo — using
+    // the direction of the entry with the day's peak wind speed as the
+    // closest equivalent, same logic as picking the weatherCode from the
+    // day's midpoint entry above.
+    windDirDominant: days.map(d => {
+      const entries = byDay.get(d)!;
+      return entries.reduce((max, e) => (e.wind.speed > max.wind.speed ? e : max), entries[0]).wind.deg;
+    }),
   };
 
   const result: WeatherData = {
@@ -387,6 +405,14 @@ export async function fetchWeatherFromTomorrow(lat: number, lon: number, units: 
       sunrise: dailyList.map(e => e.values.sunriseTime),
       sunset: dailyList.map(e => e.values.sunsetTime),
       uvMax: dailyList.map(e => e.values.uvIndexMax),
+      // Tomorrow.io's daily-aggregated wind field names (windSpeedMax? Avg?)
+      // aren't confirmed against a live response, unlike the Open-Meteo path
+      // above — this is a rarely-hit fallback (only when Open-Meteo and OWM
+      // both fail), so repeat today's current reading rather than guess a
+      // field name that could silently come back undefined.
+      windMax: dailyList.map(() => v.windSpeed),
+      windGustsMax: dailyList.map(() => v.windGust),
+      windDirDominant: dailyList.map(() => v.windDirection),
     },
   };
 
