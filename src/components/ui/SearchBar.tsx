@@ -104,7 +104,7 @@ export default function SearchBar() {
 
       {/* Dropdown Results */}
       {isOpen && results.length > 0 && (
-        <div className="absolute top-full left-0 w-full mt-2 bg-[#040d22]/95 border border-white/10 rounded-xl shadow-2xl backdrop-blur-xl overflow-hidden z-50 animate-fadein">
+        <div className="absolute top-full left-0 w-full mt-2 bg-meteorix-card border border-white/10 rounded-xl shadow-2xl backdrop-blur-xl overflow-hidden z-50 animate-fadein">
           {results.map((city) => (
             <button
               key={city.id}

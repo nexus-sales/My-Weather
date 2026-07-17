@@ -24,7 +24,7 @@ export default function PressureWidget({ pressure, title }: PressureWidgetProps)
           {/* Professional Barometer Face */}
           <svg viewBox="0 0 100 100" className="w-full h-full">
             {/* Outer Case */}
-            <circle cx="50" cy="50" r="48" fill="#040d22" stroke="white" strokeWidth="0.5" strokeOpacity="0.1" />
+            <circle cx="50" cy="50" r="48" fill="rgba(26,61,77,0.4)" stroke="white" strokeWidth="0.5" strokeOpacity="0.1" />
             <circle cx="50" cy="50" r="45" fill="none" stroke="white" strokeWidth="0.2" strokeOpacity="0.05" />
             
             {/* Colored Zones */}

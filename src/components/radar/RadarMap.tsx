@@ -727,8 +727,8 @@ export default function RadarMap({ height = 300, hideControls = false, externalL
                           center={[strike.lat, strike.lon]}
                           radius={waveRadius}
                           pathOptions={{
-                            color: '#00d4ff',
-                            fillColor: '#00d4ff',
+                            color: '#D4652F',
+                            fillColor: '#D4652F',
                             fillOpacity: Math.max(0, 0.45 - (elapsedSec / 15) * 0.45),
                             weight: 1.5,
                             dashArray: '3, 6',
@@ -776,7 +776,7 @@ export default function RadarMap({ height = 300, hideControls = false, externalL
                 <Circle
                   center={[coords.lat, coords.lon]}
                   radius={3500}
-                  pathOptions={{ color: '#0077ff', fillColor: '#00d4ff', fillOpacity: 0.18, weight: 3 }}
+                  pathOptions={{ color: '#D4652F', fillColor: '#D4652F', fillOpacity: 0.18, weight: 3 }}
                 />
                 <ZoomControl position="bottomright" />
               </MapContainer>
