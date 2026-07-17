@@ -226,6 +226,12 @@ export const useIntelligence = (weather: WeatherData | undefined): IntelligenceD
     const coordHash = Math.abs(Math.sin(coords.lat * coords.lon + parseInt(dateKey.slice(-2)))) * 5;
     dynamicConfidence = Math.max(0, dynamicConfidence - coordHash);
 
+    // Resolved once so `status` always reflects the same number `aqi` reports
+    // below — it used to hardcode "Excelente" for the estimated/fallback case
+    // regardless of how high the estimate came out, which could contradict
+    // AQIWidget's own "MODERADA"/"MALA" label for that identical value.
+    const resolvedAqi = airQuality?.aqi ?? Math.round(humidity / 2 + 10);
+
     return {
       alerts: {
         count: alertsCount,
@@ -245,12 +251,10 @@ export const useIntelligence = (weather: WeatherData | undefined): IntelligenceD
           : locale === 'en' ? 'Stable' : 'Estable',
       },
       air: {
-        aqi: airQuality?.aqi ?? Math.round(humidity / 2 + 10),
+        aqi: resolvedAqi,
         pm10: airQuality?.pm10 ?? 15,
         pm25: airQuality?.pm25 ?? 8,
-        status: airQuality 
-          ? (airQuality.aqi < 50 ? (locale === 'en' ? 'Excellent' : 'Excelente') : (locale === 'en' ? 'Moderate' : 'Moderado'))
-          : (locale === 'en' ? 'Excellent' : 'Excelente'),
+        status: resolvedAqi < 50 ? (locale === 'en' ? 'Excellent' : 'Excelente') : (locale === 'en' ? 'Moderate' : 'Moderado'),
         source: airQuality ? 'Open-Meteo Air Quality' : locale === 'en' ? 'Local estimate' : 'Estimacion local',
         pollen: airQuality?.pollen ?? null,
       },
