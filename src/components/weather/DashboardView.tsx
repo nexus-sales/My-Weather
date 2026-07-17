@@ -61,7 +61,7 @@ export default function DashboardView({ weather, cityName }: DashboardViewProps)
         <div className="col-span-1 md:col-span-12">
           <div className="flex items-center gap-3 mb-4 pl-1">
              <div className="w-2 h-2 bg-blue-400 rounded-full" />
-             <h2 className="text-sm font-medium tracking-widest text-zinc-400 uppercase font-outfit">
+             <h2 className="text-sm font-medium tracking-widest text-white/60 uppercase font-outfit">
                {t('telemetryTitle')}
              </h2>
           </div>
@@ -84,14 +84,14 @@ export default function DashboardView({ weather, cityName }: DashboardViewProps)
       <div className="pt-8 mt-4 border-t border-white/5 flex flex-wrap gap-x-6 gap-y-3 justify-center md:justify-start">
         <div className="flex items-center gap-2">
           <div className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
-          <span className="text-[10px] font-medium tracking-wider text-zinc-500 uppercase">{t('satelliteStable')}</span>
+          <span className="text-[10px] font-medium tracking-wider text-white/50 uppercase">{t('satelliteStable')}</span>
         </div>
         <div className="flex items-center gap-2">
           <div className="w-1.5 h-1.5 rounded-full bg-blue-400" />
-          <span className="text-[10px] font-medium tracking-wider text-zinc-500 uppercase">{t('model')}</span>
+          <span className="text-[10px] font-medium tracking-wider text-white/50 uppercase">{t('model')}</span>
         </div>
         <div className="flex items-center gap-2">
-          <span className="text-[10px] font-medium tracking-wider text-zinc-500 uppercase">{t('lastSync', { time: new Date(weather.current.time).toLocaleTimeString() })}</span>
+          <span className="text-[10px] font-medium tracking-wider text-white/50 uppercase">{t('lastSync', { time: new Date(weather.current.time).toLocaleTimeString() })}</span>
         </div>
       </div>
     </div>

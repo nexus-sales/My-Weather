@@ -45,7 +45,7 @@ export default function WidgetGrid({ weather }: WidgetGridProps) {
       <section className="space-y-4">
         <div className="flex items-center gap-2 pl-2">
           <div className="w-1.5 h-1.5 bg-blue-400 rounded-full" />
-          <h4 className="text-[11px] font-outfit font-semibold tracking-widest text-zinc-400 uppercase">Primary Telemetry / Surface</h4>
+          <h4 className="text-[11px] font-outfit font-semibold tracking-widest text-white/60 uppercase">Primary Telemetry / Surface</h4>
         </div>
         <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <WindWidget speed={weather.current.windSpeed} direction={weather.current.windDir} gusts={weather.current.gusts} title={t('wind')} />
@@ -59,7 +59,7 @@ export default function WidgetGrid({ weather }: WidgetGridProps) {
       <section className="space-y-4">
         <div className="flex items-center gap-2 pl-2">
           <div className="w-1.5 h-1.5 bg-indigo-400 rounded-full" />
-          <h4 className="text-[11px] font-outfit font-semibold tracking-widest text-zinc-400 uppercase">Atmospheric Physics / Static</h4>
+          <h4 className="text-[11px] font-outfit font-semibold tracking-widest text-white/60 uppercase">Atmospheric Physics / Static</h4>
         </div>
         <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <PressureWidget pressure={weather.current.pressure} title={t('pressure')} />
@@ -73,7 +73,7 @@ export default function WidgetGrid({ weather }: WidgetGridProps) {
       <section className="space-y-4">
         <div className="flex items-center gap-2 pl-2">
           <div className="w-1.5 h-1.5 bg-emerald-400 rounded-full" />
-          <h4 className="text-[11px] font-outfit font-semibold tracking-widest text-zinc-400 uppercase">Environmental Intelligence / Bio-Risk</h4>
+          <h4 className="text-[11px] font-outfit font-semibold tracking-widest text-white/60 uppercase">Environmental Intelligence / Bio-Risk</h4>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <CloudWidget coverage={weather.current.cloudCover} title="Cobertura Nubosa" />
@@ -102,7 +102,7 @@ export default function WidgetGrid({ weather }: WidgetGridProps) {
       <section className="space-y-4">
         <div className="flex items-center gap-2 pl-2">
           <div className="w-1.5 h-1.5 bg-violet-400 rounded-full" />
-          <h4 className="text-[11px] font-outfit font-semibold tracking-widest text-zinc-400 uppercase">Specialized Metrics / Climate Monitoring</h4>
+          <h4 className="text-[11px] font-outfit font-semibold tracking-widest text-white/60 uppercase">Specialized Metrics / Climate Monitoring</h4>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <DewPointWidget temp={weather.current.temp} humidity={weather.current.humidity} title="Punto de Rocío" />
@@ -132,7 +132,7 @@ export default function WidgetGrid({ weather }: WidgetGridProps) {
       <section className="space-y-4">
         <div className="flex items-center gap-2 pl-2">
           <div className="w-1.5 h-1.5 bg-amber-400 rounded-full" />
-          <h4 className="text-[11px] font-outfit font-semibold tracking-widest text-zinc-400 uppercase">Lifestyle & Energy</h4>
+          <h4 className="text-[11px] font-outfit font-semibold tracking-widest text-white/60 uppercase">Lifestyle & Energy</h4>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <SolarEnergyWidget cloudCover={weather.current.cloudCover} uvIndex={weather.current.uvIndex} sunrise={weather.daily.sunrise[0]} sunset={weather.daily.sunset[0]} />

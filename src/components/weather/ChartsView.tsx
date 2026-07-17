@@ -43,10 +43,10 @@ export default function ChartsView({ weather }: ChartsViewProps) {
     <div className="space-y-8 animate-fadein">
       <div className="flex flex-col gap-2 pl-2">
         <h2 className="text-2xl font-bold font-outfit tracking-tight text-white flex items-center gap-3">
-          <BarChart3 className="text-blue-400" size={22} />
+          <BarChart3 className="text-meteorix-highlight" size={22} />
           {t('title')}
         </h2>
-        <p className="text-xs text-zinc-400 font-inter">{t('subtitle')}</p>
+        <p className="text-xs text-white/60 font-inter">{t('subtitle')}</p>
       </div>
 
       <div className="grid grid-cols-1 gap-6">
@@ -98,10 +98,10 @@ function ChartCard({ title, icon, data, dataKey1, dataKey2, color1, color2, labe
   return (
     <div className="glass-panel p-6">
       <div className="flex items-center gap-3 mb-6">
-        <div className="p-2 rounded-xl bg-white/5 text-zinc-300 border border-white/5">
+        <div className="p-2 rounded-xl bg-white/5 text-white/80 border border-white/5">
           {icon}
         </div>
-        <h3 className="text-[10px] font-outfit font-semibold tracking-widest text-zinc-400 uppercase">{title}</h3>
+        <h3 className="text-[10px] font-outfit font-semibold tracking-widest text-white/60 uppercase">{title}</h3>
       </div>
       
       <div className="h-auto min-h-[280px] w-full">

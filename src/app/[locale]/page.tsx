@@ -42,7 +42,7 @@ export default function HomePage() {
           <h1 className="text-xl font-medium tracking-tight text-white font-outfit">
             {t('title')}
           </h1>
-          <div className="hidden lg:block text-xs font-medium text-zinc-500 border-l border-white/10 pl-4 uppercase tracking-wider">
+          <div className="hidden lg:block text-xs font-medium text-white/50 border-l border-white/10 pl-4 uppercase tracking-wider">
             {t('controlCenter')}
           </div>
         </div>
@@ -66,10 +66,10 @@ export default function HomePage() {
               className={`flex items-center gap-2 px-5 py-2 rounded-full transition-all duration-300 ease-out whitespace-nowrap ${
                 activeTab === tab.id
                   ? 'bg-white/10 text-white shadow-sm'
-                  : 'text-zinc-400 hover:text-zinc-200 hover:bg-white/5'
+                  : 'text-white/60 hover:text-white/75 hover:bg-white/5'
               }`}
             >
-              <tab.icon size={16} className={activeTab === tab.id ? 'text-blue-400' : ''} />
+              <tab.icon size={16} className={activeTab === tab.id ? 'text-meteorix-highlight' : ''} />
               <span className="text-xs font-medium tracking-wide">{tab.label}</span>
             </button>
           ))}
@@ -85,7 +85,7 @@ export default function HomePage() {
           {isLoading ? (
             <div className="flex flex-col items-center justify-center gap-6 py-32">
               <div className="w-10 h-10 border-[3px] border-zinc-800 border-t-blue-500 rounded-full animate-spin" />
-              <div className="text-sm font-medium tracking-widest text-zinc-500 uppercase">{t('loading')}</div>
+              <div className="text-sm font-medium tracking-widest text-white/50 uppercase">{t('loading')}</div>
             </div>
           ) : error ? (
             <div className="text-red-400 bg-red-950/20 border border-red-900/30 p-6 rounded-2xl text-center text-sm font-medium max-w-md mx-auto">
@@ -104,7 +104,7 @@ export default function HomePage() {
         </div>
       </main>
 
-      <footer className="relative z-10 mt-auto pb-8 pt-4 text-center text-xs text-zinc-600 font-medium tracking-widest uppercase">
+      <footer className="relative z-10 mt-auto pb-8 pt-4 text-center text-xs text-white/45 font-medium tracking-widest uppercase">
         {t('footer')}
       </footer>
     </div>

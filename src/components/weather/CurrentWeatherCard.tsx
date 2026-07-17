@@ -44,12 +44,12 @@ export default function CurrentWeatherCard({ weather, cityName }: CurrentWeather
           <div className="flex flex-col gap-1">
             <div className="flex items-center gap-2 mb-1">
                <div className="w-1.5 h-1.5 rounded-full bg-blue-400 shadow-[0_0_8px_rgba(96,165,250,0.5)]" />
-               <h3 className="text-[10px] tracking-widest text-zinc-400 font-medium uppercase font-outfit">
+               <h3 className="text-[10px] tracking-widest text-white/60 font-medium uppercase font-outfit">
                  {d('current_weather')}
                </h3>
             </div>
             <div className="flex items-center gap-2">
-              <MapPin size={14} className="text-zinc-300" />
+              <MapPin size={14} className="text-white/80" />
               <span className="text-sm font-outfit font-semibold text-white tracking-wide uppercase">{cityName}</span>
             </div>
           </div>
@@ -57,7 +57,7 @@ export default function CurrentWeatherCard({ weather, cityName }: CurrentWeather
              <div className="text-5xl drop-shadow-md mb-2">
                {condition.icon}
              </div>
-             <span className="text-[10px] font-outfit text-zinc-300 font-medium uppercase tracking-wider">{condition.label}</span>
+             <span className="text-[10px] font-outfit text-white/80 font-medium uppercase tracking-wider">{condition.label}</span>
           </div>
         </div>
         
@@ -76,9 +76,9 @@ export default function CurrentWeatherCard({ weather, cityName }: CurrentWeather
           <button 
             onClick={toggleFavorite}
             className={`flex items-center gap-2 px-4 py-2 rounded-full border transition-all duration-300 ${
-              isFavorite 
-                ? 'bg-blue-500/20 border-blue-500/40 text-blue-200' 
-                : 'bg-white/5 border-white/10 text-zinc-400 hover:text-zinc-200 hover:bg-white/10'
+              isFavorite
+                ? 'bg-meteorix-blue/20 border-meteorix-blue/40 text-meteorix-highlight'
+                : 'bg-white/5 border-white/10 text-white/60 hover:text-white/75 hover:bg-white/10'
             }`}
           >
             <Star size={14} fill={isFavorite ? 'currentColor' : 'none'} />
@@ -100,13 +100,13 @@ export default function CurrentWeatherCard({ weather, cityName }: CurrentWeather
                    alert('Sharing not supported on this browser.');
                  }
                }}
-               className="p-2.5 rounded-full bg-white/5 border border-white/10 text-zinc-400 hover:text-white hover:border-white/30 transition-all"
+               className="p-2.5 rounded-full bg-white/5 border border-white/10 text-white/60 hover:text-white hover:border-white/30 transition-all"
              >
                <Share2 size={14} />
              </button>
              <button 
                onClick={() => alert('Aether Premium UI: High fidelity meteorological visualization.')}
-               className="p-2.5 rounded-full bg-white/5 border border-white/10 text-zinc-400 hover:text-white hover:border-white/30 transition-all"
+               className="p-2.5 rounded-full bg-white/5 border border-white/10 text-white/60 hover:text-white hover:border-white/30 transition-all"
              >
                <Info size={14} />
              </button>
@@ -115,10 +115,10 @@ export default function CurrentWeatherCard({ weather, cityName }: CurrentWeather
         
         {/* Bottom Telemetry HUD */}
         <div className="relative z-10 grid grid-cols-2 gap-3 pt-6 border-t border-white/10">
-          <MetricSmall label={d('feels_like')} value={`${Math.round(weather.feelsLike)}°`} color="text-zinc-200" />
-          <MetricSmall label={d('humidity')} value={`${weather.humidity}%`} color="text-zinc-200" />
-          <MetricSmall label={d('wind')} value={`${Math.round(weather.windSpeed)} km/h`} color="text-zinc-200" />
-          <MetricSmall label={d('pressure')} value={`${Math.round(weather.pressure)} hpa`} color="text-zinc-400" />
+          <MetricSmall label={d('feels_like')} value={`${Math.round(weather.feelsLike)}°`} color="text-white/90" />
+          <MetricSmall label={d('humidity')} value={`${weather.humidity}%`} color="text-white/90" />
+          <MetricSmall label={d('wind')} value={`${Math.round(weather.windSpeed)} km/h`} color="text-white/90" />
+          <MetricSmall label={d('pressure')} value={`${Math.round(weather.pressure)} hpa`} color="text-white/60" />
         </div>
       </div>
     </div>
@@ -128,7 +128,7 @@ export default function CurrentWeatherCard({ weather, cityName }: CurrentWeather
 function MetricSmall({ label, value, color }: { label: string, value: string, color: string }) {
   return (
     <div className="flex flex-col bg-white/5 p-3 rounded-2xl border border-white/5 hover:bg-white/10 transition-colors">
-       <span className="text-[9px] tracking-wider font-medium text-zinc-500 uppercase mb-1 font-outfit">{label}</span>
+       <span className="text-[9px] tracking-wider font-medium text-white/50 uppercase mb-1 font-outfit">{label}</span>
        <span className={`text-base font-outfit font-medium ${color}`}>{value}</span>
     </div>
   )
