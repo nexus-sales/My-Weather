@@ -77,12 +77,12 @@ export default function LocationPrompt() {
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 md:p-8 bg-black/60 backdrop-blur-md animate-fadein">
-      <div className="relative max-w-md w-full bg-meteorix-card border border-meteorix-blue/30 rounded-[2.5rem] p-8 md:p-10 shadow-[0_0_80px_rgba(0,212,255,0.15)] overflow-hidden">
+      <div className="relative max-w-md w-full bg-meteorix-card border border-meteorix-blue/30 rounded-[2.5rem] p-8 md:p-10 shadow-[0_0_80px_rgba(26,61,77,0.15)] overflow-hidden">
         {/* Background glow */}
         <div className="absolute -top-24 -right-24 w-48 h-48 bg-meteorix-blue/10 blur-[60px] rounded-full" />
         
         <div className="relative z-10 flex flex-col items-center text-center space-y-6">
-          <div className="p-5 rounded-3xl bg-meteorix-blue/20 text-meteorix-blue shadow-[0_0_30px_rgba(0,212,255,0.2)] animate-bounce-subtle">
+          <div className="p-5 rounded-3xl bg-meteorix-blue/20 text-meteorix-blue shadow-[0_0_30px_rgba(26,61,77,0.2)] animate-bounce-subtle">
             <MapPin size={40} />
           </div>
           
@@ -99,10 +99,10 @@ export default function LocationPrompt() {
             <button
               onClick={handleAllow}
               disabled={isRequesting}
-              className="w-full py-4 rounded-2xl bg-meteorix-blue text-[#001941] font-black uppercase tracking-[0.2em] text-xs transition-all hover:bg-white hover:scale-[1.02] active:scale-95 disabled:opacity-50 disabled:scale-100 flex items-center justify-center gap-3 shadow-[0_10px_30px_rgba(0,212,255,0.3)]"
+              className="w-full py-4 rounded-2xl bg-meteorix-orange text-aether-text font-black uppercase tracking-[0.2em] text-xs transition-all hover:bg-white hover:text-meteorix-orange hover:scale-[1.02] active:scale-95 disabled:opacity-50 disabled:scale-100 flex items-center justify-center gap-3 shadow-[0_10px_30px_rgba(212,101,47,0.3)]"
             >
               {isRequesting ? (
-                 <div className="w-4 h-4 border-2 border-[#001941]/30 border-t-[#001941] rounded-full animate-spin" />
+                 <div className="w-4 h-4 border-2 border-aether-text/30 border-t-aether-text rounded-full animate-spin" />
               ) : (
                  <Navigation2 size={16} />
               )}
