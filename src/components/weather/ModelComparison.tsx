@@ -26,15 +26,23 @@ interface ModelCard {
 export default function ModelComparison({ lat, lon, ecmwfData }: ModelComparisonProps) {
   const t = useTranslations('Comparison');
 
+  // Rounded to ~11m precision: raw browser geolocation readings drift by a
+  // few meters between calls (each re-triggers getCurrentPosition), which
+  // otherwise busts every queryKey below on each reading and defeats both
+  // this cache and the Next.js route's fetch cache — the Tomorrow.io free
+  // tier is only 25 calls/hour, so unrounded coords burn through it fast.
+  const rLat = Math.round(lat * 10000) / 10000;
+  const rLon = Math.round(lon * 10000) / 10000;
+
   const { data: iconData, isLoading: isLoadingIcon } = useQuery({
-    queryKey: ['model-comparison-dwd', lat, lon],
-    queryFn: () => fetchDWDData(lat, lon, 'icon_eu'),
+    queryKey: ['model-comparison-dwd', rLat, rLon],
+    queryFn: () => fetchDWDData(rLat, rLon, 'icon_eu'),
     staleTime: 1000 * 60 * 30,
   });
 
   const { data: ukmoData, isLoading: isLoadingUkmo } = useQuery({
-    queryKey: ['model-comparison-ukmo', lat, lon],
-    queryFn: () => fetchUKMOData(lat, lon),
+    queryKey: ['model-comparison-ukmo', rLat, rLon],
+    queryFn: () => fetchUKMOData(rLat, rLon),
     staleTime: 1000 * 60 * 30,
     retry: false,
   });
@@ -43,15 +51,15 @@ export default function ModelComparison({ lat, lon, ecmwfData }: ModelComparison
   // already power fetchWeather's failover, just called here as data points
   // of their own. Errors stay local: a model that fails just doesn't render.
   const { data: owmData, isLoading: isLoadingOwm } = useQuery({
-    queryKey: ['model-comparison-owm', lat, lon],
-    queryFn: () => fetchWeatherFromOWM(lat, lon, 'metric'),
+    queryKey: ['model-comparison-owm', rLat, rLon],
+    queryFn: () => fetchWeatherFromOWM(rLat, rLon, 'metric'),
     staleTime: 1000 * 60 * 30,
     retry: false,
   });
 
   const { data: tomorrowData, isLoading: isLoadingTomorrow } = useQuery({
-    queryKey: ['model-comparison-tomorrow', lat, lon],
-    queryFn: () => fetchWeatherFromTomorrow(lat, lon, 'metric'),
+    queryKey: ['model-comparison-tomorrow', rLat, rLon],
+    queryFn: () => fetchWeatherFromTomorrow(rLat, rLon, 'metric'),
     staleTime: 1000 * 60 * 30,
     retry: false,
   });
@@ -76,8 +84,8 @@ export default function ModelComparison({ lat, lon, ecmwfData }: ModelComparison
   const ukmo = ukmoData?.current;
 
   const cards: ModelCard[] = [
-    { name: primarySource.name, subtitle: primarySource.subtitle, color: '#00d4ff', temp: ecmwf.temp, windSpeed: ecmwf.windSpeed, precip: ecmwf.precip },
-    { name: 'DWD ICON-EU', subtitle: 'European Precision', color: '#ff8c35', temp: icon?.temperature_2m, windSpeed: icon?.wind_speed_10m, precip: icon?.precipitation },
+    { name: primarySource.name, subtitle: primarySource.subtitle, color: '#2DD4BF', temp: ecmwf.temp, windSpeed: ecmwf.windSpeed, precip: ecmwf.precip },
+    { name: 'DWD ICON-EU', subtitle: 'European Precision', color: '#C9A227', temp: icon?.temperature_2m, windSpeed: icon?.wind_speed_10m, precip: icon?.precipitation },
     // Never the primary/fallback source (unlike OWM/Tomorrow below), so it
     // always renders its own card — no "skip if already shown" check needed.
     { name: 'UK Met Office', subtitle: 'UKV / UKMO Seamless', color: '#f43f5e', temp: ukmo?.temperature_2m, windSpeed: ukmo?.wind_speed_10m, precip: ukmo?.precipitation },
