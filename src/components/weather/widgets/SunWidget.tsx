@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import { Moon, CloudSun } from 'lucide-react';
 import WidgetWrapper from './WidgetWrapper';
 
@@ -13,6 +14,16 @@ interface SunWidgetProps {
 export default function SunWidget({ sunrise, sunset, currentTime, title }: SunWidgetProps) {
   const dSunrise = new Date(sunrise);
   const dSunset = new Date(sunset);
+  // currentTime comes from the weather API's `current.time`, which is
+  // rounded to the top of the hour (e.g. "13:00") and only refreshes with
+  // the data poll (every 10 min) — fine for the sun-position math below,
+  // but displaying it as "RELOJ LOCAL" with seconds looked like a live
+  // clock that was actually frozen. This ticks independently for display.
+  const [liveNow, setLiveNow] = useState(() => new Date());
+  useEffect(() => {
+    const id = setInterval(() => setLiveNow(new Date()), 1000);
+    return () => clearInterval(id);
+  }, []);
   const dNow = new Date(currentTime);
 
   const start = dSunrise.getTime();
@@ -128,7 +139,7 @@ export default function SunWidget({ sunrise, sunset, currentTime, title }: SunWi
            </div>
            <div className="flex flex-col items-end">
              <span className="text-[10px] font-inter text-xs text-orange-400">
-               {dNow.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
+               {liveNow.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
              </span>
              <span className="text-[6px] text-white/20 uppercase tracking-widest mt-1">Reloj Local</span>
            </div>
