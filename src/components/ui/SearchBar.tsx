@@ -87,7 +87,7 @@ export default function SearchBar() {
           className="w-full bg-[#001941]/60 border border-white/10 rounded-xl py-2 pl-10 pr-10 text-sm font-exo2 focus:outline-none focus:border-meteorix-blue/40 transition-all placeholder:text-white/20"
         />
         {isLoading ? (
-          <Loader2 className="absolute right-10 w-4 h-4 text-meteorix-blue/50 animate-spin" />
+          <Loader2 className="absolute right-10 w-4 h-4 text-meteorix-highlight/50 animate-spin" />
         ) : query && (
           <button onClick={() => setQuery('')} className="absolute right-10 hover:text-white transition-colors">
             <X className="w-4 h-4 text-white/30" />
@@ -98,7 +98,7 @@ export default function SearchBar() {
           className="absolute right-3 p-1 hover:bg-white/5 rounded-md transition-colors group"
           title={t('useLocation')}
         >
-          <MapPin className="w-4 h-4 text-meteorix-blue/60 group-hover:text-meteorix-blue" />
+          <MapPin className="w-4 h-4 text-meteorix-highlight/60 group-hover:text-meteorix-highlight" />
         </button>
       </div>
 

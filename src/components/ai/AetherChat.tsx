@@ -53,7 +53,7 @@ export default function AetherChat({ weather, cityName }: AetherChatProps) {
       <div className="p-6 border-b border-white/10 bg-white/5 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="p-2 bg-meteorix-blue/10 rounded-lg border border-meteorix-blue/20">
-            <BrainCircuit className="text-meteorix-blue w-5 h-5 animate-pulse" />
+            <BrainCircuit className="text-meteorix-highlight w-5 h-5 animate-pulse" />
           </div>
           <div>
             <h3 className="text-xs font-black tracking-widest text-white font-orbitron">Dr. AETHER AI</h3>
@@ -83,7 +83,7 @@ export default function AetherChat({ weather, cityName }: AetherChatProps) {
           >
             <div className={`flex-shrink-0 w-8 h-8 rounded-lg flex items-center justify-center border ${
               msg.role === 'user'
-                ? 'bg-meteorix-blue/20 border-meteorix-blue/40 text-meteorix-blue'
+                ? 'bg-meteorix-blue/20 border-meteorix-blue/40 text-meteorix-highlight'
                 : 'bg-white/10 border-white/20 text-white/60'
             }`}
             >
@@ -110,9 +110,9 @@ export default function AetherChat({ weather, cityName }: AetherChatProps) {
             </div>
             <div className="bg-white/5 border border-white/10 p-4 rounded-2xl rounded-tl-none">
               <div className="flex gap-1">
-                <span className="w-1.5 h-1.5 bg-meteorix-blue rounded-full animate-bounce" />
-                <span className="w-1.5 h-1.5 bg-meteorix-blue rounded-full animate-bounce [animation-delay:0.2s]" />
-                <span className="w-1.5 h-1.5 bg-meteorix-blue rounded-full animate-bounce [animation-delay:0.4s]" />
+                <span className="w-1.5 h-1.5 bg-meteorix-highlight rounded-full animate-bounce" />
+                <span className="w-1.5 h-1.5 bg-meteorix-highlight rounded-full animate-bounce [animation-delay:0.2s]" />
+                <span className="w-1.5 h-1.5 bg-meteorix-highlight rounded-full animate-bounce [animation-delay:0.4s]" />
               </div>
             </div>
           </div>
@@ -134,13 +134,13 @@ export default function AetherChat({ weather, cityName }: AetherChatProps) {
           <button
             type="submit"
             disabled={isLoading || !input.trim()}
-            className="absolute right-2 top-1/2 -translate-y-1/2 p-2 text-meteorix-blue hover:text-white transition-colors disabled:opacity-20"
+            className="absolute right-2 top-1/2 -translate-y-1/2 p-2 text-meteorix-highlight hover:text-white transition-colors disabled:opacity-20"
           >
             <Send size={16} />
           </button>
         </div>
         <div className="mt-3 flex items-center gap-2">
-          <Sparkles size={10} className="text-meteorix-blue/60" />
+          <Sparkles size={10} className="text-meteorix-highlight/60" />
           <span className="text-[7px] tracking-[0.2em] font-bold text-white/40 uppercase">
             {t('powered')}
           </span>

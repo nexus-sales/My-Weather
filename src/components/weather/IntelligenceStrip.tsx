@@ -35,7 +35,7 @@ export default function IntelligenceStrip({ data }: IntelligenceStripProps) {
     { id: 'lunar', label: t('cards.lunar'), icon: Moon, color: 'text-indigo-300', value: t('values.moonLight', { illumination }) },
     { id: 'aemet', label: t('cards.aemet'), icon: DatabaseZap, color: 'text-cyan-300', value: t('values.extraLayers') },
     ...(data.metEireann.isAvailable ? [{ id: 'metEireann', label: t('cards.metEireann'), icon: CloudSun, color: 'text-emerald-300', value: t('values.officialForecast') }] : []),
-    { id: 'confidence', label: t('cards.confidence'), icon: CheckCircle2, color: 'text-meteorix-blue', value: t('values.highConfidence', { score: data.confidence.score }) },
+    { id: 'confidence', label: t('cards.confidence'), icon: CheckCircle2, color: 'text-meteorix-highlight', value: t('values.highConfidence', { score: data.confidence.score }) },
   ];
 
   return (
@@ -57,7 +57,7 @@ export default function IntelligenceStrip({ data }: IntelligenceStripProps) {
               <span className={`text-[8px] tracking-[0.2em] font-bold uppercase mb-1 ${isActive ? 'text-white/80' : 'text-white/40'}`}>{card.label}</span>
               <span className="text-[10px] font-bold font-orbitron tracking-widest text-white uppercase">{card.value}</span>
               <div className="mt-2">
-                {isActive ? <ChevronUp size={10} className="text-meteorix-blue" /> : <ChevronDown size={10} className="text-white/20" />}
+                {isActive ? <ChevronUp size={10} className="text-meteorix-highlight" /> : <ChevronDown size={10} className="text-white/20" />}
               </div>
             </button>
           );
@@ -193,7 +193,7 @@ export default function IntelligenceStrip({ data }: IntelligenceStripProps) {
                       {data.aemet.nearestStation.prec !== undefined && (
                         <div>
                           <div className="text-[8px] text-white/20 uppercase mb-1">{t('aemet.rain')}</div>
-                          <div className="text-sm font-bold font-orbitron text-meteorix-blue">{data.aemet.nearestStation.prec} mm</div>
+                          <div className="text-sm font-bold font-orbitron text-meteorix-highlight">{data.aemet.nearestStation.prec} mm</div>
                         </div>
                       )}
                     </div>
@@ -267,11 +267,11 @@ export default function IntelligenceStrip({ data }: IntelligenceStripProps) {
             <div className="flex flex-col gap-4">
               <div className="flex items-center gap-4">
                 <div className="flex-1">
-                  <h4 className="text-[10px] tracking-widest text-meteorix-blue font-bold mb-2 uppercase">{t('confidence.title')}</h4>
+                  <h4 className="text-[10px] tracking-widest text-meteorix-highlight font-bold mb-2 uppercase">{t('confidence.title')}</h4>
                   <p className="text-xs text-white/60 leading-relaxed">{t('confidence.body', { score: data.confidence.score })}</p>
                 </div>
                 <div className="bg-meteorix-blue/10 p-4 rounded-xl border border-meteorix-blue/20">
-                  <div className="text-2xl font-black font-orbitron text-meteorix-blue">{data.confidence.score}%</div>
+                  <div className="text-2xl font-black font-orbitron text-meteorix-highlight">{data.confidence.score}%</div>
                   <div className="text-[8px] tracking-widest text-white/30 text-center uppercase">{t('confidence.trustScore')}</div>
                 </div>
               </div>

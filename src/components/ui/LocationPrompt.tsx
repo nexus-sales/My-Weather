@@ -82,7 +82,7 @@ export default function LocationPrompt() {
         <div className="absolute -top-24 -right-24 w-48 h-48 bg-meteorix-blue/10 blur-[60px] rounded-full" />
         
         <div className="relative z-10 flex flex-col items-center text-center space-y-6">
-          <div className="p-5 rounded-3xl bg-meteorix-blue/20 text-meteorix-blue shadow-[0_0_30px_rgba(26,61,77,0.2)] animate-bounce-subtle">
+          <div className="p-5 rounded-3xl bg-meteorix-blue/20 text-meteorix-highlight shadow-[0_0_30px_rgba(26,61,77,0.2)] animate-bounce-subtle">
             <MapPin size={40} />
           </div>
           

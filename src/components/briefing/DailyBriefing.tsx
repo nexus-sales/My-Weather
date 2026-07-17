@@ -103,7 +103,7 @@ export default function DailyBriefing({ weather, cityName }: DailyBriefingProps)
         <div className="flex-1 space-y-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-meteorix-blue/20 text-meteorix-blue shadow-[0_0_15px_rgba(26,61,77,0.2)]">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-meteorix-blue/20 text-meteorix-highlight shadow-[0_0_15px_rgba(26,61,77,0.2)]">
                 <Sparkles size={20} />
               </div>
               <div>
@@ -113,7 +113,7 @@ export default function DailyBriefing({ weather, cityName }: DailyBriefingProps)
             </div>
             <button 
               onClick={() => handleSpeech(`${t('voiceIntro', { city: cityName })} ${briefing.summary}`)}
-              className="p-3 rounded-full bg-white/5 hover:bg-white/10 text-white/40 hover:text-meteorix-blue transition-all border border-white/5"
+              className="p-3 rounded-full bg-white/5 hover:bg-white/10 text-white/40 hover:text-meteorix-highlight transition-all border border-white/5"
               title={t('speech')}
             >
               <Volume2 size={18} />
@@ -145,11 +145,11 @@ export default function DailyBriefing({ weather, cityName }: DailyBriefingProps)
         </div>
 
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 md:gap-3 w-full xl:w-auto">
-          <ScoreCard label={t('activities.sport')} score={briefing.scores.outdoor} icon={<Bike size={14} />} color="text-meteorix-blue" />
-          <ScoreCard label={t('activities.route')} score={briefing.scores.driving} icon={<Car size={14} />} color="text-meteorix-blue" />
-          <ScoreCard label={t('activities.photo')} score={briefing.scores.photo} icon={<Camera size={14} />} color="text-meteorix-blue" />
-          <ScoreCard label={t('activities.beach')} score={briefing.scores.beach} icon={<Sun size={14} />} color="text-meteorix-blue" />
-          <ScoreCard label={t('activities.garden')} score={briefing.scores.garden} icon={<MapPin size={14} />} color="text-meteorix-blue" />
+          <ScoreCard label={t('activities.sport')} score={briefing.scores.outdoor} icon={<Bike size={14} />} color="text-meteorix-highlight" />
+          <ScoreCard label={t('activities.route')} score={briefing.scores.driving} icon={<Car size={14} />} color="text-meteorix-highlight" />
+          <ScoreCard label={t('activities.photo')} score={briefing.scores.photo} icon={<Camera size={14} />} color="text-meteorix-highlight" />
+          <ScoreCard label={t('activities.beach')} score={briefing.scores.beach} icon={<Sun size={14} />} color="text-meteorix-highlight" />
+          <ScoreCard label={t('activities.garden')} score={briefing.scores.garden} icon={<MapPin size={14} />} color="text-meteorix-highlight" />
         </div>
       </div>
     </div>

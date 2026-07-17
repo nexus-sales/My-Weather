@@ -109,7 +109,7 @@ export default function ModelComparison({ lat, lon, ecmwfData }: ModelComparison
     <div className="bg-meteorix-card border border-meteorix-border rounded-[2rem] p-8 backdrop-blur-xl animate-fadein">
       <div className="flex items-center justify-between mb-8">
         <div className="flex items-center gap-3">
-          <Layers className="text-meteorix-blue" size={20} />
+          <Layers className="text-meteorix-highlight" size={20} />
           <h3 className="text-sm font-bold font-orbitron tracking-widest text-white/90 uppercase">
             {t('title')}
           </h3>
@@ -141,7 +141,7 @@ export default function ModelComparison({ lat, lon, ecmwfData }: ModelComparison
 
       {temps.length > 1 && (
         <div className="mt-6 p-4 rounded-2xl bg-meteorix-blue/5 border border-meteorix-blue/10 flex gap-3 items-start">
-          <Info size={14} className="text-meteorix-blue mt-0.5" />
+          <Info size={14} className="text-meteorix-highlight mt-0.5" />
           <p className="text-[9px] leading-relaxed text-white/40">
             {t('diffNote', {
               diff: diffTemp.toFixed(1),

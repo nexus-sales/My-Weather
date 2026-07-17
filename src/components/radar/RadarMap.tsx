@@ -447,7 +447,7 @@ export default function RadarMap({ height = 300, hideControls = false, externalL
 
         {(layerType === 'radar' && currentFrame) && (
           <div className="bg-black/80 backdrop-blur-md border border-white/10 px-3 py-1.5 rounded-lg flex items-center gap-3 w-fit pointer-events-auto shadow-xl">
-            <button onClick={() => setIsPlaying(!isPlaying)} className="text-meteorix-blue hover:text-white transition-colors">
+            <button onClick={() => setIsPlaying(!isPlaying)} className="text-meteorix-highlight hover:text-white transition-colors">
               {isPlaying ? '⏸' : '▶'}
             </button>
             <div className="flex flex-col">
@@ -698,13 +698,13 @@ export default function RadarMap({ height = 300, hideControls = false, externalL
                       }}
                     >
                       <div className="bg-black/80 backdrop-blur-md border border-white/20 p-2 rounded-lg text-[8px] font-orbitron text-white min-w-[60px] pointer-events-none">
-                        <div className="font-bold text-meteorix-blue mb-1">{station.ubi}</div>
+                        <div className="font-bold text-meteorix-highlight mb-1">{station.ubi}</div>
                         <div className="flex justify-between gap-2">
                           <span>TEMP:</span>
                           <span className="text-white">{temperature}°C</span>
                         </div>
                         {precipitation > 0 && (
-                          <div className="flex justify-between gap-2 text-meteorix-blue">
+                          <div className="flex justify-between gap-2 text-meteorix-highlight">
                             <span>RAIN:</span>
                             <span>{precipitation}mm</span>
                           </div>
@@ -800,7 +800,7 @@ export default function RadarMap({ height = 300, hideControls = false, externalL
               {layerType === 'radar' && activeFrames.length > 0 && (
                 <div className="absolute bottom-4 left-4 right-12 z-[1000] h-1 bg-white/10 rounded-full overflow-hidden pointer-events-none">
                   <div 
-                    className="h-full bg-meteorix-blue shadow-[0_0_10px_#1A3D4D] transition-all duration-300"
+                    className="h-full bg-meteorix-highlight shadow-[0_0_10px_#2DD4BF] transition-all duration-300"
                     style={{ width: `${((displayedFrameIndex + 1) / activeFrames.length) * 100}%` }} 
                   />
                 </div>

@@ -38,8 +38,8 @@ export default function Forecast7Days({ daily, hourly }: Forecast7DaysProps) {
   return (
     <div className="w-full mt-12 animate-fadein" style={{ animationDelay: '200ms' }}>
       <div className="flex items-center gap-2 mb-6 px-4">
-        <Calendar className="w-4 h-4 text-meteorix-blue/60" />
-        <h3 className="text-xs font-bold tracking-[0.3em] text-meteorix-blue/80 uppercase">
+        <Calendar className="w-4 h-4 text-meteorix-highlight/60" />
+        <h3 className="text-xs font-bold tracking-[0.3em] text-meteorix-highlight/80 uppercase">
           {t('forecast_7_days')}
         </h3>
       </div>
@@ -60,7 +60,7 @@ export default function Forecast7Days({ daily, hourly }: Forecast7DaysProps) {
               }`}
             >
               <span className={`text-[10px] font-bold tracking-widest uppercase mb-1 ${
-                isSelected ? 'text-meteorix-blue' : 'text-white/50'
+                isSelected ? 'text-meteorix-highlight' : 'text-white/50'
               }`}>
                 {getDayName(time)}
               </span>
@@ -95,7 +95,7 @@ export default function Forecast7Days({ daily, hourly }: Forecast7DaysProps) {
       {/* Hourly Detail Section */}
       <div className="meteorix-card rounded-3xl p-6">
         <div className="flex items-center gap-2 mb-6">
-          <Clock className="w-3.5 h-3.5 text-meteorix-blue/60" />
+          <Clock className="w-3.5 h-3.5 text-meteorix-highlight/60" />
           <h4 className="text-[9px] font-bold tracking-[0.2em] text-white/60 uppercase">
             Detalle por horas — {getDayName(selectedDateStr)} {getFormattedDate(selectedDateStr)}
           </h4>

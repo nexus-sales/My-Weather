@@ -17,9 +17,10 @@
   /* Meteorix Mission Control palette — referenced by ~20 components (bg-meteorix-*,
      text-meteorix-*, border-meteorix-*). card/border/bg alias the aether-* tokens
      above and inherit their values automatically. */
-  --color-meteorix-blue: #1A3D4D; /* Basalto */
+  --color-meteorix-blue: #1A3D4D; /* Basalto — structural fills/borders, NOT for icon/text foreground: too dark to read against the dark UI (confirmed: DailyBriefing activity icons were invisible) */
   --color-meteorix-green: #F2E2C4; /* Calima */
   --color-meteorix-orange: #D4652F; /* Terracota volcánica */
+  --color-meteorix-highlight: #2DD4BF; /* Teal Atlántico — bright accent for icon/text foreground where meteorix-blue used to work before it got repaletted dark. Same hue already used for temperature/ECMWF data, reused here for the same "bright accent, not the terracota action color" role. */
   --color-meteorix-bg: var(--color-aether-bg);
   --color-meteorix-card: var(--color-aether-panel);
   --color-meteorix-border: var(--color-aether-border);

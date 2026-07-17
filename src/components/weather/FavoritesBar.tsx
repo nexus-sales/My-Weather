@@ -13,7 +13,7 @@ export default function FavoritesBar() {
   return (
     <div className="flex items-center gap-3 w-full overflow-x-auto no-scrollbar pb-2 animate-fadein">
       <div className="flex items-center gap-2 text-[8px] font-bold tracking-[0.2em] text-white/20 uppercase whitespace-nowrap">
-        <Star size={10} className="text-meteorix-blue/40" />
+        <Star size={10} className="text-meteorix-highlight/40" />
         {t('favorites')}:
       </div>
       
@@ -26,8 +26,8 @@ export default function FavoritesBar() {
             }}
             className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-meteorix-card border border-meteorix-border hover:border-meteorix-blue/30 hover:bg-meteorix-blue/5 transition-all whitespace-nowrap"
           >
-            <MapPin size={8} className="text-meteorix-blue/50" />
-            <span className="text-[10px] font-bold text-white/60 group-hover:text-meteorix-blue transition-colors">
+            <MapPin size={8} className="text-meteorix-highlight/50" />
+            <span className="text-[10px] font-bold text-white/60 group-hover:text-meteorix-highlight transition-colors">
               {fav.name.split(',')[0]}
             </span>
           </button>

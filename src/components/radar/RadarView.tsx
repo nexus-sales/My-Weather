@@ -11,7 +11,7 @@ const RadarMap = dynamic(() => import('@/components/radar/RadarMap'), {
     <div className="w-full h-full bg-[#00060f] flex items-center justify-center">
       <div className="flex flex-col items-center gap-4">
         <div className="w-8 h-8 border-4 border-meteorix-blue/30 border-t-meteorix-blue rounded-full animate-spin" />
-        <span className="text-[10px] font-orbitron tracking-widest text-meteorix-blue/50 uppercase animate-blink">Iniciando Telemetría...</span>
+        <span className="text-[10px] font-orbitron tracking-widest text-meteorix-highlight/50 uppercase animate-blink">Iniciando Telemetría...</span>
       </div>
     </div>
   ),
@@ -48,7 +48,7 @@ export default function RadarView() {
               onClick={() => setRadarLayer(mode.id)}
               className={`flex items-center gap-2 px-4 py-2 rounded-xl transition-all whitespace-nowrap shrink-0 ${
                 radarLayer === mode.id
-                  ? 'bg-meteorix-blue/20 text-meteorix-blue border border-meteorix-blue/40 shadow-[0_0_15px_rgba(26,61,77,0.1)]'
+                  ? 'bg-meteorix-blue/20 text-meteorix-highlight border border-meteorix-blue/40 shadow-[0_0_15px_rgba(26,61,77,0.1)]'
                   : 'text-white/40 hover:text-white/60 hover:bg-white/5 border border-transparent'
               }`}
             >

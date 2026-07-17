@@ -90,7 +90,7 @@ export default function HourlyChart({ data }: HourlyChartProps) {
   return (
     <div className="w-full meteorix-card rounded-3xl p-6 animate-fadein flex flex-col h-[400px]" style={{ animationDelay: '300ms' }}>
       <div className="flex items-center gap-2 mb-8">
-        <Activity className="w-4 h-4 text-meteorix-blue/80" />
+        <Activity className="w-4 h-4 text-meteorix-highlight/80" />
         <h3 className="text-[10px] tracking-[0.4em] text-white/60 font-bold uppercase">
           {t('thermalEvolution')}
         </h3>
