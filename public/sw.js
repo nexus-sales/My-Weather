@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'myweather-v2';
+const CACHE_VERSION = 'myweather-v3';
 const APP_SHELL = [
   '/',
   '/es',

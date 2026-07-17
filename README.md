@@ -94,6 +94,10 @@ El proyecto nacio como prototipo monolitico en `Meteorix pro.jsx` y esta migrand
 - **Supabase** — fase futura (favoritos, historial, alertas persistentes)
 - **PWA nativa** sin dependencia externa inicial: `manifest.ts`, service worker y cache basica
 
+## Notas operativas
+
+- **Cualquier cambio visual o de shell (paleta, layout de `[locale]`, iconos, manifest) debe ir acompanado de un bump de `CACHE_VERSION` en `public/sw.js`.** El `activate` handler borra toda cache con nombre distinto al actual, asi que subir el numero es lo unico necesario para purgar el HTML/iconos viejos — sin el bump, cualquier usuario con la PWA instalada o que ya visito la app sigue viendo el shell cacheado hasta que limpie cache a mano.
+
 ## Fuentes de datos activas
 
 - **Open-Meteo** — condiciones actuales (ECMWF), prevision 7 dias, historico, calidad del aire, datos marinos, indices convectivos y visibilidad.
