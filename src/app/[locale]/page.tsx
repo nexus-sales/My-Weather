@@ -57,7 +57,7 @@ export default function HomePage() {
       </header>
 
       {/* Premium Segmented Controls (Tabs) */}
-      <nav className="relative z-30 flex items-center justify-center px-4 md:px-8 py-3 border-b border-white/5 bg-black/20 backdrop-blur-xl overflow-x-auto no-scrollbar">
+      <nav className="relative z-30 flex items-center justify-start sm:justify-center px-4 md:px-8 py-3 border-b border-white/5 bg-black/20 backdrop-blur-xl overflow-x-auto no-scrollbar">
         <div className="flex bg-black/40 p-1 rounded-full border border-white/5">
           {tabs.map((tab) => (
             <button
