@@ -137,7 +137,7 @@ export default function WidgetGrid({ weather }: WidgetGridProps) {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <SolarEnergyWidget cloudCover={weather.current.cloudCover} uvIndex={weather.current.uvIndex} sunrise={weather.daily.sunrise[0]} sunset={weather.daily.sunset[0]} />
           <PhotographyWidget sunrise={weather.daily.sunrise[0]} sunset={weather.daily.sunset[0]} />
-          <ThermalComfortWidget temp={weather.current.temp} humidity={weather.current.humidity} windSpeed={weather.current.windSpeed} />
+          <ThermalComfortWidget temp={weather.current.temp} feelsLike={weather.current.feelsLike} />
           <StargazingWidget cloudCover={weather.current.cloudCover} moonPhase={intelligence.lunar.phase} moonPhaseName={intelligence.lunar.phaseKey} rain={weather.current.precip} />
         </div>
       </section>

@@ -5,21 +5,15 @@ import WidgetWrapper from './WidgetWrapper';
 
 interface ThermalComfortWidgetProps {
   temp: number;
-  humidity: number;
-  windSpeed: number;
+  feelsLike: number;
 }
 
-export default function ThermalComfortWidget({ temp, humidity, windSpeed }: ThermalComfortWidgetProps) {
-  // Compute Heat Index / Wind Chill or simple Feel-like Sensation
-  // Simple Apparent Temperature (Feel Like) formula approximation
-  // AT = T + 0.33 * e - 0.70 * ws - 4.0
-  // where e = water vapor pressure (hPa) = (rh / 100) * 6.105 * exp(17.27 * T / (237.7 + T))
-  const rh = humidity;
-  const ws = windSpeed / 3.6; // convert km/h to m/s
-  const e = (rh / 100) * 6.105 * Math.exp((17.27 * temp) / (237.7 + temp));
-  const feelLike = temp + 0.33 * e - 0.7 * ws - 4.0;
-  
-  const finalFeel = Math.round(feelLike * 10) / 10;
+export default function ThermalComfortWidget({ temp, feelsLike }: ThermalComfortWidgetProps) {
+  // feelsLike comes straight from weather.current.feelsLike (Open-Meteo's
+  // apparent_temperature). This used to recompute the same Bureau of
+  // Meteorology AT formula independently client-side — same formula, two
+  // implementations, no reason for them to ever disagree.
+  const finalFeel = Math.round(feelsLike * 10) / 10;
 
   // Sensation category and styling
   let sensation = 'Neutral';
@@ -28,43 +22,43 @@ export default function ThermalComfortWidget({ temp, humidity, windSpeed }: Ther
   let dangerLevel = 'Bajo';
   let percentage = 50; // slider position
 
-  if (feelLike >= 40) {
+  if (feelsLike >= 40) {
     sensation = 'Calor Extremo';
     advice = 'Peligro de golpe de calor. Hidrátate.';
     color = '#ef4444'; // red-500
     dangerLevel = 'Extremo';
     percentage = 95;
-  } else if (feelLike >= 35) {
+  } else if (feelsLike >= 35) {
     sensation = 'Calor Muy Alto';
     advice = 'Evita esfuerzo. Busca sombra y agua.';
     color = '#f97316'; // orange-500
     dangerLevel = 'Muy Alto';
     percentage = 85;
-  } else if (feelLike >= 30) {
+  } else if (feelsLike >= 30) {
     sensation = 'Calor Moderado';
     advice = 'Ropa ligera, ventilación y agua.';
     color = '#fbbf24'; // amber-400
     dangerLevel = 'Moderado';
     percentage = 70;
-  } else if (feelLike >= 18 && feelLike < 30) {
+  } else if (feelsLike >= 18 && feelsLike < 30) {
     sensation = 'Confortable';
     advice = 'Condiciones ideales. Ropa casual.';
     color = '#34d399'; // emerald-400
     dangerLevel = 'Ninguno';
     percentage = 50;
-  } else if (feelLike >= 10 && feelLike < 18) {
+  } else if (feelsLike >= 10 && feelsLike < 18) {
     sensation = 'Fresco';
     advice = 'Prenda de abrigo fina o chaqueta.';
     color = '#60a5fa'; // blue-400
     dangerLevel = 'Ninguno';
     percentage = 35;
-  } else if (feelLike >= 0 && feelLike < 10) {
+  } else if (feelsLike >= 0 && feelsLike < 10) {
     sensation = 'Frío';
     advice = 'Abrigo grueso, protege cuello/manos.';
     color = '#818cf8'; // indigo-400
     dangerLevel = 'Bajo';
     percentage = 20;
-  } else if (feelLike < 0) {
+  } else if (feelsLike < 0) {
     sensation = 'Frío Extremo';
     advice = 'Riesgo de hipotermia. Varias capas.';
     color = '#a5b4fc'; // indigo-300
@@ -111,7 +105,7 @@ export default function ThermalComfortWidget({ temp, humidity, windSpeed }: Ther
           </div>
           <div className="flex items-center gap-1.5 text-zinc-500 text-[9px] font-inter">
              <Activity size={10} />
-             <span>Calculado con Temp, Humedad y Viento</span>
+             <span>Sensación térmica del proveedor (temp, humedad, viento)</span>
           </div>
         </div>
       </div>
