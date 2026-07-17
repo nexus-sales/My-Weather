@@ -108,5 +108,9 @@ h1, h2, h3, h4, h5, h6, .font-outfit {
 }
 .no-scrollbar {
   -ms-overflow-style: none;
-  scrollbar-width: none;
+}
+@supports (scrollbar-width: none) {
+  .no-scrollbar {
+    scrollbar-width: none;
+  }
 }
