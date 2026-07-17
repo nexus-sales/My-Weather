@@ -65,8 +65,8 @@ h1, h2, h3, h4, h5, h6, .font-outfit {
 /* Premium Glass Panel (For Bento Grid Cards) */
 .glass-panel {
   background: var(--color-aether-panel);
-  backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
+  backdrop-filter: blur(24px);
   border: 1px solid var(--color-aether-border);
   box-shadow: 
     0 4px 6px -1px rgba(0, 0, 0, 0.1),
