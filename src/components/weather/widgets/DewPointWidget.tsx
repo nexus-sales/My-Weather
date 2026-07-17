@@ -2,6 +2,7 @@
 
 import { ThermometerSnowflake } from 'lucide-react';
 import WidgetWrapper from './WidgetWrapper';
+import { calculateDewPoint } from '@/lib/weatherUtils';
 
 interface DewPointWidgetProps {
   temp: number;
@@ -10,14 +11,8 @@ interface DewPointWidgetProps {
 }
 
 export default function DewPointWidget({ temp, humidity, title }: DewPointWidgetProps) {
-  // Magnuse formula for Dew Point
-  const a = 17.27;
-  const b = 237.7;
-  // Math.log(0) = -Infinity would propagate to NaN — clamp to a valid range first.
-  const safeHumidity = Math.max(1, Math.min(100, humidity));
-  const alpha = ((a * temp) / (b + temp)) + Math.log(safeHumidity / 100);
-  const dewPoint = (b * alpha) / (a - alpha);
-  
+  const dewPoint = calculateDewPoint(temp, humidity);
+
   // Comfort level
   let comfort = 'Confortable';
   let color = '#00ff88';

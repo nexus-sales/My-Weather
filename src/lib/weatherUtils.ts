@@ -49,3 +49,15 @@ export const getWindDirection = (degree: number) => {
   const directions = ['N', 'NNE', 'NE', 'ENE', 'E', 'ESE', 'SE', 'SSE', 'S', 'SSO', 'SO', 'OSO', 'O', 'ONO', 'NO', 'NNO'];
   return directions[Math.round(degree / 22.5) % 16];
 };
+
+// Magnus formula. Single source of truth — DewPointWidget and HumidityWidget
+// used to each compute this independently with different formulas and
+// disagreed by several degrees for the same reading.
+export const calculateDewPoint = (temp: number, humidity: number) => {
+  const a = 17.27;
+  const b = 237.7;
+  // Math.log(0) = -Infinity would propagate to NaN — clamp to a valid range first.
+  const safeHumidity = Math.max(1, Math.min(100, humidity));
+  const alpha = ((a * temp) / (b + temp)) + Math.log(safeHumidity / 100);
+  return (b * alpha) / (a - alpha);
+};

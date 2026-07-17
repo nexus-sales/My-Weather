@@ -2,6 +2,7 @@
 
 import { Droplet } from 'lucide-react';
 import WidgetWrapper from './WidgetWrapper';
+import { calculateDewPoint } from '@/lib/weatherUtils';
 
 interface HumidityWidgetProps {
   humidity: number;
@@ -10,9 +11,8 @@ interface HumidityWidgetProps {
 }
 
 export default function HumidityWidget({ humidity, temp, title }: HumidityWidgetProps) {
-  // Calculate approximate Dew Point (Magnus-Tetens formula simplified)
-  const dewPoint = temp - ((100 - humidity) / 5);
-  
+  const dewPoint = calculateDewPoint(temp, humidity);
+
   return (
     <WidgetWrapper title={title} icon={<Droplet size={14} className="text-blue-400 animate-pulse" />}>
       <div className="relative flex flex-col items-center justify-center w-full h-full">
