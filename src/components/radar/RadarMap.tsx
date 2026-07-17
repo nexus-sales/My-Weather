@@ -433,12 +433,12 @@ export default function RadarMap({ height = 300, hideControls = false, externalL
       {/* Controles superiores */}
       {!hideControls && (
         <div className="absolute top-4 left-4 right-4 z-[1000] flex flex-col gap-2 pointer-events-none">
-          <div className="bg-black/80 backdrop-blur-md border border-white/10 p-1 rounded-lg flex flex-wrap items-center gap-1 pointer-events-auto shadow-xl max-w-full">
+          <div className="bg-black/80 backdrop-blur-md border border-white/10 p-1 rounded-lg flex flex-nowrap items-center overflow-x-auto no-scrollbar sm:flex-wrap sm:overflow-visible gap-1 pointer-events-auto shadow-xl max-w-full">
             {INTERNAL_LAYER_BUTTONS.map((mode) => (
               <button
                 key={mode.id}
                 onClick={() => setInternalLayerType(mode.id)}
-                className={`px-3 py-1.5 rounded-md text-[10px] font-orbitron font-bold tracking-wider transition-all ${layerType === mode.id ? 'bg-meteorix-blue text-white shadow-[0_0_15px_rgba(26,61,77,0.4)]' : 'text-white/60 hover:text-white hover:bg-white/5'}`}
+                className={`shrink-0 px-3 py-1.5 rounded-md text-[10px] font-orbitron font-bold tracking-wider transition-all ${layerType === mode.id ? 'bg-meteorix-blue text-white shadow-[0_0_15px_rgba(26,61,77,0.4)]' : 'text-white/60 hover:text-white hover:bg-white/5'}`}
               >
                 {mode.label}
               </button>
