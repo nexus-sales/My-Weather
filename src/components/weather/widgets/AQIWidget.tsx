@@ -4,7 +4,10 @@ import { Activity, Wind } from 'lucide-react';
 import WidgetWrapper from './WidgetWrapper';
 
 interface AQIWidgetProps {
-  aqiValue?: number; // Optional AQI, fallback to random if missing for demo
+  // WidgetGrid always passes intelligence.air.aqi, which has its own
+  // fallback estimate — this default never actually triggers in practice,
+  // it's only here as a safety net if the prop is ever omitted.
+  aqiValue?: number;
   dataQuality?: 'observed' | 'estimated' | 'static';
   source?: string;
 }
