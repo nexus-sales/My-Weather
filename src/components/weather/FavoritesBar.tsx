@@ -12,7 +12,7 @@ export default function FavoritesBar() {
 
   return (
     <div className="flex items-center gap-3 w-full overflow-x-auto no-scrollbar pb-2 animate-fadein">
-      <div className="flex items-center gap-2 text-[8px] font-bold tracking-[0.2em] text-white/20 uppercase whitespace-nowrap">
+      <div className="flex items-center gap-2 text-[8px] font-bold tracking-[0.2em] text-white/45 uppercase whitespace-nowrap">
         <Star size={10} className="text-meteorix-highlight/40" />
         {t('favorites')}:
       </div>

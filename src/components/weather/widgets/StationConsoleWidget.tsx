@@ -37,20 +37,20 @@ export default function StationConsoleWidget({ outdoorTemp, outdoorHum }: Statio
         {/* Indoor Sensors */}
         <div className="flex items-center gap-8 bg-black/30 p-4 rounded-xl border border-white/5">
            <div className="flex flex-col">
-              <span className="text-[10px] font-outfit text-white/50 uppercase tracking-widest flex items-center gap-2 mb-1">
+              <span className="text-[10px] font-outfit text-white/65 uppercase tracking-widest flex items-center gap-2 mb-1">
                 <Thermometer size={12} className="text-blue-400" /> Interior
               </span>
               <span className="text-3xl font-outfit font-black text-white drop-shadow-md">
-                {indoorTemp}°<span className="text-lg text-white/50">C</span>
+                {indoorTemp}°<span className="text-lg text-white/65">C</span>
               </span>
            </div>
            
            <div className="flex flex-col text-right">
-              <span className="text-[10px] font-outfit text-white/50 uppercase tracking-widest flex items-center justify-end gap-2 mb-1">
+              <span className="text-[10px] font-outfit text-white/65 uppercase tracking-widest flex items-center justify-end gap-2 mb-1">
                 <Droplets size={12} className="text-blue-400" /> Humedad
               </span>
               <span className="text-3xl font-outfit font-bold text-white">
-                {indoorHum}<span className="text-lg text-white/50">%</span>
+                {indoorHum}<span className="text-lg text-white/65">%</span>
               </span>
            </div>
         </div>
@@ -71,7 +71,7 @@ export default function StationConsoleWidget({ outdoorTemp, outdoorHum }: Statio
            <div className="flex items-center gap-3">
               <Orbit size={18} className="text-yellow-400 animate-[spin_10s_linear_infinite]" />
               <div className="flex flex-col">
-                 <span className="text-[10px] font-outfit text-white/50 uppercase tracking-widest">Panel Solar</span>
+                 <span className="text-[10px] font-outfit text-white/65 uppercase tracking-widest">Panel Solar</span>
                  <span className="text-[12px] text-yellow-400 font-bold">Cargando {voltage}V</span>
               </div>
            </div>

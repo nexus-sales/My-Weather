@@ -49,7 +49,7 @@ export default function RadarView() {
               className={`flex items-center gap-2 px-4 py-2 rounded-xl transition-all whitespace-nowrap shrink-0 ${
                 radarLayer === mode.id
                   ? 'bg-meteorix-blue/20 text-meteorix-highlight border border-meteorix-blue/40 shadow-[0_0_15px_rgba(26,61,77,0.1)]'
-                  : 'text-white/40 hover:text-white/60 hover:bg-white/5 border border-transparent'
+                  : 'text-white/60 hover:text-white/60 hover:bg-white/5 border border-transparent'
               }`}
             >
               <mode.icon size={14} />
@@ -58,7 +58,7 @@ export default function RadarView() {
           ))}
         </div>
 
-        <button className="hidden sm:flex items-center gap-2 px-4 py-2 text-white/20 hover:text-white/60 transition-colors shrink-0">
+        <button className="hidden sm:flex items-center gap-2 px-4 py-2 text-white/45 hover:text-white/60 transition-colors shrink-0">
           <Maximize2 size={14} />
           <span className="text-[10px] font-bold tracking-widest uppercase">{t('expand')}</span>
         </button>

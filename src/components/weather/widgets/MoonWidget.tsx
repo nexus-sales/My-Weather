@@ -81,20 +81,20 @@ export default function MoonWidget({ data, title }: MoonWidgetProps) {
               <span className="text-4xl font-outfit font-bold text-white tracking-tighter">
                 {Math.round(data.illumination * 100)}
               </span>
-              <span className="text-sm text-white/40">%</span>
+              <span className="text-sm text-white/60">%</span>
             </div>
-            <span className="text-[8px] font-outfit text-white/20 uppercase tracking-[0.3em]">
+            <span className="text-[8px] font-outfit text-white/45 uppercase tracking-[0.3em]">
               Iluminación Actual
             </span>
           </div>
           
           <div className="mt-4 grid grid-cols-2 gap-2 w-full">
             <div className="flex flex-col items-end">
-              <span className="text-[7px] text-white/30 uppercase">Edad</span>
+              <span className="text-[7px] text-white/50 uppercase">Edad</span>
               <span className="text-[10px] font-inter text-xs text-white/60">{data.ageDays.toFixed(1)}d</span>
             </div>
             <div className="flex flex-col items-end">
-              <span className="text-[7px] text-white/30 uppercase">Fase</span>
+              <span className="text-[7px] text-white/50 uppercase">Fase</span>
               <span className="text-[10px] font-inter text-xs text-white/60">{(data.phase * 100).toFixed(0)}%</span>
             </div>
           </div>

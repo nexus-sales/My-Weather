@@ -28,8 +28,8 @@ export default function IntelligenceStrip({ data }: IntelligenceStripProps) {
   const illumination = Math.round(data.lunar.illumination * 100);
 
   const cards = [
-    { id: 'alerts', label: t('cards.alerts'), icon: ShieldAlert, color: data.alerts.level === 'none' ? 'text-white/20' : 'text-meteorix-orange', value: data.alerts.count > 0 ? t('values.activeAlerts', { count: data.alerts.count }) : t('values.noRisk') },
-    { id: 'storms', label: t('cards.storms'), icon: Zap, color: data.storms.risk > 50 ? 'text-yellow-400' : 'text-white/20', value: t('values.stormRisk', { risk: data.storms.risk }) },
+    { id: 'alerts', label: t('cards.alerts'), icon: ShieldAlert, color: data.alerts.level === 'none' ? 'text-white/45' : 'text-meteorix-orange', value: data.alerts.count > 0 ? t('values.activeAlerts', { count: data.alerts.count }) : t('values.noRisk') },
+    { id: 'storms', label: t('cards.storms'), icon: Zap, color: data.storms.risk > 50 ? 'text-yellow-400' : 'text-white/45', value: t('values.stormRisk', { risk: data.storms.risk }) },
     { id: 'air', label: t('cards.air'), icon: Wind, color: 'text-meteorix-green', value: t('values.aqi', { aqi: data.air.aqi }) },
     { id: 'marine', label: t('cards.marine'), icon: Waves, color: 'text-blue-400', value: t('values.waveTrend', { wave: data.marine.waveHeight, trend: tideTrendLabel }) },
     { id: 'lunar', label: t('cards.lunar'), icon: Moon, color: 'text-indigo-300', value: t('values.moonLight', { illumination }) },
@@ -54,10 +54,10 @@ export default function IntelligenceStrip({ data }: IntelligenceStripProps) {
               }`}
             >
               <card.icon className={`w-5 h-5 mb-3 ${card.color} ${isActive ? 'brightness-125' : ''}`} />
-              <span className={`text-[8px] tracking-[0.2em] font-bold uppercase mb-1 ${isActive ? 'text-white/80' : 'text-white/40'}`}>{card.label}</span>
+              <span className={`text-[8px] tracking-[0.2em] font-bold uppercase mb-1 ${isActive ? 'text-white/80' : 'text-white/60'}`}>{card.label}</span>
               <span className="text-[10px] font-bold font-orbitron tracking-widest text-white uppercase">{card.value}</span>
               <div className="mt-2">
-                {isActive ? <ChevronUp size={10} className="text-meteorix-highlight" /> : <ChevronDown size={10} className="text-white/20" />}
+                {isActive ? <ChevronUp size={10} className="text-meteorix-highlight" /> : <ChevronDown size={10} className="text-white/45" />}
               </div>
             </button>
           );
@@ -68,7 +68,7 @@ export default function IntelligenceStrip({ data }: IntelligenceStripProps) {
         <div className="bg-meteorix-card/60 border border-meteorix-border rounded-2xl p-6 backdrop-blur-xl animate-fadein border-t-meteorix-blue/30">
           {(data.loadStates.alerts || data.loadStates.marine || data.loadStates.weather) && activeCard === null && (
             <div className="flex items-center justify-center py-2">
-               <div className="text-[8px] text-white/20 animate-pulse uppercase tracking-widest">{t('syncing')}</div>
+               <div className="text-[8px] text-white/45 animate-pulse uppercase tracking-widest">{t('syncing')}</div>
             </div>
           )}
 
@@ -84,7 +84,7 @@ export default function IntelligenceStrip({ data }: IntelligenceStripProps) {
                 <h4 className="text-[10px] tracking-widest text-meteorix-orange font-bold mb-4 uppercase">
                   {t('alertsTitle')}
                   {data.alerts.country && (
-                    <span className="text-white/30 normal-case tracking-normal">
+                    <span className="text-white/50 normal-case tracking-normal">
                       {' '}— {ALERTS_COUNTRY_NAMES[data.alerts.country]?.[locale === 'en' ? 'en' : 'es'] ?? data.alerts.country.toUpperCase()}
                     </span>
                   )}
@@ -95,14 +95,14 @@ export default function IntelligenceStrip({ data }: IntelligenceStripProps) {
                       <div className="w-1 h-1 rounded-full bg-meteorix-orange animate-ping" />
                       {detail}
                     </div>
-                  )) : <div className="text-xs text-white/30 italic">{t('noAlerts')}</div>}
+                  )) : <div className="text-xs text-white/50 italic">{t('noAlerts')}</div>}
                 </div>
               </div>
             </div>
           )}
 
           {activeCard === 'storms' && data.loadStates.weather && (
-             <div className="flex items-center justify-center py-8 text-white/20 animate-pulse">{t('analyzingConvection')}</div>
+             <div className="flex items-center justify-center py-8 text-white/45 animate-pulse">{t('analyzingConvection')}</div>
           )}
 
           {activeCard === 'storms' && !data.loadStates.weather && (
@@ -115,7 +115,7 @@ export default function IntelligenceStrip({ data }: IntelligenceStripProps) {
           )}
 
           {activeCard === 'air' && data.loadStates.weather && (
-             <div className="flex items-center justify-center py-8 text-white/20 animate-pulse">{t('measuringParticles')}</div>
+             <div className="flex items-center justify-center py-8 text-white/45 animate-pulse">{t('measuringParticles')}</div>
           )}
 
           {activeCard === 'air' && !data.loadStates.weather && (
@@ -146,14 +146,14 @@ export default function IntelligenceStrip({ data }: IntelligenceStripProps) {
                   ? `${t(`tides.${data.marine.nextTide.type}`)} ${new Date(data.marine.nextTide.time).toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' })}`
                   : t('tides.noData')}
               />
-              <div className="col-span-2 sm:col-span-3 md:col-span-6 text-[9px] leading-relaxed text-white/30 border-t border-white/5 pt-4">
+              <div className="col-span-2 sm:col-span-3 md:col-span-6 text-[9px] leading-relaxed text-white/50 border-t border-white/5 pt-4">
                 {t('tides.note', { source: data.marine.source })}
               </div>
             </div>
           )}
 
           {activeCard === 'lunar' && data.loadStates.weather && (
-            <div className="flex items-center justify-center py-8 text-white/20 animate-pulse">{t('calculatingEphemeris')}</div>
+            <div className="flex items-center justify-center py-8 text-white/45 animate-pulse">{t('calculatingEphemeris')}</div>
           )}
 
           {activeCard === 'lunar' && !data.loadStates.weather && (
@@ -167,7 +167,7 @@ export default function IntelligenceStrip({ data }: IntelligenceStripProps) {
           )}
 
           {activeCard === 'aemet' && (data.loadStates.stations || data.loadStates.radar) && (
-             <div className="flex items-center justify-center py-8 text-white/20 animate-pulse">{t('connectingAemet')}</div>
+             <div className="flex items-center justify-center py-8 text-white/45 animate-pulse">{t('connectingAemet')}</div>
           )}
 
           {activeCard === 'aemet' && !(data.loadStates.stations || data.loadStates.radar) && (
@@ -177,37 +177,37 @@ export default function IntelligenceStrip({ data }: IntelligenceStripProps) {
                 
                 {data.aemet.nearestStation ? (
                   <div className="bg-white/5 border border-white/5 rounded-xl p-4 mb-4">
-                    <div className="text-[8px] tracking-widest text-white/30 uppercase mb-2">{t('aemet.nearestStation')}</div>
+                    <div className="text-[8px] tracking-widest text-white/50 uppercase mb-2">{t('aemet.nearestStation')}</div>
                     <div className="text-sm font-bold text-white/90 mb-1">{data.aemet.nearestStation.ubi}</div>
                     <div className="flex gap-6 mt-3">
                       <div>
-                        <div className="text-[8px] text-white/20 uppercase mb-1">{t('aemet.temperature')}</div>
+                        <div className="text-[8px] text-white/45 uppercase mb-1">{t('aemet.temperature')}</div>
                         <div className="text-sm font-bold font-orbitron text-cyan-300">{data.aemet.nearestStation.ta}ºC</div>
                       </div>
                       {data.aemet.nearestStation.vvm !== undefined && (
                         <div>
-                          <div className="text-[8px] text-white/20 uppercase mb-1">{t('aemet.wind')}</div>
+                          <div className="text-[8px] text-white/45 uppercase mb-1">{t('aemet.wind')}</div>
                           <div className="text-sm font-bold font-orbitron text-white/60">{Math.round(data.aemet.nearestStation.vvm * 3.6)} km/h</div>
                         </div>
                       )}
                       {data.aemet.nearestStation.prec !== undefined && (
                         <div>
-                          <div className="text-[8px] text-white/20 uppercase mb-1">{t('aemet.rain')}</div>
+                          <div className="text-[8px] text-white/45 uppercase mb-1">{t('aemet.rain')}</div>
                           <div className="text-sm font-bold font-orbitron text-meteorix-highlight">{data.aemet.nearestStation.prec} mm</div>
                         </div>
                       )}
                     </div>
-                    <div className="mt-3 pt-3 border-t border-white/5 text-[8px] text-white/20 uppercase">
+                    <div className="mt-3 pt-3 border-t border-white/5 text-[8px] text-white/45 uppercase">
                       {t('aemet.obs')} {new Date(data.aemet.nearestStation.fint).toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' })}
                     </div>
                   </div>
                 ) : (
-                  <div className="text-xs text-white/30 italic mb-4">{t('aemet.noStations')}</div>
+                  <div className="text-xs text-white/50 italic mb-4">{t('aemet.noStations')}</div>
                 )}
                 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                   {data.aemet.capabilities.map((capability) => (
-                    <div key={capability} className="text-[9px] text-white/50 bg-white/5 px-3 py-2 rounded-lg border border-white/5">
+                    <div key={capability} className="text-[9px] text-white/65 bg-white/5 px-3 py-2 rounded-lg border border-white/5">
                       {t(`aemet.capabilities.${capability}`)}
                     </div>
                   ))}
@@ -223,25 +223,25 @@ export default function IntelligenceStrip({ data }: IntelligenceStripProps) {
                   <div className="bg-blue-900/10 border border-blue-900/20 rounded-xl p-4">
                     <div className="text-[8px] tracking-widest text-blue-400 uppercase mb-2">{t('aemet.marineTitle')}</div>
                     <div className="text-[10px] font-bold text-white/80 mb-2">{data.aemet.coastal.nombre}</div>
-                    <p className="text-[9px] text-white/50 leading-relaxed line-clamp-3 hover:line-clamp-none transition-all cursor-pointer">
+                    <p className="text-[9px] text-white/65 leading-relaxed line-clamp-3 hover:line-clamp-none transition-all cursor-pointer">
                       {data.aemet.coastal.texto}
                     </p>
                   </div>
                 )}
-                <p className="text-[9px] text-white/30 leading-relaxed italic border-l-2 border-cyan-400/30 pl-3">{t('aemet.note')}</p>
+                <p className="text-[9px] text-white/50 leading-relaxed italic border-l-2 border-cyan-400/30 pl-3">{t('aemet.note')}</p>
               </div>
             </div>
           )}
 
           {activeCard === 'metEireann' && data.loadStates.metEireann && (
-             <div className="flex items-center justify-center py-8 text-white/20 animate-pulse">Enlace Met Eireann...</div>
+             <div className="flex items-center justify-center py-8 text-white/45 animate-pulse">Enlace Met Eireann...</div>
           )}
 
           {activeCard === 'metEireann' && !data.loadStates.metEireann && data.metEireann.isAvailable && (
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
               <div className="col-span-2 md:col-span-4">
                 <h4 className="text-[10px] tracking-widest text-emerald-300 font-bold mb-2 uppercase">{t('metEireann.title')}</h4>
-                <p className="text-xs text-white/40 leading-relaxed">{t('metEireann.current')}</p>
+                <p className="text-xs text-white/60 leading-relaxed">{t('metEireann.current')}</p>
               </div>
               <Metric label={t('metEireann.temp')} value={typeof data.metEireann.nextHour?.temp === 'number' ? `${data.metEireann.nextHour.temp}C` : t('tides.noData')} color="text-emerald-300" />
               <Metric label={t('metEireann.wind')} value={typeof data.metEireann.nextHour?.windSpeed === 'number' ? `${Math.round(data.metEireann.nextHour.windSpeed * 3.6)} km/h` : t('tides.noData')} />
@@ -260,7 +260,7 @@ export default function IntelligenceStrip({ data }: IntelligenceStripProps) {
           )}
 
           {activeCard === 'confidence' && data.loadStates.weather && (
-             <div className="flex items-center justify-center py-8 text-white/20 animate-pulse">Calculando consistencia...</div>
+             <div className="flex items-center justify-center py-8 text-white/45 animate-pulse">Calculando consistencia...</div>
           )}
 
           {activeCard === 'confidence' && !data.loadStates.weather && (
@@ -272,12 +272,12 @@ export default function IntelligenceStrip({ data }: IntelligenceStripProps) {
                 </div>
                 <div className="bg-meteorix-blue/10 p-4 rounded-xl border border-meteorix-blue/20">
                   <div className="text-2xl font-black font-orbitron text-meteorix-highlight">{data.confidence.score}%</div>
-                  <div className="text-[8px] tracking-widest text-white/30 text-center uppercase">{t('confidence.trustScore')}</div>
+                  <div className="text-[8px] tracking-widest text-white/50 text-center uppercase">{t('confidence.trustScore')}</div>
                 </div>
               </div>
               <div className="pt-4 border-t border-white/5 flex gap-8">
-                <div className="text-[9px] font-bold text-white/40 uppercase">{t('confidence.source')}: <span className="text-white/70">{data.confidence.source}</span></div>
-                <div className="text-[9px] font-bold text-white/40 uppercase">{t('confidence.consistency')}: <span className="text-white/70">{data.confidence.consistency}</span></div>
+                <div className="text-[9px] font-bold text-white/60 uppercase">{t('confidence.source')}: <span className="text-white/70">{data.confidence.source}</span></div>
+                <div className="text-[9px] font-bold text-white/60 uppercase">{t('confidence.consistency')}: <span className="text-white/70">{data.confidence.consistency}</span></div>
               </div>
             </div>
           )}
@@ -290,7 +290,7 @@ export default function IntelligenceStrip({ data }: IntelligenceStripProps) {
 function Metric({ label, value, color = 'text-white/80' }: { label: string; value: string; color?: string }) {
   return (
     <div className="space-y-1">
-      <div className="text-[8px] tracking-widest text-white/30 uppercase">{label}</div>
+      <div className="text-[8px] tracking-widest text-white/50 uppercase">{label}</div>
       <div className={`text-lg font-bold font-orbitron uppercase ${color}`}>{value}</div>
     </div>
   );

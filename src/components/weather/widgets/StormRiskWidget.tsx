@@ -23,9 +23,9 @@ export default function StormRiskWidget({ risk, cape, liftedIndex, rifts, dataQu
         <div className="flex items-center justify-between">
           <div className="flex flex-col">
             <span className="text-3xl font-outfit font-black text-white leading-none">
-              {risk}<span className="text-[10px] text-white/50 ml-1">%</span>
+              {risk}<span className="text-[10px] text-white/65 ml-1">%</span>
             </span>
-            <span className="text-[7px] font-inter text-xs text-white/40 uppercase tracking-widest mt-1">Prob. de Descargas</span>
+            <span className="text-[7px] font-inter text-xs text-white/60 uppercase tracking-widest mt-1">Prob. de Descargas</span>
           </div>
           
           <div className="text-right flex flex-col items-end">
@@ -38,11 +38,11 @@ export default function StormRiskWidget({ risk, cape, liftedIndex, rifts, dataQu
         {/* Technical Data HUD */}
         <div className="mt-4 grid grid-cols-2 gap-2">
            <div className="bg-black/30 p-2 rounded-lg border border-white/5">
-              <span className="text-[6px] font-outfit text-white/40 uppercase block mb-1">CAPE Index</span>
-              <span className="text-[10px] font-inter text-xs text-white/90">{cape} <span className="text-[6px] text-white/30">J/kg</span></span>
+              <span className="text-[6px] font-outfit text-white/60 uppercase block mb-1">CAPE Index</span>
+              <span className="text-[10px] font-inter text-xs text-white/90">{cape} <span className="text-[6px] text-white/50">J/kg</span></span>
            </div>
            <div className="bg-black/30 p-2 rounded-lg border border-white/5">
-              <span className="text-[6px] font-outfit text-white/40 uppercase block mb-1">Lifted Index</span>
+              <span className="text-[6px] font-outfit text-white/60 uppercase block mb-1">Lifted Index</span>
               <span className="text-[10px] font-inter text-xs text-white/90">{liftedIndex}</span>
            </div>
         </div>

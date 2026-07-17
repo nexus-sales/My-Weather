@@ -38,7 +38,7 @@ function CustomTooltip({ active, payload, label, temperatureLabel, rainLabel }: 
 
   return (
     <div className="bg-meteorix-card border border-meteorix-border rounded-xl px-4 py-3 text-[10px] font-orbitron font-bold tracking-wider space-y-1.5">
-      <div className="text-white/40 uppercase mb-2">{label}</div>
+      <div className="text-white/60 uppercase mb-2">{label}</div>
       {temp && (
         <div className="flex items-center gap-2 text-[#2DD4BF]">
           <span className="w-1.5 h-1.5 rounded-full bg-[#2DD4BF] inline-block" />

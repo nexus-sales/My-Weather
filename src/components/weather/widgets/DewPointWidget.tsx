@@ -33,7 +33,7 @@ export default function DewPointWidget({ temp, humidity, title }: DewPointWidget
         </div>
 
         <div className="mt-4 flex flex-col gap-2">
-           <div className="flex justify-between items-center text-[7px] font-inter text-xs text-white/40 uppercase">
+           <div className="flex justify-between items-center text-[7px] font-inter text-xs text-white/60 uppercase">
               <span>Saturación de Aire</span>
               <span>{humidity}%</span>
            </div>
@@ -43,7 +43,7 @@ export default function DewPointWidget({ temp, humidity, title }: DewPointWidget
                 style={{ width: `${humidity}%`, backgroundColor: color }} 
               />
            </div>
-           <p className="text-[6px] font-inter text-xs text-white/20 uppercase leading-tight">
+           <p className="text-[6px] font-inter text-xs text-white/45 uppercase leading-tight">
              Temperatura a la que el aire se satura y forma condensación.
            </p>
         </div>

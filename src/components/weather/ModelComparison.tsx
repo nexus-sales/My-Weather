@@ -126,7 +126,7 @@ export default function ModelComparison({ lat, lon, ecmwfData }: ModelComparison
           <div key={card.name} className="space-y-3 p-4 rounded-2xl bg-white/5 border border-white/5">
             <div className="flex justify-between items-center mb-2">
               <span className="text-[10px] font-bold uppercase tracking-tighter" style={{ color: card.color }}>{card.name}</span>
-              <span className="text-[8px] text-white/30 uppercase">{card.subtitle}</span>
+              <span className="text-[8px] text-white/50 uppercase">{card.subtitle}</span>
             </div>
             <Row label={t('temp')} value={typeof card.temp === 'number' ? `${card.temp.toFixed(1)}°C` : '--'} />
             <Row label={t('wind')} value={typeof card.windSpeed === 'number' ? `${card.windSpeed.toFixed(1)} km/h` : '--'} />
@@ -136,13 +136,13 @@ export default function ModelComparison({ lat, lon, ecmwfData }: ModelComparison
       </div>
 
       {isFetching && (
-        <p className="mt-4 text-[9px] text-white/20 uppercase tracking-widest">Sincronizando modelos adicionales...</p>
+        <p className="mt-4 text-[9px] text-white/45 uppercase tracking-widest">Sincronizando modelos adicionales...</p>
       )}
 
       {temps.length > 1 && (
         <div className="mt-6 p-4 rounded-2xl bg-meteorix-blue/5 border border-meteorix-blue/10 flex gap-3 items-start">
           <Info size={14} className="text-meteorix-highlight mt-0.5" />
-          <p className="text-[9px] leading-relaxed text-white/40">
+          <p className="text-[9px] leading-relaxed text-white/60">
             {t('diffNote', {
               diff: diffTemp.toFixed(1),
               info: !isDivergent
@@ -159,7 +159,7 @@ export default function ModelComparison({ lat, lon, ecmwfData }: ModelComparison
 function Row({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex justify-between items-baseline border-b border-white/5 pb-1 last:border-0 last:pb-0">
-      <span className="text-[9px] text-white/40 uppercase font-medium">{label}</span>
+      <span className="text-[9px] text-white/60 uppercase font-medium">{label}</span>
       <span className="text-xs font-bold font-orbitron text-white/80">{value}</span>
     </div>
   );

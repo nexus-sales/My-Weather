@@ -44,7 +44,7 @@ export default function VisibilityWidget({ visibility, title }: VisibilityWidget
           {/* Distance Markers */}
           <div className="absolute bottom-1 w-full flex justify-between px-2">
              {[0, 3, 6, 9, 12].map(d => (
-               <span key={d} className="text-[6px] font-inter text-xs text-white/20">{d}km</span>
+               <span key={d} className="text-[6px] font-inter text-xs text-white/45">{d}km</span>
              ))}
           </div>
         </div>
@@ -60,7 +60,7 @@ export default function VisibilityWidget({ visibility, title }: VisibilityWidget
            
            <div className="mt-2 flex items-center gap-2">
              <div className={`w-1.5 h-1.5 rounded-full ${km > 5 ? 'bg-emerald-400' : 'bg-orange-400'} animate-pulse`} />
-             <span className="text-[8px] font-outfit text-white/40 uppercase tracking-[0.2em]">
+             <span className="text-[8px] font-outfit text-white/60 uppercase tracking-[0.2em]">
                {km > 8 ? 'Visibilidad Óptima' : km > 3 ? 'Visibilidad Moderada' : 'Alcance Reducido'}
              </span>
            </div>

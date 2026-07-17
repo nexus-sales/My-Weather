@@ -120,12 +120,12 @@ export default function SunWidget({ sunrise, sunset, currentTime, title }: SunWi
 
           {/* Precision Labels */}
           <div className="absolute top-[88%] left-[10%] -translate-x-1/2 flex flex-col items-center">
-            <span className="text-[6px] text-white/20 uppercase">Amanecer</span>
-            <span className="text-[9px] font-inter text-xs text-white/40">{dSunrise.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+            <span className="text-[6px] text-white/45 uppercase">Amanecer</span>
+            <span className="text-[9px] font-inter text-xs text-white/60">{dSunrise.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
           </div>
           <div className="absolute top-[88%] right-[10%] translate-x-1/2 flex flex-col items-center">
-            <span className="text-[6px] text-white/20 uppercase">Ocaso</span>
-            <span className="text-[9px] font-inter text-xs text-white/40">{dSunset.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+            <span className="text-[6px] text-white/45 uppercase">Ocaso</span>
+            <span className="text-[9px] font-inter text-xs text-white/60">{dSunset.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
           </div>
         </div>
 
@@ -135,13 +135,13 @@ export default function SunWidget({ sunrise, sunset, currentTime, title }: SunWi
              <span className="text-[10px] font-outfit text-white/80 leading-none">
                {isNight ? 'NOCHE' : `${Math.round(currentProgress * 100)}% DIA`}
              </span>
-             <span className="text-[6px] text-white/20 uppercase tracking-widest mt-1">Status Solar</span>
+             <span className="text-[6px] text-white/45 uppercase tracking-widest mt-1">Status Solar</span>
            </div>
            <div className="flex flex-col items-end">
              <span className="text-[10px] font-inter text-xs text-orange-400">
                {liveNow.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
              </span>
-             <span className="text-[6px] text-white/20 uppercase tracking-widest mt-1">Reloj Local</span>
+             <span className="text-[6px] text-white/45 uppercase tracking-widest mt-1">Reloj Local</span>
            </div>
         </div>
       </div>

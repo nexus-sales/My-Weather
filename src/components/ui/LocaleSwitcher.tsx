@@ -24,7 +24,7 @@ export default function LocaleSwitcher() {
         className={`px-3 py-1 text-[10px] font-bold tracking-widest transition-all rounded ${
           locale === 'es' 
             ? 'bg-meteorix-blue/20 text-meteorix-highlight border border-meteorix-blue/50 shadow-[0_0_10px_rgba(26,61,77,0.2)]'
-            : 'text-white/40 hover:text-white/70'
+            : 'text-white/60 hover:text-white/70'
         }`}
       >
         ESP
@@ -35,7 +35,7 @@ export default function LocaleSwitcher() {
         className={`px-3 py-1 text-[10px] font-bold tracking-widest transition-all rounded ${
           locale === 'en' 
             ? 'bg-meteorix-blue/20 text-meteorix-highlight border border-meteorix-blue/50 shadow-[0_0_10px_rgba(26,61,77,0.2)]'
-            : 'text-white/40 hover:text-white/70'
+            : 'text-white/60 hover:text-white/70'
         }`}
       >
         ENG

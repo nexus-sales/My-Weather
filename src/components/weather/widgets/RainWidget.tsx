@@ -14,7 +14,7 @@ export default function RainWidget({ amount, title }: RainWidgetProps) {
   const heightPercent = Math.min(100, (amount / maxAmount) * 100);
 
   return (
-    <WidgetWrapper title={title} icon={<Droplets size={14} className={amount > 0 ? 'text-blue-400 animate-bounce' : 'text-white/20'} />}>
+    <WidgetWrapper title={title} icon={<Droplets size={14} className={amount > 0 ? 'text-blue-400 animate-bounce' : 'text-white/45'} />}>
       <div className="relative flex items-center gap-8 w-full px-4 h-full">
         {/* Lab-style Glass Flask with Rain Animation */}
         <div className="relative w-16 h-32 flex flex-col justify-end">
@@ -54,7 +54,7 @@ export default function RainWidget({ amount, title }: RainWidgetProps) {
               {[20, 15, 10, 5, 0].map((m) => (
                 <div key={m} className="flex items-center gap-2">
                   <div className={`h-[1px] bg-white/20 ${m % 10 === 0 ? 'w-3' : 'w-1.5'}`} />
-                  {m % 10 === 0 && <span className="text-[7px] text-white/30 font-inter text-xs">{m}</span>}
+                  {m % 10 === 0 && <span className="text-[7px] text-white/50 font-inter text-xs">{m}</span>}
                 </div>
               ))}
             </div>
@@ -67,7 +67,7 @@ export default function RainWidget({ amount, title }: RainWidgetProps) {
             <span className="text-4xl font-outfit font-bold text-white tracking-tighter drop-shadow-glow">
               {amount.toFixed(1)}
             </span>
-            <span className="text-[10px] text-white/40 font-outfit uppercase tracking-widest mt-1">
+            <span className="text-[10px] text-white/60 font-outfit uppercase tracking-widest mt-1">
               Millímetros / h
             </span>
           </div>

@@ -70,7 +70,7 @@ export default function AQIWidget({ aqiValue = 42, dataQuality, source }: AQIWid
         </div>
 
         <div className="mt-auto relative z-10">
-           <span className="text-[7px] font-inter text-xs text-white/50 uppercase tracking-widest">{message}</span>
+           <span className="text-[7px] font-inter text-xs text-white/65 uppercase tracking-widest">{message}</span>
            
            {/* Color Scale Bar */}
            <div className="h-1.5 w-full bg-gradient-to-r from-[#00ff88] via-[#ffcc00] to-[#ff3e3e] mt-2 rounded-full overflow-hidden relative">

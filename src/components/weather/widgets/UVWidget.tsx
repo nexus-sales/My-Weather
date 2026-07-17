@@ -94,7 +94,7 @@ export default function UVWidget({ index, title }: UVWidgetProps) {
            </div>
            
             <div className="flex flex-col items-end">
-             <span className="text-[6px] text-white/30 uppercase tracking-widest">Protección</span>
+             <span className="text-[6px] text-white/50 uppercase tracking-widest">Protección</span>
              <span className="text-[9px] font-outfit text-white/60 uppercase">{status.risk}</span>
            </div>
         </div>

@@ -48,9 +48,9 @@ export default function SurfWidget({ waveHeight, period, windSpeed, windDir, tit
         <div className="flex justify-between items-start">
            <div className="flex flex-col">
               <span className="text-2xl font-outfit font-black text-white leading-none">
-                {waveHeight.toFixed(1)}<span className="text-[10px] text-white/50 ml-1">m</span>
+                {waveHeight.toFixed(1)}<span className="text-[10px] text-white/65 ml-1">m</span>
               </span>
-              <span className="text-[7px] font-inter text-xs text-white/40 uppercase tracking-widest mt-1">Olas</span>
+              <span className="text-[7px] font-inter text-xs text-white/60 uppercase tracking-widest mt-1">Olas</span>
            </div>
            
            <div className="flex flex-col items-end">
@@ -87,15 +87,15 @@ export default function SurfWidget({ waveHeight, period, windSpeed, windDir, tit
 
         <div className="flex justify-between mt-4 border-t border-white/5 pt-2">
            <div className="flex flex-col">
-              <span className="text-[6px] font-outfit text-white/40 uppercase">Periodo</span>
+              <span className="text-[6px] font-outfit text-white/60 uppercase">Periodo</span>
               <span className="text-[10px] font-inter text-xs text-white/80">{period}s</span>
            </div>
            <div className="flex flex-col text-center">
-              <span className="text-[6px] font-outfit text-white/40 uppercase">Energía</span>
+              <span className="text-[6px] font-outfit text-white/60 uppercase">Energía</span>
               <span className="text-[10px] font-inter text-xs text-white/80">{energy}kJ</span>
            </div>
            <div className="flex flex-col text-right">
-              <span className="text-[6px] font-outfit text-white/40 uppercase">Viento {Math.round(windDir)}°</span>
+              <span className="text-[6px] font-outfit text-white/60 uppercase">Viento {Math.round(windDir)}°</span>
               <span className="text-[10px] font-inter text-xs text-white/80">{windSpeed.toFixed(0)}km/h</span>
            </div>
         </div>

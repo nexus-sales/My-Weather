@@ -59,13 +59,13 @@ export default function AetherChat({ weather, cityName }: AetherChatProps) {
             <h3 className="text-xs font-black tracking-widest text-white font-orbitron">Dr. AETHER AI</h3>
             <div className="flex items-center gap-1.5 mt-0.5">
               <div className="w-1.5 h-1.5 rounded-full bg-meteorix-green animate-pulse shadow-[0_0_8px_#F2E2C4]" />
-              <span className="text-[8px] font-bold tracking-widest text-white/40 uppercase">{t('status')}</span>
+              <span className="text-[8px] font-bold tracking-widest text-white/60 uppercase">{t('status')}</span>
             </div>
           </div>
         </div>
         <div className="hidden sm:flex gap-2">
           {[t('tags.synoptic'), t('tags.risks'), t('tags.advice')].map((tag) => (
-            <span key={tag} className="text-[7px] font-bold tracking-widest text-white/40 border border-white/10 px-2 py-1 rounded bg-white/5 uppercase">
+            <span key={tag} className="text-[7px] font-bold tracking-widest text-white/60 border border-white/10 px-2 py-1 rounded bg-white/5 uppercase">
               {tag}
             </span>
           ))}
@@ -129,7 +129,7 @@ export default function AetherChat({ weather, cityName }: AetherChatProps) {
             value={input}
             onChange={(e) => setInput(e.target.value)}
             placeholder={t('placeholder')}
-            className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-xs text-white placeholder:text-white/30 focus:outline-none focus:border-meteorix-blue/60 transition-all pr-12 font-orbitron tracking-widest"
+            className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-xs text-white placeholder:text-white/50 focus:outline-none focus:border-meteorix-blue/60 transition-all pr-12 font-orbitron tracking-widest"
           />
           <button
             type="submit"
@@ -141,7 +141,7 @@ export default function AetherChat({ weather, cityName }: AetherChatProps) {
         </div>
         <div className="mt-3 flex items-center gap-2">
           <Sparkles size={10} className="text-meteorix-highlight/60" />
-          <span className="text-[7px] tracking-[0.2em] font-bold text-white/40 uppercase">
+          <span className="text-[7px] tracking-[0.2em] font-bold text-white/60 uppercase">
             {t('powered')}
           </span>
         </div>

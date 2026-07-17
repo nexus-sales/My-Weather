@@ -107,13 +107,13 @@ export default function DailyBriefing({ weather, cityName }: DailyBriefingProps)
                 <Sparkles size={20} />
               </div>
               <div>
-                <h3 className="text-[10px] font-bold uppercase tracking-[0.3em] text-white/40">{t('title')}</h3>
+                <h3 className="text-[10px] font-bold uppercase tracking-[0.3em] text-white/60">{t('title')}</h3>
                 <p className="text-lg md:text-xl font-bold text-white/90">{t('situation', { city: cityName })}</p>
               </div>
             </div>
             <button 
               onClick={() => handleSpeech(`${t('voiceIntro', { city: cityName })} ${briefing.summary}`)}
-              className="p-3 rounded-full bg-white/5 hover:bg-white/10 text-white/40 hover:text-meteorix-highlight transition-all border border-white/5"
+              className="p-3 rounded-full bg-white/5 hover:bg-white/10 text-white/60 hover:text-meteorix-highlight transition-all border border-white/5"
               title={t('speech')}
             >
               <Volume2 size={18} />
@@ -169,7 +169,7 @@ function ScoreCard({ icon, label, score, color }: { icon: React.ReactNode; label
   return (
     <div className="flex flex-col items-center justify-center rounded-2xl border border-white/5 bg-white/5 p-4 transition-all hover:bg-white/10 w-full min-w-[100px]">
       <div className={`mb-2 ${color}`}>{icon}</div>
-      <div className="text-[8px] font-bold uppercase tracking-widest text-white/30 mb-1">{label}</div>
+      <div className="text-[8px] font-bold uppercase tracking-widest text-white/50 mb-1">{label}</div>
       <div className="text-xl font-black font-orbitron text-white/90">{score}%</div>
       <div className="mt-2 h-1 w-full rounded-full bg-white/5 overflow-hidden">
         <div 

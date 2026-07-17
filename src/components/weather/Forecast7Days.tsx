@@ -60,11 +60,11 @@ export default function Forecast7Days({ daily, hourly }: Forecast7DaysProps) {
               }`}
             >
               <span className={`text-[10px] font-bold tracking-widest uppercase mb-1 ${
-                isSelected ? 'text-meteorix-highlight' : 'text-white/50'
+                isSelected ? 'text-meteorix-highlight' : 'text-white/65'
               }`}>
                 {getDayName(time)}
               </span>
-              <span className="text-[9px] text-white/30 mb-4 font-mono">
+              <span className="text-[9px] text-white/50 mb-4 font-mono">
                 {getFormattedDate(time)}
               </span>
 
@@ -76,7 +76,7 @@ export default function Forecast7Days({ daily, hourly }: Forecast7DaysProps) {
                 <span className="text-lg font-bold font-orbitron text-white">
                   {Math.round(daily.tempMax[i])}°
                 </span>
-                <span className="text-xs font-bold font-orbitron text-white/40">
+                <span className="text-xs font-bold font-orbitron text-white/60">
                   {Math.round(daily.tempMin[i])}°
                 </span>
               </div>
@@ -106,7 +106,7 @@ export default function Forecast7Days({ daily, hourly }: Forecast7DaysProps) {
             const hourCondition = getWeatherCondition(h.code, locale);
             return (
               <div key={h.time} className="flex flex-col items-center min-w-[70px] p-3 rounded-xl bg-white/[0.02] border border-white/5">
-                <span className="text-[9px] font-bold font-mono text-white/30 mb-2">
+                <span className="text-[9px] font-bold font-mono text-white/50 mb-2">
                   {new Date(h.time).getHours()}:00
                 </span>
                 <div className="text-xl mb-2">{hourCondition.icon}</div>

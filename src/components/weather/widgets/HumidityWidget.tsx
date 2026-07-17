@@ -63,7 +63,7 @@ export default function HumidityWidget({ humidity, temp, title }: HumidityWidget
               </span>
               <span className="text-sm font-outfit text-blue-400 opacity-60 ml-0.5">%</span>
             </div>
-            <span className="text-[7px] font-outfit text-white/30 uppercase tracking-[0.4em] mt-1">Humedad</span>
+            <span className="text-[7px] font-outfit text-white/50 uppercase tracking-[0.4em] mt-1">Humedad</span>
           </div>
         </div>
 
@@ -71,12 +71,12 @@ export default function HumidityWidget({ humidity, temp, title }: HumidityWidget
         <div className="mt-2 w-full flex items-center justify-around px-2">
           <div className="flex flex-col items-center">
              <span className="text-[10px] font-inter text-xs text-white/60">{dewPoint.toFixed(1)}°C</span>
-             <span className="text-[6px] text-white/20 uppercase tracking-widest">Punto Rocío</span>
+             <span className="text-[6px] text-white/45 uppercase tracking-widest">Punto Rocío</span>
           </div>
           <div className="w-[1px] h-4 bg-white/5" />
           <div className="flex flex-col items-center">
              <span className="text-[10px] font-outfit text-emerald-400 uppercase">{humidity < 40 ? 'Seco' : humidity < 70 ? 'Ideal' : 'Húmedo'}</span>
-             <span className="text-[6px] text-white/20 uppercase tracking-widest">Sensación</span>
+             <span className="text-[6px] text-white/45 uppercase tracking-widest">Sensación</span>
           </div>
         </div>
       </div>

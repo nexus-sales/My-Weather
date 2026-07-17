@@ -19,7 +19,7 @@ export default function HistoryView() {
   if (isLoading) return (
     <div className="flex flex-col items-center justify-center py-32 animate-pulse">
        <History className="text-white/10 mb-4 animate-spin" size={40} />
-       <div className="text-[10px] tracking-widest text-white/20 uppercase font-orbitron">{t('sync')}</div>
+       <div className="text-[10px] tracking-widest text-white/45 uppercase font-orbitron">{t('sync')}</div>
     </div>
   );
 

@@ -45,7 +45,7 @@ export default function PollenWidget({ alder, birch, grass, dataQuality, source 
             <span className="text-2xl font-outfit font-black text-white leading-none">
               {worst.label}
             </span>
-            <span className="text-[7px] font-inter text-xs text-white/40 uppercase tracking-widest mt-1">
+            <span className="text-[7px] font-inter text-xs text-white/60 uppercase tracking-widest mt-1">
               Nivel más alto detectado
             </span>
           </div>
@@ -62,7 +62,7 @@ export default function PollenWidget({ alder, birch, grass, dataQuality, source 
             const level = levelFor(s.value);
             return (
               <div key={s.label} className="flex items-center gap-2">
-                <span className="text-[9px] font-outfit text-white/50 uppercase w-16 shrink-0">{s.label}</span>
+                <span className="text-[9px] font-outfit text-white/65 uppercase w-16 shrink-0">{s.label}</span>
                 <div className="flex-1 h-1.5 bg-black/40 rounded-full border border-white/5 overflow-hidden">
                   <div
                     className="h-full transition-all duration-1000"

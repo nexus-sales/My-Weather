@@ -116,7 +116,7 @@ export default function WindWidget({ speed, direction, gusts, title }: WindWidge
           <div className="flex items-center gap-3 mt-1.5 px-3 py-0.5 rounded-full bg-white/5 border border-white/10">
             <div className="flex items-center gap-1">
                <div className="w-1 h-1 rounded-full bg-orange-400 animate-ping" />
-               <span className="text-[10px] font-inter text-white/50">{direction}° {directions[Math.round(direction/45)%8]}</span>
+               <span className="text-[10px] font-inter text-white/65">{direction}° {directions[Math.round(direction/45)%8]}</span>
             </div>
             {typeof gusts === 'number' && (
               <>

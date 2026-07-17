@@ -90,7 +90,7 @@ export default function LocationPrompt() {
             <h2 className="text-2xl font-black font-orbitron tracking-widest text-white uppercase">
               {t('title')}
             </h2>
-            <p className="text-xs md:text-sm text-white/50 leading-relaxed font-exo2">
+            <p className="text-xs md:text-sm text-white/65 leading-relaxed font-exo2">
               {t('body')}
             </p>
           </div>
@@ -112,7 +112,7 @@ export default function LocationPrompt() {
             
             <button
               onClick={handleIgnore}
-              className="w-full py-4 rounded-2xl bg-white/5 text-white/40 font-bold uppercase tracking-[0.2em] text-[10px] transition-all hover:bg-white/10 hover:text-white/60"
+              className="w-full py-4 rounded-2xl bg-white/5 text-white/60 font-bold uppercase tracking-[0.2em] text-[10px] transition-all hover:bg-white/10 hover:text-white/60"
             >
               {t('ignore')}
             </button>
@@ -121,7 +121,7 @@ export default function LocationPrompt() {
 
         <button 
           onClick={handleIgnore}
-          className="absolute top-6 right-6 text-white/20 hover:text-white transition-colors"
+          className="absolute top-6 right-6 text-white/45 hover:text-white transition-colors"
         >
           <X size={20} />
         </button>

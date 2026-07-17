@@ -60,15 +60,15 @@ export default function OfficialAlerts() {
           <ShieldAlert size={16} style={{ color: '#ff8c35' }} />
         </div>
         <div className="flex-1 min-w-0">
-          <div className="text-[9px] font-bold uppercase tracking-[0.25em] text-white/40">{t('eyebrow')}</div>
+          <div className="text-[9px] font-bold uppercase tracking-[0.25em] text-white/60">{t('eyebrow')}</div>
           <h3 className="text-base font-bold text-white/90">
             {t('title', { count: alerts.length, country: countryName })}
           </h3>
         </div>
         {isExpanded ? (
-          <ChevronUp size={16} className="text-white/30 shrink-0" />
+          <ChevronUp size={16} className="text-white/50 shrink-0" />
         ) : (
-          <ChevronDown size={16} className="text-white/30 shrink-0" />
+          <ChevronDown size={16} className="text-white/50 shrink-0" />
         )}
       </button>
 
@@ -94,7 +94,7 @@ export default function OfficialAlerts() {
                       {alert.severity}
                     </span>
                   </div>
-                  {alert.area && <span className="text-xs text-white/50">{alert.area}</span>}
+                  {alert.area && <span className="text-xs text-white/65">{alert.area}</span>}
                 </div>
               );
             })}
@@ -105,7 +105,7 @@ export default function OfficialAlerts() {
               href={`https://meteoalarm.org?region=${country.toUpperCase()}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="mt-3 inline-block text-[11px] text-white/40 hover:text-[#ff8c35] uppercase tracking-widest underline decoration-dotted underline-offset-4 transition-colors"
+              className="mt-3 inline-block text-[11px] text-white/60 hover:text-[#ff8c35] uppercase tracking-widest underline decoration-dotted underline-offset-4 transition-colors"
             >
               {t('more', { count: remaining })}
             </a>

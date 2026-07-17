@@ -78,19 +78,19 @@ export default function SearchBar() {
   return (
     <div className="relative w-full max-w-md" ref={dropdownRef}>
       <div className="relative flex items-center">
-        <Search className="absolute left-3 w-4 h-4 text-white/30" />
+        <Search className="absolute left-3 w-4 h-4 text-white/50" />
         <input
           type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder={t('placeholder')}
-          className="w-full bg-[#001941]/60 border border-white/10 rounded-xl py-2 pl-10 pr-10 text-sm font-exo2 focus:outline-none focus:border-meteorix-blue/40 transition-all placeholder:text-white/20"
+          className="w-full bg-[#001941]/60 border border-white/10 rounded-xl py-2 pl-10 pr-10 text-sm font-exo2 focus:outline-none focus:border-meteorix-blue/40 transition-all placeholder:text-white/45"
         />
         {isLoading ? (
           <Loader2 className="absolute right-10 w-4 h-4 text-meteorix-highlight/50 animate-spin" />
         ) : query && (
           <button onClick={() => setQuery('')} className="absolute right-10 hover:text-white transition-colors">
-            <X className="w-4 h-4 text-white/30" />
+            <X className="w-4 h-4 text-white/50" />
           </button>
         )}
         <button 
@@ -112,7 +112,7 @@ export default function SearchBar() {
               className="w-full text-left px-4 py-3 hover:bg-meteorix-blue/10 flex flex-col transition-colors border-b border-white/5 last:border-0"
             >
               <span className="text-sm font-bold text-white/90">{city.name}</span>
-              <span className="text-[10px] text-white/40 tracking-wider uppercase">
+              <span className="text-[10px] text-white/60 tracking-wider uppercase">
                 {city.state ? `${city.state}, ` : ''}{city.country}
               </span>
             </button>
