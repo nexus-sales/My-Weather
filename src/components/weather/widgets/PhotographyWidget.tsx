@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import { Camera, Sunrise, Sunset, Clock } from 'lucide-react';
 import WidgetWrapper from './WidgetWrapper';
 
@@ -11,7 +12,13 @@ interface PhotographyWidgetProps {
 export default function PhotographyWidget({ sunrise, sunset }: PhotographyWidgetProps) {
   const sunriseDate = new Date(sunrise);
   const sunsetDate = new Date(sunset);
-  const now = new Date();
+  // Ticks independently so the golden/blue-hour phase doesn't lag behind the
+  // weather-data refetch interval (up to 10 min stale otherwise).
+  const [now, setNow] = useState(() => new Date());
+  useEffect(() => {
+    const id = setInterval(() => setNow(new Date()), 30000);
+    return () => clearInterval(id);
+  }, []);
 
   // Golden Hour: ~45 mins after sunrise, ~45 mins before sunset
   // Blue Hour: ~15 mins before sunrise, ~15 mins after sunset

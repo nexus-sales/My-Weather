@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import { Sun, BatteryCharging, Zap } from 'lucide-react';
 import WidgetWrapper from './WidgetWrapper';
 
@@ -17,8 +18,15 @@ export default function SolarEnergyWidget({ cloudCover, uvIndex, sunrise, sunset
   efficiency = Math.max(0, Math.min(100, efficiency)); // Clamp between 0-100
 
   // sunrise/sunset arrive as full ISO datetimes (e.g. "2026-07-12T07:32"), not
-  // "HH:MM" — parse as dates directly, same pattern as SunWidget.tsx.
-  const now = new Date();
+  // "HH:MM" — parse as dates directly, same pattern as SunWidget.tsx. `now`
+  // ticks independently instead of being computed once per render, or the
+  // night/day cutoff could lag up to 10 min behind the real sunrise/sunset
+  // (the gap between weather-data refetches).
+  const [now, setNow] = useState(() => new Date());
+  useEffect(() => {
+    const id = setInterval(() => setNow(new Date()), 30000);
+    return () => clearInterval(id);
+  }, []);
   const sunriseDate = new Date(sunrise);
   const sunsetDate = new Date(sunset);
 
