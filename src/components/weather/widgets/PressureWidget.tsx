@@ -14,8 +14,13 @@ export default function PressureWidget({ pressure, title }: PressureWidgetProps)
   const max = 1040;
   const progress = Math.max(0, Math.min(1, (pressure - min) / (max - min)));
   
-  // Angle for the needle: from -120deg to 120deg (240deg sweep)
-  const angle = (progress * 240) - 120;
+  // Angle for the needle: 240deg sweep, offset by +90deg from the raw
+  // progress*240-120 range because the tick marks below are placed with SVG
+  // cos/sin (0deg = east/3-o'clock) while this needle is a CSS-rotated div
+  // (0deg = north/12-o'clock, since it's drawn pointing up by default) — the
+  // two systems disagree by exactly 90deg unless corrected here, which used
+  // to point the needle a quarter-circle away from its own tick marks.
+  const angle = (progress * 240) - 30;
 
   return (
     <WidgetWrapper title={title} icon={<Gauge size={14} className="text-blue-400" />}>
