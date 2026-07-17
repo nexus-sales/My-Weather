@@ -96,10 +96,11 @@ export default function LocationPrompt() {
           </div>
 
           <div className="flex flex-col gap-3 w-full pt-4">
+            {/* bg-[#A95025] instead of bg-meteorix-orange: at text-xs (12px) even font-black doesn't meet WCAG's bold-large-text exemption, so this button needs its own darker shade to hit 4.5:1 against text-aether-text (token's #D4652F only gets 3.27:1) */}
             <button
               onClick={handleAllow}
               disabled={isRequesting}
-              className="w-full py-4 rounded-2xl bg-meteorix-orange text-aether-text font-black uppercase tracking-[0.2em] text-xs transition-all hover:bg-white hover:text-meteorix-orange hover:scale-[1.02] active:scale-95 disabled:opacity-50 disabled:scale-100 flex items-center justify-center gap-3 shadow-[0_10px_30px_rgba(212,101,47,0.3)]"
+              className="w-full py-4 rounded-2xl bg-[#A95025] text-aether-text font-black uppercase tracking-[0.2em] text-xs transition-all hover:bg-white hover:text-[#A95025] hover:scale-[1.02] active:scale-95 disabled:opacity-50 disabled:scale-100 flex items-center justify-center gap-3 shadow-[0_10px_30px_rgba(169,80,37,0.3)]"
             >
               {isRequesting ? (
                  <div className="w-4 h-4 border-2 border-aether-text/30 border-t-aether-text rounded-full animate-spin" />
