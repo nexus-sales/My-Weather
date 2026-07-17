@@ -58,7 +58,7 @@ export default function AetherChat({ weather, cityName }: AetherChatProps) {
           <div>
             <h3 className="text-xs font-black tracking-widest text-white font-orbitron">Dr. AETHER AI</h3>
             <div className="flex items-center gap-1.5 mt-0.5">
-              <div className="w-1.5 h-1.5 rounded-full bg-meteorix-green animate-pulse shadow-[0_0_8px_#00ffa3]" />
+              <div className="w-1.5 h-1.5 rounded-full bg-meteorix-green animate-pulse shadow-[0_0_8px_#F2E2C4]" />
               <span className="text-[8px] font-bold tracking-widest text-white/40 uppercase">{t('status')}</span>
             </div>
           </div>

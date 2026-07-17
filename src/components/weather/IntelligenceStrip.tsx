@@ -49,7 +49,7 @@ export default function IntelligenceStrip({ data }: IntelligenceStripProps) {
               onClick={() => setActiveCard(isActive ? null : card.id)}
               className={`flex flex-col items-center justify-center p-4 rounded-2xl border transition-all ${
                 isActive
-                  ? 'bg-meteorix-blue/20 border-meteorix-blue/60 shadow-[0_0_25px_rgba(0,212,255,0.2)]'
+                  ? 'bg-meteorix-blue/20 border-meteorix-blue/60 shadow-[0_0_25px_rgba(26,61,77,0.2)]'
                   : 'meteorix-card hover:border-white/20'
               }`}
             >

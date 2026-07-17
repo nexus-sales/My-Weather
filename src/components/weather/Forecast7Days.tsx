@@ -55,7 +55,7 @@ export default function Forecast7Days({ daily, hourly }: Forecast7DaysProps) {
               onClick={() => setSelectedIndex(i)}
               className={`relative flex flex-col items-center p-5 rounded-2xl border transition-all hover:scale-[1.02] min-w-[120px] lg:min-w-0 snap-start ${
                 isSelected 
-                  ? 'bg-meteorix-blue/20 border-meteorix-blue/60 shadow-[0_0_25px_rgba(0,212,255,0.2)]' 
+                  ? 'bg-meteorix-blue/20 border-meteorix-blue/60 shadow-[0_0_25px_rgba(26,61,77,0.2)]'
                   : 'meteorix-card hover:border-white/20'
               }`}
             >

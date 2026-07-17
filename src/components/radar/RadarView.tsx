@@ -48,7 +48,7 @@ export default function RadarView() {
               onClick={() => setRadarLayer(mode.id)}
               className={`flex items-center gap-2 px-4 py-2 rounded-xl transition-all whitespace-nowrap shrink-0 ${
                 radarLayer === mode.id
-                  ? 'bg-meteorix-blue/20 text-meteorix-blue border border-meteorix-blue/40 shadow-[0_0_15px_rgba(0,212,255,0.1)]'
+                  ? 'bg-meteorix-blue/20 text-meteorix-blue border border-meteorix-blue/40 shadow-[0_0_15px_rgba(26,61,77,0.1)]'
                   : 'text-white/40 hover:text-white/60 hover:bg-white/5 border border-transparent'
               }`}
             >

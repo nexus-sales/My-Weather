@@ -5,25 +5,21 @@
   --font-outfit: var(--font-outfit);
   --font-inter: var(--font-inter);
 
-  /* Aether Premium Color Palette */
-  --color-aether-bg: #09090b; /* zinc-950 */
-  --color-aether-panel: rgba(24, 24, 27, 0.4); /* zinc-900 with opacity */
-  --color-aether-border: rgba(255, 255, 255, 0.08);
-  --color-aether-border-hover: rgba(255, 255, 255, 0.15);
-  --color-aether-accent: #60a5fa; /* blue-400 */
-  --color-aether-text: #fafafa;
-  --color-aether-text-muted: #a1a1aa; /* zinc-400 */
+  /* Aether Premium Color Palette — Atlantic/volcanic theme */
+  --color-aether-bg: #0B1F2A; /* Atlántico profundo */
+  --color-aether-panel: rgba(26, 61, 77, 0.4); /* Basalto azulado */
+  --color-aether-border: rgba(232, 244, 240, 0.10); /* Espuma tenue */
+  --color-aether-border-hover: rgba(232, 244, 240, 0.18);
+  --color-aether-accent: #D4652F; /* Terracota volcánica */
+  --color-aether-text: #E8F4F0; /* Espuma */
+  --color-aether-text-muted: #5C7A82; /* Bruma */
 
   /* Meteorix Mission Control palette — referenced by ~20 components (bg-meteorix-*,
-     text-meteorix-*, border-meteorix-*) but never actually defined here, so every
-     one of those classes silently rendered as nothing. Reconstructed from the
-     glow colors those same components already pair with the class (e.g. AetherChat
-     pairs bg-meteorix-green with shadow #00ffa3; IntelligenceStrip pairs
-     meteorix-blue with shadow rgba(0,212,255,...)). card/border/bg alias the
-     existing aether-* tokens — same visual language, just the newer name. */
-  --color-meteorix-blue: #00d4ff;
-  --color-meteorix-green: #00ffa3;
-  --color-meteorix-orange: #ff8c35;
+     text-meteorix-*, border-meteorix-*). card/border/bg alias the aether-* tokens
+     above and inherit their values automatically. */
+  --color-meteorix-blue: #1A3D4D; /* Basalto */
+  --color-meteorix-green: #F2E2C4; /* Calima */
+  --color-meteorix-orange: #D4652F; /* Terracota volcánica */
   --color-meteorix-bg: var(--color-aether-bg);
   --color-meteorix-card: var(--color-aether-panel);
   --color-meteorix-border: var(--color-aether-border);

@@ -438,7 +438,7 @@ export default function RadarMap({ height = 300, hideControls = false, externalL
               <button
                 key={mode.id}
                 onClick={() => setInternalLayerType(mode.id)}
-                className={`px-3 py-1.5 rounded-md text-[10px] font-orbitron font-bold tracking-wider transition-all ${layerType === mode.id ? 'bg-meteorix-blue text-white shadow-[0_0_15px_rgba(0,212,255,0.4)]' : 'text-white/40 hover:text-white hover:bg-white/5'}`}
+                className={`px-3 py-1.5 rounded-md text-[10px] font-orbitron font-bold tracking-wider transition-all ${layerType === mode.id ? 'bg-meteorix-blue text-white shadow-[0_0_15px_rgba(26,61,77,0.4)]' : 'text-white/40 hover:text-white hover:bg-white/5'}`}
               >
                 {mode.label}
               </button>
@@ -800,7 +800,7 @@ export default function RadarMap({ height = 300, hideControls = false, externalL
               {layerType === 'radar' && activeFrames.length > 0 && (
                 <div className="absolute bottom-4 left-4 right-12 z-[1000] h-1 bg-white/10 rounded-full overflow-hidden pointer-events-none">
                   <div 
-                    className="h-full bg-meteorix-blue shadow-[0_0_10px_#00d4ff] transition-all duration-300" 
+                    className="h-full bg-meteorix-blue shadow-[0_0_10px_#1A3D4D] transition-all duration-300"
                     style={{ width: `${((displayedFrameIndex + 1) / activeFrames.length) * 100}%` }} 
                   />
                 </div>

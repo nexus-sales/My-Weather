@@ -103,7 +103,7 @@ export default function DailyBriefing({ weather, cityName }: DailyBriefingProps)
         <div className="flex-1 space-y-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-meteorix-blue/20 text-meteorix-blue shadow-[0_0_15px_rgba(0,212,255,0.2)]">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-meteorix-blue/20 text-meteorix-blue shadow-[0_0_15px_rgba(26,61,77,0.2)]">
                 <Sparkles size={20} />
               </div>
               <div>
