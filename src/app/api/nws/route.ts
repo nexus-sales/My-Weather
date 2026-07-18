@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from 'next/server';
 // Returns { covered: false } for non-US coordinates so the client can handle gracefully.
 
 const NWS_BASE = 'https://api.weather.gov';
-const USER_AGENT = 'MyWeather/5.0 (admin@nexus-sales.eu)';
+const USER_AGENT = 'Solajero/5.0 (admin@nexus-sales.eu)';
 
 const NWS_HEADERS = {
   'User-Agent': USER_AGENT,

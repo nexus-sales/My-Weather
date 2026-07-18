@@ -2,8 +2,8 @@ import type { MetadataRoute } from 'next';
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: 'MyWeather / METEORIX PRO',
-    short_name: 'MyWeather',
+    name: 'Solajero',
+    short_name: 'Solajero',
     description: 'Centro meteorologico personal con datos en tiempo real, radar, alertas e IA.',
     start_url: '/es',
     scope: '/',
@@ -14,15 +14,15 @@ export default function manifest(): MetadataRoute.Manifest {
     categories: ['weather', 'productivity', 'utilities'],
     icons: [
       {
-        src: '/icons/meteorix-icon.svg',
+        src: '/icons/solajero-icon.png',
         sizes: 'any',
-        type: 'image/svg+xml',
+        type: 'image/png',
         purpose: 'any',
       },
       {
-        src: '/icons/meteorix-maskable.svg',
+        src: '/icons/solajero-icon.png',
         sizes: 'any',
-        type: 'image/svg+xml',
+        type: 'image/png',
         purpose: 'maskable',
       },
     ],

@@ -1,4 +1,4 @@
-# MyWeather / METEORIX PRO
+# Solajero / METEORIX PRO
 
 Aplicacion meteorologica avanzada construida con Next.js 16, datos en tiempo real, radar interactivo, graficas profesionales y arquitectura preparada para IA meteorologica.
 

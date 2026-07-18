@@ -39,7 +39,7 @@ export const usePWSStore = create<PWSState>()(
         })),
     }),
     {
-      name: 'myweather-pws-storage',
+      name: 'solajero-pws-storage',
       storage: createJSONStorage(() => localStorage),
     }
   )

@@ -39,7 +39,7 @@ export default function HomePage() {
 
       <header className="relative z-40 flex items-center justify-between px-6 py-5 border-b border-white/5 bg-zinc-950/40 backdrop-blur-2xl supports-[backdrop-filter]:bg-zinc-950/20">
         <div className="flex items-center gap-4">
-          <h1 className="text-xl font-medium tracking-tight text-white font-outfit">
+          <h1 className="text-2xl font-black tracking-widest text-white font-outfit uppercase">
             {t('title')}
           </h1>
           <div className="hidden lg:block text-xs font-medium text-white/50 border-l border-white/10 pl-4 uppercase tracking-wider">

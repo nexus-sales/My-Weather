@@ -1,13 +1,13 @@
 {
   "Index": {
-    "title": "MyWeather",
+    "title": "Solajero",
     "description": "The most advanced weather app ever built with web technology.",
     "controlCenter": "Control Center v5.0",
     "loading": "Syncing satellite data...",
     "connectionError": "Connection error. Re-linking to ECMWF satellites...",
     "moduleOffline": "{module} module offline",
     "moduleMigrating": "In technical migration phase",
-    "footer": "Engineering-grade meteorology",
+    "footer": "Superior level meteorology, Created by Grupo LMB - 2026",
     "tabs": {
       "dashboard": "Dashboard",
       "radar": "Radar",

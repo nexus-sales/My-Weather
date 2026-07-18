@@ -19,7 +19,7 @@ export async function GET(request: NextRequest) {
   try {
     const res = await fetch(url, {
       headers: {
-        'User-Agent': 'MyWeather/1.0 (Engineering-grade weather app)',
+        'User-Agent': 'Solajero/1.0 (Engineering-grade weather app)',
       },
       next: { revalidate: 1800 }
     });

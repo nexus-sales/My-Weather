@@ -13,7 +13,7 @@ export default function ServiceWorkerRegister() {
 
       if ('caches' in window) {
         caches.keys()
-          .then((keys) => Promise.all(keys.filter((key) => key.startsWith('myweather-')).map((key) => caches.delete(key))))
+          .then((keys) => Promise.all(keys.filter((key) => key.startsWith('solajero-')).map((key) => caches.delete(key))))
           .catch(() => {});
       }
       return;

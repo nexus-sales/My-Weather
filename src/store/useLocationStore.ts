@@ -70,7 +70,7 @@ export const useLocationStore = create<LocationState>()(
       clearHistory: () => set({ history: [] }),
     }),
     {
-      name: 'myweather-location-storage',
+      name: 'solajero-location-storage',
       storage: createJSONStorage(() => localStorage),
     }
   )

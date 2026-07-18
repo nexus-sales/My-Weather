@@ -1,13 +1,13 @@
 {
   "Index": {
-    "title": "MyWeather",
+    "title": "Solajero",
     "description": "La aplicacion meteorologica mas avanzada construida con tecnologia web.",
     "controlCenter": "Centro de control v5.0",
     "loading": "Sincronizando datos satelitales...",
     "connectionError": "Error de conexion. Reenlazando con satelites ECMWF...",
     "moduleOffline": "Modulo {module} offline",
     "moduleMigrating": "En fase de migracion tecnica",
-    "footer": "Meteorologia a nivel de ingenieria",
+    "footer": "Meteorología a nivel superior, Creada por Grupo LMB - 2026",
     "tabs": {
       "dashboard": "Panel",
       "radar": "Radar",

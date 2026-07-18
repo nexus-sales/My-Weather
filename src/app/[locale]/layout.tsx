@@ -14,21 +14,21 @@ function isLocale(locale: string): locale is Locale {
 }
 
 export const metadata: Metadata = {
-  title: 'MyWeather',
+  title: 'Solajero',
   description: 'The most advanced weather app ever built with web technology. Created by Salvador Munoz Portillo.',
-  applicationName: 'MyWeather',
+  applicationName: 'Solajero',
   manifest: '/manifest.webmanifest',
   appleWebApp: {
     capable: true,
     statusBarStyle: 'black-translucent',
-    title: 'MyWeather',
+    title: 'Solajero',
   },
   formatDetection: {
     telephone: false,
   },
   icons: {
-    icon: '/icons/meteorix-icon.svg',
-    apple: '/icons/meteorix-maskable.svg',
+    icon: '/icons/solajero-icon.png',
+    apple: '/icons/solajero-icon.png',
   },
 };
 
