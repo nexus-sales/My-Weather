@@ -112,10 +112,19 @@ export const fetchMetEireannForecast = async (lat: number, lon: number): Promise
 
     if (Object.keys(data).length === 0) return { isAvailable: false, source: 'Met Eireann' };
 
+    // Met Éireann's weatherapi format carries the issue time as the `created`
+    // attribute on the root <weatherdata> element — there is no <updated> tag
+    // (that belongs to met.no's older schema), so reading one always came back
+    // empty. Fall back to the model run time (`termin`) if `created` is absent.
+    const updated =
+      doc.documentElement?.getAttribute('created') ??
+      doc.getElementsByTagName('model')[0]?.getAttribute('termin') ??
+      undefined;
+
     return {
       isAvailable: true,
       source: 'Met Eireann',
-      updated: doc.getElementsByTagName('updated')[0]?.textContent ?? undefined,
+      updated,
       nextHour: {
         time: targetFrom,
         ...data,
