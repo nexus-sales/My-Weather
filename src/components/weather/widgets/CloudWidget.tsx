@@ -1,6 +1,7 @@
 'use client';
 
 import { Cloud, Sun, CloudRain } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import WidgetWrapper from './WidgetWrapper';
 
 interface CloudWidgetProps {
@@ -9,11 +10,12 @@ interface CloudWidgetProps {
 }
 
 export default function CloudWidget({ coverage, title }: CloudWidgetProps) {
+  const t = useTranslations('Widgets');
   // Determine status and icon color
   const isOvercast = coverage > 70;
   const isClear = coverage < 20;
   
-  const status = isOvercast ? 'Cubierto' : isClear ? 'Despejado' : 'Parcial';
+  const status = isOvercast ? t('cloud.overcast') : isClear ? t('cloud.clear') : t('cloud.partial');
   const color = isClear ? '#fbbf24' : isOvercast ? '#94a3b8' : '#60a5fa';
 
   return (
@@ -66,11 +68,11 @@ export default function CloudWidget({ coverage, title }: CloudWidgetProps) {
         {/* Small Data Strip */}
         <div className="mt-4 w-full flex justify-between px-2">
            <div className="flex flex-col">
-              <span className="text-[6px] font-outfit text-white/50 uppercase">Transparencia</span>
+              <span className="text-[6px] font-outfit text-white/50 uppercase">{t('cloud.transparency')}</span>
               <span className="text-[9px] font-inter text-xs text-white/80">{100 - coverage}%</span>
            </div>
            <div className="flex flex-col text-right">
-              <span className="text-[6px] font-outfit text-white/50 uppercase">Opacidad</span>
+              <span className="text-[6px] font-outfit text-white/50 uppercase">{t('cloud.opacity')}</span>
               <span className="text-[9px] font-inter text-xs text-white/80">{coverage}%</span>
            </div>
         </div>

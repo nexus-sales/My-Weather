@@ -3,6 +3,7 @@
 import { useMemo } from 'react';
 import { Cpu, Thermometer, Droplets, BatteryCharging, Orbit } from 'lucide-react';
 import WidgetWrapper from './WidgetWrapper';
+import { useTranslations } from 'next-intl';
 
 interface StationConsoleWidgetProps {
   outdoorTemp: number;
@@ -10,6 +11,7 @@ interface StationConsoleWidgetProps {
 }
 
 export default function StationConsoleWidget({ outdoorTemp, outdoorHum }: StationConsoleWidgetProps) {
+  const t = useTranslations('Widgets');
   // Indoor data derived from outdoor for realism (buffered)
   const indoorTemp = parseFloat((outdoorTemp * 0.3 + 18).toFixed(1));
   const indoorHum = Math.min(65, Math.max(30, outdoorHum - 10));
@@ -26,11 +28,11 @@ export default function StationConsoleWidget({ outdoorTemp, outdoorHum }: Statio
 
   return (
     <WidgetWrapper
-      title="Consola de Estación"
+      title={t('stationConsole.title')}
       icon={<Cpu size={14} className="text-meteorix-highlight" />}
       className="h-auto pb-4"
       dataQuality="estimated"
-      source="Valores interiores derivados hasta conectar una estación física"
+      source={t('stationConsole.source')}
     >
       <div className="w-full flex flex-col md:flex-row items-center justify-between gap-6 px-4">
         
@@ -71,7 +73,7 @@ export default function StationConsoleWidget({ outdoorTemp, outdoorHum }: Statio
            <div className="flex items-center gap-3">
               <Orbit size={18} className="text-yellow-400 animate-[spin_10s_linear_infinite]" />
               <div className="flex flex-col">
-                 <span className="text-[10px] font-outfit text-white/65 uppercase tracking-widest">Panel Solar</span>
+                 <span className="text-[10px] font-outfit text-white/65 uppercase tracking-widest">{t('stationConsole.solarPanel')}</span>
                  <span className="text-[12px] text-yellow-400 font-bold">Cargando {voltage}V</span>
               </div>
            </div>

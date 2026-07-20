@@ -5,16 +5,24 @@ import { useUIStore } from '@/store/useUIStore';
 import { Cloud, CloudRain, Maximize2, Satellite, Thermometer, Wind, Zap, Sparkles, Flame, CloudFog, Snowflake, Moon } from 'lucide-react';
 import dynamic from 'next/dynamic';
 
-const RadarMap = dynamic(() => import('@/components/radar/RadarMap'), {
-  ssr: false,
-  loading: () => (
+// Its own component (not an inline arrow in the `loading` option) so it can
+// call useTranslations — next/dynamic renders `loading` as a real component,
+// so hooks are valid here, but only if it is one.
+function RadarLoading() {
+  const t = useTranslations('Radar');
+  return (
     <div className="w-full h-full bg-[#00060f] flex items-center justify-center">
       <div className="flex flex-col items-center gap-4">
         <div className="w-8 h-8 border-4 border-meteorix-blue/30 border-t-meteorix-blue rounded-full animate-spin" />
-        <span className="text-[10px] font-orbitron tracking-widest text-meteorix-highlight/50 uppercase animate-blink">Iniciando Telemetría...</span>
+        <span className="text-[10px] font-orbitron tracking-widest text-meteorix-highlight/50 uppercase animate-blink">{t('booting')}</span>
       </div>
     </div>
-  ),
+  );
+}
+
+const RadarMap = dynamic(() => import('@/components/radar/RadarMap'), {
+  ssr: false,
+  loading: RadarLoading,
 });
 
 // All 11 layers as direct buttons — no dropdown. There's room for them, and

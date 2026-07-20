@@ -234,7 +234,7 @@ export default function IntelligenceStrip({ data }: IntelligenceStripProps) {
           )}
 
           {activeCard === 'metEireann' && data.loadStates.metEireann && (
-             <div className="flex items-center justify-center py-8 text-white/45 animate-pulse">Enlace Met Eireann...</div>
+             <div className="flex items-center justify-center py-8 text-white/45 animate-pulse">{t('connectingMetEireann')}</div>
           )}
 
           {activeCard === 'metEireann' && !data.loadStates.metEireann && data.metEireann.isAvailable && (
@@ -260,7 +260,7 @@ export default function IntelligenceStrip({ data }: IntelligenceStripProps) {
           )}
 
           {activeCard === 'confidence' && data.loadStates.weather && (
-             <div className="flex items-center justify-center py-8 text-white/45 animate-pulse">Calculando consistencia...</div>
+             <div className="flex items-center justify-center py-8 text-white/45 animate-pulse">{t('calculatingConsistency')}</div>
           )}
 
           {activeCard === 'confidence' && !data.loadStates.weather && (

@@ -1,6 +1,7 @@
 'use client';
 
 import { Waves, ArrowUpRight, ArrowDownRight, Anchor } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import WidgetWrapper from './WidgetWrapper';
 
 interface MarineWidgetProps {
@@ -14,8 +15,9 @@ interface MarineWidgetProps {
 }
 
 export default function MarineWidget({ waveHeight, period, tideTrend, temp, title, dataQuality, source }: MarineWidgetProps) {
+  const t = useTranslations('Widgets');
   const TrendIcon = tideTrend === 'rising' ? ArrowUpRight : tideTrend === 'falling' ? ArrowDownRight : Anchor;
-  const trendLabel = tideTrend === 'rising' ? 'Subiendo' : tideTrend === 'falling' ? 'Bajando' : 'Estable';
+  const trendLabel = tideTrend === 'rising' ? t('marine.rising') : tideTrend === 'falling' ? t('marine.falling') : t('marine.steady');
 
   return (
     <WidgetWrapper title={title} icon={<Waves size={14} className="text-sky-400" />} dataQuality={dataQuality} source={source}>
@@ -25,7 +27,7 @@ export default function MarineWidget({ waveHeight, period, tideTrend, temp, titl
               <span className="text-2xl font-outfit font-black text-white leading-none">
                 {waveHeight.toFixed(1)}<span className="text-[10px] text-white/65 ml-1">m</span>
               </span>
-              <span className="text-[7px] font-inter text-xs text-white/60 uppercase tracking-widest mt-1">Altura de Ola</span>
+              <span className="text-[7px] font-inter text-xs text-white/60 uppercase tracking-widest mt-1">{t('marine.waveHeight')}</span>
            </div>
            
            <div className="flex flex-col items-end">
@@ -33,7 +35,7 @@ export default function MarineWidget({ waveHeight, period, tideTrend, temp, titl
                  <TrendIcon size={12} />
                  <span className="text-[9px] font-inter text-xs font-bold uppercase tracking-tighter">{trendLabel}</span>
               </div>
-              <span className="text-[7px] font-inter text-xs text-white/50 uppercase tracking-widest mt-0.5">Marea</span>
+              <span className="text-[7px] font-inter text-xs text-white/50 uppercase tracking-widest mt-0.5">{t('marine.tide')}</span>
            </div>
         </div>
 
@@ -62,11 +64,11 @@ export default function MarineWidget({ waveHeight, period, tideTrend, temp, titl
 
         <div className="flex justify-between mt-4 border-t border-white/5 pt-2">
            <div className="flex flex-col">
-              <span className="text-[6px] font-outfit text-white/60 uppercase">Periodo</span>
+              <span className="text-[6px] font-outfit text-white/60 uppercase">{t('marine.period')}</span>
               <span className="text-[10px] font-inter text-xs text-white/80">{period}s</span>
            </div>
            <div className="flex flex-col text-right">
-              <span className="text-[6px] font-outfit text-white/60 uppercase">Agua</span>
+              <span className="text-[6px] font-outfit text-white/60 uppercase">{t('marine.water')}</span>
               <span className="text-[10px] font-inter text-xs text-white/80">{temp.toFixed(1)}°C</span>
            </div>
         </div>

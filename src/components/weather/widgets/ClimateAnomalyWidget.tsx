@@ -2,6 +2,7 @@
 
 import { History, TrendingUp, TrendingDown } from 'lucide-react';
 import WidgetWrapper from './WidgetWrapper';
+import { useTranslations } from 'next-intl';
 
 interface ClimateAnomalyWidgetProps {
   anomaly: number;
@@ -12,6 +13,7 @@ interface ClimateAnomalyWidgetProps {
 }
 
 export default function ClimateAnomalyWidget({ anomaly, baseline, title, dataQuality, source }: ClimateAnomalyWidgetProps) {
+  const t = useTranslations('Widgets');
   const isWarmer = anomaly > 0;
   const color = isWarmer ? '#ff3e3e' : '#60a5fa';
   const Icon = isWarmer ? TrendingUp : TrendingDown;
@@ -32,13 +34,13 @@ export default function ClimateAnomalyWidget({ anomaly, baseline, title, dataQua
               </span>
               <span className="text-[10px] text-white/60 font-inter text-xs">VS 1996</span>
             </div>
-            <span className="text-[7px] font-inter text-xs text-white/50 uppercase tracking-widest">Anomalía Térmica Histórica</span>
+            <span className="text-[7px] font-inter text-xs text-white/50 uppercase tracking-widest">{t('climate.anomaly')}</span>
           </div>
         </div>
 
         <div className="bg-black/40 rounded-lg p-2 border border-white/5 space-y-2 mt-4">
            <div className="flex justify-between items-center">
-              <span className="text-[7px] font-outfit text-white/60 uppercase">Referencia (30 años)</span>
+              <span className="text-[7px] font-outfit text-white/60 uppercase">{t('climate.baseline')}</span>
               <span className="text-[9px] font-inter text-xs text-white/80">{baseline.toFixed(1)}°C</span>
            </div>
            

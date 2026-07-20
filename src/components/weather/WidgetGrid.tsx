@@ -35,6 +35,7 @@ interface WidgetGridProps {
 
 export default function WidgetGrid({ weather }: WidgetGridProps) {
   const t = useTranslations('Dashboard');
+  const tw = useTranslations('Widgets');
   const intelligence = useIntelligence(weather);
   const { coords } = useLocationStore();
   const { data: spaceWeather } = useSpaceWeather(coords.lat, coords.lon);
@@ -45,7 +46,7 @@ export default function WidgetGrid({ weather }: WidgetGridProps) {
       <section className="space-y-4">
         <div className="flex items-center gap-2 pl-2">
           <div className="w-1.5 h-1.5 bg-blue-400 rounded-full" />
-          <h4 className="text-[11px] font-outfit font-semibold tracking-widest text-white/60 uppercase">Primary Telemetry / Surface</h4>
+          <h4 className="text-[11px] font-outfit font-semibold tracking-widest text-white/60 uppercase">{t('groups.primary')}</h4>
         </div>
         <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <WindWidget speed={weather.current.windSpeed} direction={weather.current.windDir} gusts={weather.current.gusts} title={t('wind')} daily={weather.daily} />
@@ -59,13 +60,13 @@ export default function WidgetGrid({ weather }: WidgetGridProps) {
       <section className="space-y-4">
         <div className="flex items-center gap-2 pl-2">
           <div className="w-1.5 h-1.5 bg-indigo-400 rounded-full" />
-          <h4 className="text-[11px] font-outfit font-semibold tracking-widest text-white/60 uppercase">Atmospheric Physics / Static</h4>
+          <h4 className="text-[11px] font-outfit font-semibold tracking-widest text-white/60 uppercase">{t('groups.atmospheric')}</h4>
         </div>
         <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <PressureWidget pressure={weather.current.pressure} title={t('pressure')} />
           <HumidityWidget humidity={weather.current.humidity} temp={weather.current.temp} title={t('humidity')} />
-          <VisibilityWidget visibility={weather.current.visibility} title={t('visibility') || 'Visibilidad'} />
-          <MoonWidget data={intelligence.lunar} title={t('lunar') || 'Fase Lunar'} />
+          <VisibilityWidget visibility={weather.current.visibility} title={t('visibility')} />
+          <MoonWidget data={intelligence.lunar} title={t('lunar')} />
         </div>
       </section>
 
@@ -73,10 +74,10 @@ export default function WidgetGrid({ weather }: WidgetGridProps) {
       <section className="space-y-4">
         <div className="flex items-center gap-2 pl-2">
           <div className="w-1.5 h-1.5 bg-emerald-400 rounded-full" />
-          <h4 className="text-[11px] font-outfit font-semibold tracking-widest text-white/60 uppercase">Environmental Intelligence / Bio-Risk</h4>
+          <h4 className="text-[11px] font-outfit font-semibold tracking-widest text-white/60 uppercase">{t('groups.environmental')}</h4>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <CloudWidget coverage={weather.current.cloudCover} title="Cobertura Nubosa" />
+          <CloudWidget coverage={weather.current.cloudCover} title={tw('cloud.title')} />
           <AQIWidget aqiValue={intelligence.air.aqi} dataQuality={intelligence.air.source === 'Open-Meteo Air Quality' ? 'observed' : 'estimated'} source={intelligence.air.source} />
           <SpaceWeatherWidget
             kpIndex={spaceWeather?.kpIndex ?? null}
@@ -102,18 +103,18 @@ export default function WidgetGrid({ weather }: WidgetGridProps) {
       <section className="space-y-4">
         <div className="flex items-center gap-2 pl-2">
           <div className="w-1.5 h-1.5 bg-violet-400 rounded-full" />
-          <h4 className="text-[11px] font-outfit font-semibold tracking-widest text-white/60 uppercase">Specialized Metrics / Climate Monitoring</h4>
+          <h4 className="text-[11px] font-outfit font-semibold tracking-widest text-white/60 uppercase">{t('groups.specialized')}</h4>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <DewPointWidget temp={weather.current.temp} humidity={weather.current.humidity} title="Punto de Rocío" />
-          <ClimateAnomalyWidget anomaly={intelligence.climate?.anomaly ?? 0} baseline={intelligence.climate?.baseline ?? 0} title="Registro Histórico" dataQuality={intelligence.climate ? 'observed' : 'estimated'} source={intelligence.climate ? 'Open-Meteo Archive' : 'Sin histórico disponible'} />
-          <MarineWidget waveHeight={intelligence.marine.waveHeight} period={intelligence.marine.period} tideTrend={intelligence.marine.tideTrend} temp={intelligence.marine.temp} title="Estado del Mar" dataQuality={intelligence.marine.source === 'Open-Meteo Marine' ? 'observed' : 'estimated'} source={intelligence.marine.source} />
+          <DewPointWidget temp={weather.current.temp} humidity={weather.current.humidity} title={tw('dewPoint.title')} />
+          <ClimateAnomalyWidget anomaly={intelligence.climate?.anomaly ?? 0} baseline={intelligence.climate?.baseline ?? 0} title={tw('climate.title')} dataQuality={intelligence.climate ? 'observed' : 'estimated'} source={intelligence.climate ? 'Open-Meteo Archive' : tw('climate.noHistory')} />
+          <MarineWidget waveHeight={intelligence.marine.waveHeight} period={intelligence.marine.period} tideTrend={intelligence.marine.tideTrend} temp={intelligence.marine.temp} title={tw('marine.title')} dataQuality={intelligence.marine.source === 'Open-Meteo Marine' ? 'observed' : 'estimated'} source={intelligence.marine.source} />
           <SurfWidget 
             waveHeight={intelligence.marine.waveHeight} 
             period={intelligence.marine.period} 
             windSpeed={weather.current.windSpeed} 
             windDir={weather.current.windDir} 
-            title="Surf Quality" 
+            title={tw('surf.title')} 
           />
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -123,7 +124,7 @@ export default function WidgetGrid({ weather }: WidgetGridProps) {
             liftedIndex={intelligence.storms.liftedIndex} 
             rifts={intelligence.storms.rifts} 
             dataQuality="estimated"
-            source="Índice heurístico con meteorología actual"
+            source={tw('storm.source')}
           />
         </div>
       </section>
@@ -132,7 +133,7 @@ export default function WidgetGrid({ weather }: WidgetGridProps) {
       <section className="space-y-4">
         <div className="flex items-center gap-2 pl-2">
           <div className="w-1.5 h-1.5 bg-amber-400 rounded-full" />
-          <h4 className="text-[11px] font-outfit font-semibold tracking-widest text-white/60 uppercase">Lifestyle & Energy</h4>
+          <h4 className="text-[11px] font-outfit font-semibold tracking-widest text-white/60 uppercase">{t('groups.lifestyle')}</h4>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <SolarEnergyWidget cloudCover={weather.current.cloudCover} uvIndex={weather.current.uvIndex} sunrise={weather.daily.sunrise[0]} sunset={weather.daily.sunset[0]} />

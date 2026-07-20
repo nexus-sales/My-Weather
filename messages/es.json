@@ -45,7 +45,27 @@
     "expand": "Expandir",
     "satelliteLink": "Enlace satelital activo",
     "coordinates": "Coordenadas",
-    "provider": "Proveedor"
+    "provider": "Proveedor",
+    "booting": "Iniciando telemetría...",
+    "station": {
+      "temp": "TEMP:",
+      "rain": "LLUVIA:"
+    },
+    "lightning": {
+      "impact": "IMPACTO DETECTADO",
+      "distance": "Distancia:",
+      "intensity": "Intensidad:",
+      "thunderDelay": "Retardo trueno:",
+      "age": "Edad:",
+      "justNow": "Hace un instante",
+      "secondsAgo": "Hace {seconds}s"
+    },
+    "status": {
+      "loadingFrames": "Cargando fotogramas meteorológicos reales...",
+      "rainviewerError": "RainViewer no está respondiendo ahora mismo. El mapa base sigue disponible, pero la capa animada no se ha podido cargar.",
+      "owmChecking": "Validando OpenWeatherMap y cargando tiles...",
+      "owmError": "OpenWeatherMap no ha autorizado esta clave todavía. Reinicia el servidor si acabas de editar .env.local; si sigue igual, espera a que la clave nueva se active o revísala en OpenWeather."
+    }
   },
   "Dashboard": {
     "title": "Panel",
@@ -73,7 +93,14 @@
     "rain": "Lluvia",
     "visibility": "Visibilidad",
     "lunar": "Fase Lunar",
-    "telemetryTitle": "Sensores de Telemetría Avanzada"
+    "telemetryTitle": "Sensores de Telemetría Avanzada",
+    "groups": {
+      "primary": "Telemetría primaria / Superficie",
+      "atmospheric": "Física atmosférica / Estática",
+      "environmental": "Inteligencia ambiental / Bio-riesgo",
+      "specialized": "Métricas especializadas / Vigilancia climática",
+      "lifestyle": "Estilo de vida y energía"
+    }
   },
   "Intelligence": {
     "cards": {
@@ -179,7 +206,9 @@
       "waningGibbous": "Gibosa menguante",
       "lastQuarter": "Cuarto menguante",
       "waningCrescent": "Menguante final"
-    }
+    },
+    "connectingMetEireann": "Enlace Met Eireann...",
+    "calculatingConsistency": "Calculando consistencia..."
   },
   "Aether": {
     "greeting": "Sincronizacion establecida. Soy AETHER. Analizando la situacion atmosferica en **{cityName}**. ¿En que puedo ayudarte hoy con el analisis meteorologico?",
@@ -264,6 +293,259 @@
     "pressure": "Presion",
     "lastObs": "Ultima Obs",
     "capabilities": "Capacidades Operativas",
-    "note": "Nota: Los datos provienen de la red oficial de AEMET y sensores asociados."
+    "note": "Nota: Los datos provienen de la red oficial de AEMET y sensores asociados.",
+    "panels": {
+      "aemetTitle": "AEMET oficiales cercanas",
+      "aemetSubtitle": "Red oficial. Observaciones puntuales, no modelo interpolado.",
+      "pwsTitle": "PWS Weather Underground",
+      "pwsSubtitle": "Estaciones personales cercanas cuando la API lo permite.",
+      "syncing": "Sincronizando estaciones...",
+      "pwsNotConfigured": "Estaciones personales no disponibles: Weather Underground solo emite claves ligadas a una estación (PWS) propia registrada.",
+      "pwsError": "Weather Underground no ha devuelto estaciones cercanas. Puede ser un fallo temporal de su API.",
+      "pwsEmpty": "No hay PWS cercanas disponibles para esta zona.",
+      "gust": "Racha",
+      "direction": "Dir.",
+      "altitude": "Alt.",
+      "obs": "Obs."
+    }
+  },
+  "Widgets": {
+    "quality": {
+      "observed": "Real",
+      "estimated": "Estimado",
+      "system": "Sistema"
+    },
+    "expanded": {
+      "close": "Cerrar"
+    },
+    "aqi": {
+      "title": "Calidad Aire / Calima",
+      "good": "BUENA",
+      "moderate": "MODERADA",
+      "bad": "MALA",
+      "toxic": "TÓXICA",
+      "hazeLight": "Posible presencia de Calima ligera",
+      "hazeDense": "Calima densa. Evitar ejercicio al aire libre",
+      "severe": "Peligro respiratorio severo",
+      "messageGood": "Partículas PM2.5/PM10 en niveles bajos"
+    },
+    "climate": {
+      "title": "Registro Histórico",
+      "anomaly": "Anomalía Térmica Histórica",
+      "baseline": "Referencia (30 años)",
+      "noHistory": "Sin histórico disponible"
+    },
+    "cloud": {
+      "title": "Cobertura Nubosa",
+      "clear": "Despejado",
+      "partial": "Parcial",
+      "overcast": "Cubierto",
+      "opacity": "Opacidad",
+      "transparency": "Transparencia"
+    },
+    "dewPoint": {
+      "title": "Punto de Rocío",
+      "dry": "Seco",
+      "comfortable": "Confortable",
+      "humid": "Húmedo",
+      "oppressive": "Opresivo",
+      "airSaturation": "Saturación de Aire",
+      "description": "Temperatura a la que el aire se satura y forma condensación."
+    },
+    "drone": {
+      "title": "Seguridad de Vuelo / Drones",
+      "wind": "Viento",
+      "visibility": "Visib.",
+      "go": "GO",
+      "warning": "WARNING",
+      "nogo": "NO-GO",
+      "optimal": "Condiciones Óptimas para Vuelo (VFR)",
+      "caution": "Precaución: Ráfagas o visibilidad reducida",
+      "unsafe": "Vuelo Inseguro: Clima adverso detectado"
+    },
+    "humidity": {
+      "dry": "Seco",
+      "ideal": "Ideal",
+      "humid": "Húmedo",
+      "humidity": "Humedad",
+      "dewPoint": "Punto Rocío",
+      "feels": "Sensación"
+    },
+    "marine": {
+      "title": "Estado del Mar",
+      "rising": "Subiendo",
+      "falling": "Bajando",
+      "steady": "Estable",
+      "water": "Agua",
+      "waveHeight": "Altura de Ola",
+      "tide": "Marea",
+      "period": "Periodo"
+    },
+    "moon": {
+      "age": "Edad",
+      "phase": "Fase"
+    },
+    "photography": {
+      "title": "Luz Fotográfica",
+      "night": "Fotografía Nocturna",
+      "gps": "Calculado por GPS",
+      "currentPhase": "Fase Actual",
+      "morning": "Mañana",
+      "evening": "Tarde",
+      "hardLight": "Luz Dura (Día)",
+      "blueHourDawn": "Blue Hour (Amanecer)",
+      "goldenMorning": "Golden Hour (Mañana)",
+      "goldenEvening": "Golden Hour (Tarde)",
+      "blueHourDusk": "Blue Hour (Atardecer)"
+    },
+    "pollen": {
+      "title": "Polen",
+      "alder": "Aliso",
+      "birch": "Abedul",
+      "grass": "Gramíneas",
+      "low": "Bajo",
+      "moderate": "Moderado",
+      "high": "Alto",
+      "veryHigh": "Muy Alto",
+      "highest": "Nivel más alto detectado"
+    },
+    "pressure": {
+      "barometer": "BARÓMETRO",
+      "hectopascals": "HECTOPASCALES"
+    },
+    "rain": {
+      "none": "Sin lluvia detectada",
+      "light": "Llovizna ligera",
+      "moderate": "Lluvia moderada",
+      "heavy": "Lluvia intensa",
+      "status": "Estado de Precipitación:",
+      "live": "Captando datos en tiempo real"
+    },
+    "solar": {
+      "title": "Potencial Solar",
+      "low": "Baja",
+      "moderate": "Moderada",
+      "excellent": "Excelente",
+      "charging": "Cargando",
+      "maintenance": "Mantenimiento",
+      "batteries": "Baterías",
+      "efficiency": "Eficiencia Estimada",
+      "generation": "Generación de Energía",
+      "inactiveNight": "Inactiva (Noche)"
+    },
+    "space": {
+      "title": "Clima Espacial (NOAA)",
+      "quiet": "Tranquilo",
+      "minorStorm": "Tormenta Menor",
+      "solarStorm": "Tormenta Solar",
+      "low": "Bajo",
+      "none": "Nulo",
+      "possible": "Posible",
+      "negligible": "Prácticamente nula",
+      "noData": "Sin datos",
+      "unavailable": "No disponible",
+      "calculating": "Calculando...",
+      "geomagnetic": "Actividad Geomagnética",
+      "aurora": "Auroras Boreales (aquí)",
+      "gpsRisk": "Riesgo para GPS",
+      "kpIndex": "Índice Kp actual",
+      "level": "Nivel {kp} / 9"
+    },
+    "stargazing": {
+      "title": "Observación Estelar",
+      "excellent": "Excelente",
+      "good": "Bueno",
+      "acceptable": "Aceptable",
+      "poor": "Pobre",
+      "veryPoor": "Muy Pobre",
+      "high": "Alta",
+      "medium": "Media",
+      "new": "Nueva",
+      "jupiter": "Júpiter y Vía Láctea visibles",
+      "skyQuality": "Aptitud del Cielo",
+      "moonPhase": "Fase Lunar",
+      "cloudiness": "Nubosidad",
+      "transparency": "Transparencia",
+      "window": "Ventana óptima: 22:00 - 04:00",
+      "nullRain": "Nulo (Lluvia)",
+      "brightOnly": "Solo objetos brillantes (Luna)"
+    },
+    "stationConsole": {
+      "title": "Consola de Estación",
+      "source": "Valores interiores derivados hasta conectar una estación física",
+      "solarPanel": "Panel Solar"
+    },
+    "storm": {
+      "title": "Riesgo de Tormenta / Convección",
+      "cape": "Índice CAPE",
+      "lifted": "Lifted Index",
+      "dischargeProb": "Prob. de Descargas",
+      "extreme": "Inestabilidad Extrema Detectada",
+      "source": "Índice heurístico con meteorología actual"
+    },
+    "sun": {
+      "night": "NOCHE",
+      "sunrise": "Amanecer",
+      "sunset": "Ocaso",
+      "localClock": "Reloj Local",
+      "solarStatus": "Status Solar",
+      "day": "DÍA"
+    },
+    "surf": {
+      "title": "Calidad de Surf",
+      "energy": "Energía",
+      "waves": "Olas",
+      "period": "Periodo",
+      "flat": "Plato",
+      "epic": "Épico",
+      "veryGood": "Muy Bueno",
+      "acceptable": "Aceptable",
+      "poor": "Pobre"
+    },
+    "thermal": {
+      "title": "Confort Térmico",
+      "feelsLike": "SENSACIÓN TÉRMICA",
+      "bioIndex": "Índice Bioclimático",
+      "source": "Sensación térmica del proveedor (temp, humedad, viento)",
+      "extremeCold": "Frío Extremo",
+      "cold": "Frío",
+      "cool": "Fresco",
+      "comfortable": "Confortable",
+      "moderateHeat": "Calor Moderado",
+      "veryHighHeat": "Calor Muy Alto",
+      "extremeHeat": "Calor Extremo",
+      "stressNone": "Ninguno",
+      "stressLow": "Bajo",
+      "stressModerate": "Moderado",
+      "stressHigh": "Alto",
+      "stressVeryHigh": "Muy Alto",
+      "stressExtreme": "Extremo",
+      "adviceIdeal": "Condiciones ideales. Ropa casual.",
+      "adviceUsual": "Ropa habitual",
+      "adviceJacket": "Prenda de abrigo fina o chaqueta.",
+      "adviceLayers": "Riesgo de hipotermia. Varias capas.",
+      "adviceShade": "Evita esfuerzo. Busca sombra y agua.",
+      "adviceHydrate": "Peligro de golpe de calor. Hidrátate.",
+      "neutral": "Neutral",
+      "adviceLight": "Ropa ligera, ventilación y agua.",
+      "adviceHeavyCoat": "Abrigo grueso, protege cuello/manos."
+    },
+    "uv": {
+      "low": "Bajo",
+      "moderate": "Moderado",
+      "high": "Alto",
+      "veryHigh": "Muy Alto",
+      "extreme": "Extremo",
+      "protection": "Protección",
+      "radiation": "Radiación Solar",
+      "needed": "Necesaria",
+      "safe": "Seguro",
+      "danger": "Peligro"
+    },
+    "visibility": {
+      "optimal": "Visibilidad Óptima",
+      "moderate": "Visibilidad Moderada",
+      "reduced": "Alcance Reducido"
+    }
   }
 }

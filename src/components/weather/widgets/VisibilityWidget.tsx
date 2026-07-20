@@ -1,6 +1,7 @@
 'use client';
 
 import { Radar } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import WidgetWrapper from './WidgetWrapper';
 
 interface VisibilityWidgetProps {
@@ -9,6 +10,7 @@ interface VisibilityWidgetProps {
 }
 
 export default function VisibilityWidget({ visibility, title }: VisibilityWidgetProps) {
+  const t = useTranslations('Widgets');
   const km = visibility > 1000 ? visibility / 1000 : visibility;
   const progress = Math.min(100, (km / 12) * 100);
 
@@ -61,7 +63,7 @@ export default function VisibilityWidget({ visibility, title }: VisibilityWidget
            <div className="mt-2 flex items-center gap-2">
              <div className={`w-1.5 h-1.5 rounded-full ${km > 5 ? 'bg-emerald-400' : 'bg-orange-400'} animate-pulse`} />
              <span className="text-[8px] font-outfit text-white/60 uppercase tracking-[0.2em]">
-               {km > 8 ? 'Visibilidad Óptima' : km > 3 ? 'Visibilidad Moderada' : 'Alcance Reducido'}
+               {km > 8 ? t('visibility.optimal') : km > 3 ? t('visibility.moderate') : t('visibility.reduced')}
              </span>
            </div>
         </div>

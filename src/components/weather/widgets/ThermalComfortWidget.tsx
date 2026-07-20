@@ -2,6 +2,7 @@
 
 import { Thermometer, Shirt, Activity } from 'lucide-react';
 import WidgetWrapper from './WidgetWrapper';
+import { useTranslations } from 'next-intl';
 
 interface ThermalComfortWidgetProps {
   temp: number;
@@ -16,62 +17,64 @@ export default function ThermalComfortWidget({ temp, feelsLike }: ThermalComfort
   const finalFeel = Math.round(feelsLike * 10) / 10;
 
   // Sensation category and styling
-  let sensation = 'Neutral';
-  let advice = 'Ropa habitual';
+  const t = useTranslations('Widgets');
+
+  let sensation = t('thermal.neutral');
+  let advice = t('thermal.adviceUsual');
   let color = '#38bdf8'; // sky-400
-  let dangerLevel = 'Bajo';
+  let dangerLevel = t('thermal.stressLow');
   let percentage = 50; // slider position
 
   if (feelsLike >= 40) {
-    sensation = 'Calor Extremo';
-    advice = 'Peligro de golpe de calor. Hidrátate.';
+    sensation = t('thermal.extremeHeat');
+    advice = t('thermal.adviceHydrate');
     color = '#ef4444'; // red-500
-    dangerLevel = 'Extremo';
+    dangerLevel = t('thermal.stressExtreme');
     percentage = 95;
   } else if (feelsLike >= 35) {
-    sensation = 'Calor Muy Alto';
-    advice = 'Evita esfuerzo. Busca sombra y agua.';
+    sensation = t('thermal.veryHighHeat');
+    advice = t('thermal.adviceShade');
     color = '#f97316'; // orange-500
-    dangerLevel = 'Muy Alto';
+    dangerLevel = t('thermal.stressVeryHigh');
     percentage = 85;
   } else if (feelsLike >= 30) {
-    sensation = 'Calor Moderado';
-    advice = 'Ropa ligera, ventilación y agua.';
+    sensation = t('thermal.moderateHeat');
+    advice = t('thermal.adviceLight');
     color = '#fbbf24'; // amber-400
-    dangerLevel = 'Moderado';
+    dangerLevel = t('thermal.stressModerate');
     percentage = 70;
   } else if (feelsLike >= 18 && feelsLike < 30) {
-    sensation = 'Confortable';
-    advice = 'Condiciones ideales. Ropa casual.';
+    sensation = t('thermal.comfortable');
+    advice = t('thermal.adviceIdeal');
     color = '#34d399'; // emerald-400
-    dangerLevel = 'Ninguno';
+    dangerLevel = t('thermal.stressNone');
     percentage = 50;
   } else if (feelsLike >= 10 && feelsLike < 18) {
-    sensation = 'Fresco';
-    advice = 'Prenda de abrigo fina o chaqueta.';
+    sensation = t('thermal.cool');
+    advice = t('thermal.adviceJacket');
     color = '#60a5fa'; // blue-400
-    dangerLevel = 'Ninguno';
+    dangerLevel = t('thermal.stressNone');
     percentage = 35;
   } else if (feelsLike >= 0 && feelsLike < 10) {
-    sensation = 'Frío';
-    advice = 'Abrigo grueso, protege cuello/manos.';
+    sensation = t('thermal.cold');
+    advice = t('thermal.adviceHeavyCoat');
     color = '#818cf8'; // indigo-400
-    dangerLevel = 'Bajo';
+    dangerLevel = t('thermal.stressLow');
     percentage = 20;
   } else if (feelsLike < 0) {
-    sensation = 'Frío Extremo';
-    advice = 'Riesgo de hipotermia. Varias capas.';
+    sensation = t('thermal.extremeCold');
+    advice = t('thermal.adviceLayers');
     color = '#a5b4fc'; // indigo-300
-    dangerLevel = 'Alto';
+    dangerLevel = t('thermal.stressHigh');
     percentage = 5;
   }
 
   return (
-    <WidgetWrapper title="Confort Térmico" icon={<Thermometer size={14} style={{ color }} />}>
+    <WidgetWrapper title={t('thermal.title')} icon={<Thermometer size={14} style={{ color }} />}>
       <div className="w-full h-full flex flex-col justify-between p-2">
         <div className="flex justify-between items-start">
            <div className="flex flex-col">
-              <span className="text-[10px] font-outfit text-white/60 uppercase tracking-widest">SENSACIÓN TÉRMICA</span>
+              <span className="text-[10px] font-outfit text-white/60 uppercase tracking-widest">{t('thermal.feelsLike')}</span>
               <div className="flex items-baseline gap-1 mt-1">
                 <span className="text-3xl font-outfit font-bold text-white">{finalFeel}°</span>
                 <span className="text-xs text-white/60">real {Math.round(temp)}°</span>
@@ -85,7 +88,7 @@ export default function ThermalComfortWidget({ temp, feelsLike }: ThermalComfort
         {/* Comfort Bar */}
         <div className="flex flex-col gap-2 my-4">
            <div className="flex items-center justify-between">
-             <span className="text-[10px] font-inter text-white/80">Índice Bioclimático</span>
+             <span className="text-[10px] font-inter text-white/80">{t('thermal.bioIndex')}</span>
              <span className="text-[10px] font-outfit font-semibold" style={{ color }}>Riesgo {dangerLevel}</span>
            </div>
            
@@ -105,7 +108,7 @@ export default function ThermalComfortWidget({ temp, feelsLike }: ThermalComfort
           </div>
           <div className="flex items-center gap-1.5 text-white/50 text-[9px] font-inter">
              <Activity size={10} />
-             <span>Sensación térmica del proveedor (temp, humedad, viento)</span>
+             <span>{t('thermal.source')}</span>
           </div>
         </div>
       </div>

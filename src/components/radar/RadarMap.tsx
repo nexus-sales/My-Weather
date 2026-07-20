@@ -5,6 +5,7 @@ import { MapContainer, TileLayer, WMSTileLayer, Circle, ZoomControl, useMap, Mar
 import { useLocationStore } from '@/store/useLocationStore';
 import { fetchAemetStations, isSpainCoords, AemetStation } from '@/services/aemetService';
 import { divIcon } from 'leaflet';
+import { useTranslations } from 'next-intl';
 import 'leaflet/dist/leaflet.css';
 
 interface RadarMapProps {
@@ -36,18 +37,12 @@ const EUMETSAT_LAYER_NAMES: Partial<Record<RadarLayer, string>> = {
 // All 11 layers as direct buttons — no dropdown. A hidden "more layers" menu
 // here caused three separate bugs in a row (overflow clipping, trapped
 // stacking context, map remount race) for no real space benefit.
-const INTERNAL_LAYER_BUTTONS: { id: RadarLayer; label: string }[] = [
-  { id: 'satellite', label: 'SATÉLITE' },
-  { id: 'radar', label: 'RADAR' },
-  { id: 'clouds', label: 'NUBES' },
-  { id: 'temp', label: 'TERMICA' },
-  { id: 'wind', label: 'VIENTO' },
-  { id: 'lightning', label: 'RAYOS SAT' },
-  { id: 'dust', label: 'CALIMA' },
-  { id: 'fire', label: 'INCENDIOS' },
-  { id: 'fog', label: 'NIEBLA' },
-  { id: 'cloudphase', label: 'FASE NUBES' },
-  { id: 'infrared', label: 'INFRARROJO' },
+// Ids only — labels come from the shared `Radar.modes.*` messages, the same
+// keys RadarView's button row uses, so the two never drift apart or ship in
+// two different languages.
+const INTERNAL_LAYER_BUTTONS: RadarLayer[] = [
+  'satellite', 'radar', 'clouds', 'temp', 'wind', 'lightning',
+  'dust', 'fire', 'fog', 'cloudphase', 'infrared',
 ];
 
 interface RainViewerFrame {
@@ -146,6 +141,7 @@ function stationColor(station: AemetStation) {
 }
 
 export default function RadarMap({ height = 300, hideControls = false, externalLayerType }: RadarMapProps) {
+  const t = useTranslations('Radar');
   const { coords } = useLocationStore();
   const [radarFrames, setRadarFrames] = useState<RainViewerFrame[]>([]);
   const [satelliteFrames, setSatelliteFrames] = useState<RainViewerFrame[]>([]);
@@ -454,11 +450,11 @@ export default function RadarMap({ height = 300, hideControls = false, externalL
           <div className="bg-black/80 backdrop-blur-md border border-white/10 p-1 rounded-lg flex flex-nowrap items-center overflow-x-auto no-scrollbar sm:flex-wrap sm:overflow-visible gap-1 pointer-events-auto shadow-xl max-w-full">
             {INTERNAL_LAYER_BUTTONS.map((mode) => (
               <button
-                key={mode.id}
-                onClick={() => setInternalLayerType(mode.id)}
-                className={`shrink-0 px-3 py-1.5 rounded-md text-[10px] font-orbitron font-bold tracking-wider transition-all ${layerType === mode.id ? 'bg-meteorix-blue text-white shadow-[0_0_15px_rgba(26,61,77,0.4)]' : 'text-white/60 hover:text-white hover:bg-white/5'}`}
+                key={mode}
+                onClick={() => setInternalLayerType(mode)}
+                className={`shrink-0 px-3 py-1.5 rounded-md text-[10px] font-orbitron font-bold tracking-wider transition-all ${layerType === mode ? 'bg-meteorix-blue text-white shadow-[0_0_15px_rgba(26,61,77,0.4)]' : 'text-white/60 hover:text-white hover:bg-white/5'}`}
               >
-                {mode.label}
+                {t(`modes.${mode === 'radar' ? 'rain' : mode}`)}
               </button>
             ))}
           </div>
@@ -718,12 +714,12 @@ export default function RadarMap({ height = 300, hideControls = false, externalL
                       <div className="bg-black/80 backdrop-blur-md border border-white/20 p-2 rounded-lg text-[8px] font-orbitron text-white min-w-[60px] pointer-events-none">
                         <div className="font-bold text-meteorix-highlight mb-1">{station.ubi}</div>
                         <div className="flex justify-between gap-2">
-                          <span>TEMP:</span>
+                          <span>{t('station.temp')}</span>
                           <span className="text-white">{temperature}°C</span>
                         </div>
                         {precipitation > 0 && (
                           <div className="flex justify-between gap-2 text-meteorix-highlight">
-                            <span>RAIN:</span>
+                            <span>{t('station.rain')}</span>
                             <span>{precipitation}mm</span>
                           </div>
                         )}
@@ -762,25 +758,25 @@ export default function RadarMap({ height = 300, hideControls = false, externalL
                           <div className="bg-[#0b1319]/95 backdrop-blur-md border border-amber-500/40 p-2.5 rounded-lg text-white font-sans text-xs min-w-[155px] shadow-2xl">
                             <div className="flex items-center gap-1.5 text-amber-400 font-bold mb-1.5 border-b border-white/10 pb-1">
                               <span className="animate-pulse">⚡</span>
-                              <span className="font-orbitron tracking-widest text-[9px]">IMPACTO DETECTADO</span>
+                              <span className="font-orbitron tracking-widest text-[9px]">{t('lightning.impact')}</span>
                             </div>
                             <div className="space-y-1 text-slate-300 text-[10px] font-medium">
                               <div className="flex justify-between gap-4">
-                                <span>Distancia:</span>
+                                <span>{t('lightning.distance')}</span>
                                 <span className="text-white font-semibold font-orbitron">{strike.distanceKm.toFixed(1)} km</span>
                               </div>
                               <div className="flex justify-between gap-4">
-                                <span>Intensidad:</span>
+                                <span>{t('lightning.intensity')}</span>
                                 <span className="text-amber-300 font-semibold font-orbitron">{strike.intensity} kA</span>
                               </div>
                               <div className="flex justify-between gap-4">
-                                <span>Retardo trueno:</span>
+                                <span>{t('lightning.thunderDelay')}</span>
                                 <span className="text-sky-400 font-semibold font-orbitron">+{strike.thunderDelaySec}s</span>
                               </div>
                               <div className="flex justify-between border-t border-white/5 pt-1.5 mt-1.5 text-[8px] text-slate-400">
-                                <span>Edad:</span>
+                                <span>{t('lightning.age')}</span>
                                 <span>
-                                  {elapsedSec < 3 ? 'Hace un instante' : `Hace ${Math.round(elapsedSec)}s`}
+                                  {elapsedSec < 3 ? t('lightning.justNow') : t('lightning.secondsAgo', { seconds: Math.round(elapsedSec) })}
                                 </span>
                               </div>
                             </div>
@@ -802,16 +798,16 @@ export default function RadarMap({ height = 300, hideControls = false, externalL
               {layerType === 'radar' && timelineStatus !== 'ready' && (
                 <div className="absolute inset-x-4 top-4 z-[1000] rounded-lg border border-amber-400/30 bg-black/80 px-4 py-3 text-xs text-amber-100 shadow-xl">
                   {timelineStatus === 'loading'
-                    ? 'Cargando fotogramas meteorologicos reales...'
-                    : 'RainViewer no esta respondiendo ahora mismo. El mapa base sigue disponible, pero la capa animada no se ha podido cargar.'}
+                    ? t('status.loadingFrames')
+                    : t('status.rainviewerError')}
                 </div>
               )}
 
               {['temp', 'wind'].includes(layerType) && owmStatus !== 'ready' && (
                 <div className="absolute inset-x-4 top-4 z-[1000] rounded-lg border border-amber-400/30 bg-black/80 px-4 py-3 text-xs text-amber-100 shadow-xl">
                   {owmStatus === 'checking'
-                    ? 'Validando OpenWeatherMap y cargando tiles...'
-                    : 'OpenWeatherMap no ha autorizado esta clave todavia. Reinicia el servidor si acabas de editar .env.local; si sigue igual, espera a que la clave nueva se active o revisala en OpenWeather.'}
+                    ? t('status.owmChecking')
+                    : t('status.owmError')}
                 </div>
               )}
 

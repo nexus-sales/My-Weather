@@ -106,11 +106,12 @@ export default function StationsView({ weather }: StationsViewProps) {
 
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
         <StationListPanel
-          title="AEMET oficiales cercanas"
-          subtitle="Red oficial. Observaciones puntuales, no modelo interpolado."
+          title={t('panels.aemetTitle')}
+          subtitle={t('panels.aemetSubtitle')}
           icon={<Satellite size={16} />}
           isLoading={intelligence.loadStates.stations}
           emptyText={t('noStations')}
+          syncingText={t('panels.syncing')}
         >
           {nearbyAemetStations.map((station) => (
             <StationRow
@@ -121,31 +122,33 @@ export default function StationsView({ weather }: StationsViewProps) {
               metrics={[
                 { label: t('temp'), value: formatNumber(station.ta, '°C') },
                 { label: t('wind'), value: formatWindFromMs(station.vvm) },
-                { label: 'Racha', value: formatWindFromMs(station.vmax) },
+                { label: t('panels.gust'), value: formatWindFromMs(station.vmax) },
                 { label: t('humidity'), value: formatNumber(station.hr, '%') },
                 { label: t('pressure'), value: formatNumber(station.pres, ' hPa') },
                 { label: t('rain'), value: formatNumber(station.prec, ' mm') },
-                { label: 'Dir.', value: formatDirection(station.dv) },
-                { label: 'Alt.', value: formatNumber(station.alt, ' m') },
+                { label: t('panels.direction'), value: formatDirection(station.dv) },
+                { label: t('panels.altitude'), value: formatNumber(station.alt, ' m') },
               ]}
               observedAt={station.fint}
+              obsLabel={t('panels.obs')}
             />
           ))}
         </StationListPanel>
 
         <StationListPanel
-          title="PWS Weather Underground"
-          subtitle="Estaciones personales cercanas cuando la API lo permite."
+          title={t('panels.pwsTitle')}
+          subtitle={t('panels.pwsSubtitle')}
           icon={<Wifi size={16} />}
           isLoading={pwsNearby.isLoading}
+          syncingText={t('panels.syncing')}
           errorText={
             pwsNearby.error instanceof WUNotConfiguredError
-              ? 'Estaciones personales no disponibles: Weather Underground solo emite claves ligadas a una estación (PWS) propia registrada.'
+              ? t('panels.pwsNotConfigured')
               : pwsNearby.isError
-              ? 'Weather Underground no ha devuelto estaciones cercanas. Puede ser un fallo temporal de su API.'
+              ? t('panels.pwsError')
               : undefined
           }
-          emptyText="No hay PWS cercanas disponibles para esta zona."
+          emptyText={t('panels.pwsEmpty')}
         >
           {(pwsNearby.data ?? []).map((station) => (
             <StationRow
@@ -156,14 +159,15 @@ export default function StationsView({ weather }: StationsViewProps) {
               metrics={[
                 { label: t('temp'), value: formatNumber(station.metric?.temp, '°C') },
                 { label: t('wind'), value: formatNumber(station.metric?.windSpeed, ' km/h') },
-                { label: 'Racha', value: formatNumber(station.metric?.windGust, ' km/h') },
+                { label: t('panels.gust'), value: formatNumber(station.metric?.windGust, ' km/h') },
                 { label: t('humidity'), value: formatNumber(station.humidity, '%') },
                 { label: t('pressure'), value: formatNumber(station.metric?.pressure, ' hPa') },
                 { label: t('rain'), value: formatNumber(station.metric?.precipRate, ' mm/h') },
-                { label: 'Dir.', value: formatDirection(station.winddir) },
+                { label: t('panels.direction'), value: formatDirection(station.winddir) },
                 { label: 'UV', value: formatNumber(station.uv, '') },
               ]}
               observedAt={station.obsTimeUtc}
+              obsLabel={t('panels.obs')}
             />
           ))}
         </StationListPanel>
@@ -188,6 +192,7 @@ function StationListPanel({
   isLoading,
   errorText,
   emptyText,
+  syncingText,
   children,
 }: {
   title: string;
@@ -196,6 +201,7 @@ function StationListPanel({
   isLoading?: boolean;
   errorText?: string;
   emptyText: string;
+  syncingText: string;
   children: React.ReactNode;
 }) {
   const hasItems = React.Children.count(children) > 0;
@@ -214,7 +220,7 @@ function StationListPanel({
       </div>
 
       {isLoading ? (
-        <div className="py-10 text-center text-[10px] uppercase tracking-widest text-white/50">Sincronizando estaciones...</div>
+        <div className="py-10 text-center text-[10px] uppercase tracking-widest text-white/50">{syncingText}</div>
       ) : errorText ? (
         <div className="rounded-xl border border-amber-400/20 bg-amber-400/10 p-4 text-xs text-amber-100">{errorText}</div>
       ) : hasItems ? (
@@ -232,12 +238,14 @@ function StationRow({
   distance,
   metrics,
   observedAt,
+  obsLabel,
 }: {
   name: string;
   source: string;
   distance: string;
   metrics: { label: string; value: string }[];
   observedAt?: string;
+  obsLabel: string;
 }) {
   return (
     <div className="py-4 first:pt-0 last:pb-0">
@@ -252,7 +260,7 @@ function StationRow({
           </div>
           {observedAt && (
             <div className="mt-1 text-[9px] uppercase tracking-widest text-white/45">
-              Obs. {formatObservedTime(observedAt)}
+              {obsLabel} {formatObservedTime(observedAt)}
             </div>
           )}
         </div>

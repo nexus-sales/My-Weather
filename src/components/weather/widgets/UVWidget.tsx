@@ -1,6 +1,7 @@
 'use client';
 
 import { Zap, ShieldAlert } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import WidgetWrapper from './WidgetWrapper';
 
 interface UVWidgetProps {
@@ -9,12 +10,14 @@ interface UVWidgetProps {
 }
 
 export default function UVWidget({ index, title }: UVWidgetProps) {
+  const t = useTranslations('Widgets');
+
   const getUVStatus = (idx: number) => {
-    if (idx <= 2) return { color: '#00ff88', label: 'Bajo', risk: 'Seguro', glow: 'rgba(0, 255, 136, 0.4)' };
-    if (idx <= 5) return { color: '#ffcc00', label: 'Moderado', risk: 'Protección', glow: 'rgba(255, 204, 0, 0.4)' };
-    if (idx <= 7) return { color: '#ff8c35', label: 'Alto', risk: 'Necesaria', glow: 'rgba(255, 140, 53, 0.4)' };
-    if (idx <= 10) return { color: '#ff3e3e', label: 'Muy Alto', risk: 'Extrema', glow: 'rgba(255, 62, 62, 0.4)' };
-    return { color: '#bf00ff', label: 'Extremo', risk: 'Peligro', glow: 'rgba(191, 0, 255, 0.4)' };
+    if (idx <= 2) return { color: '#00ff88', label: t('uv.low'), risk: t('uv.safe'), glow: 'rgba(0, 255, 136, 0.4)' };
+    if (idx <= 5) return { color: '#ffcc00', label: t('uv.moderate'), risk: t('uv.protection'), glow: 'rgba(255, 204, 0, 0.4)' };
+    if (idx <= 7) return { color: '#ff8c35', label: t('uv.high'), risk: t('uv.needed'), glow: 'rgba(255, 140, 53, 0.4)' };
+    if (idx <= 10) return { color: '#ff3e3e', label: t('uv.veryHigh'), risk: t('uv.extreme'), glow: 'rgba(255, 62, 62, 0.4)' };
+    return { color: '#bf00ff', label: t('uv.extreme'), risk: t('uv.danger'), glow: 'rgba(191, 0, 255, 0.4)' };
   };
 
   const status = getUVStatus(index);
@@ -94,14 +97,14 @@ export default function UVWidget({ index, title }: UVWidgetProps) {
            </div>
            
             <div className="flex flex-col items-end">
-             <span className="text-[6px] text-white/50 uppercase tracking-widest">Protección</span>
+             <span className="text-[6px] text-white/50 uppercase tracking-widest">{t('uv.protection')}</span>
              <span className="text-[9px] font-outfit text-white/60 uppercase">{status.risk}</span>
            </div>
         </div>
 
         {/* Solar Radiation */}
         <div className="absolute top-2 right-2 flex flex-col items-end text-right pointer-events-none">
-          <span className="text-[6px] font-inter text-xs text-yellow-400/60 uppercase tracking-widest">Radiación Solar</span>
+          <span className="text-[6px] font-inter text-xs text-yellow-400/60 uppercase tracking-widest">{t('uv.radiation')}</span>
           <span className="text-[10px] font-outfit font-bold text-yellow-400">
             {Math.round(index * 80)} <span className="text-[6px] text-yellow-400/50">W/m²</span>
           </span>

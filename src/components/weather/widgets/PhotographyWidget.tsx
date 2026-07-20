@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { Camera, Sunrise, Sunset, Clock } from 'lucide-react';
 import WidgetWrapper from './WidgetWrapper';
+import { useTranslations } from 'next-intl';
 
 interface PhotographyWidgetProps {
   sunrise: string; // full ISO datetime, e.g. "2026-07-12T07:32"
@@ -35,37 +36,39 @@ export default function PhotographyWidget({ sunrise, sunset }: PhotographyWidget
   const eveningBlueHourEnd = new Date(sunsetDate.getTime() + 15 * 60000);
 
   // Determine current active phase
-  let activePhase = 'Luz Dura (Día)';
+  const t = useTranslations('Widgets');
+
+  let activePhase = t('photography.hardLight');
   let activeColor = '#facc15'; // yellow-400
   let isOptimal = false;
 
   if (now >= morningBlueHour && now < sunriseDate) {
-    activePhase = 'Blue Hour (Amanecer)';
+    activePhase = t('photography.blueHourDawn');
     activeColor = '#60a5fa'; // blue-400
     isOptimal = true;
   } else if (now >= sunriseDate && now < morningGoldenHourEnd) {
-    activePhase = 'Golden Hour (Mañana)';
+    activePhase = t('photography.goldenMorning');
     activeColor = '#fbbf24'; // amber-400
     isOptimal = true;
   } else if (now >= eveningGoldenHourStart && now < sunsetDate) {
-    activePhase = 'Golden Hour (Tarde)';
+    activePhase = t('photography.goldenEvening');
     activeColor = '#fb923c'; // orange-400
     isOptimal = true;
   } else if (now >= sunsetDate && now < eveningBlueHourEnd) {
-    activePhase = 'Blue Hour (Atardecer)';
+    activePhase = t('photography.blueHourDusk');
     activeColor = '#3b82f6'; // blue-500
     isOptimal = true;
   } else if (now < morningBlueHour || now >= eveningBlueHourEnd) {
-    activePhase = 'Fotografía Nocturna';
+    activePhase = t('photography.night');
     activeColor = '#818cf8'; // indigo-400
   }
 
   return (
-    <WidgetWrapper title="Luz Fotográfica" icon={<Camera size={14} style={{ color: activeColor }} />}>
+    <WidgetWrapper title={t('photography.title')} icon={<Camera size={14} style={{ color: activeColor }} />}>
       <div className="w-full h-full flex flex-col justify-between p-2">
         <div className="flex justify-between items-start">
            <div className="flex flex-col">
-              <span className="text-[10px] font-outfit text-white/60 uppercase tracking-widest">Fase Actual</span>
+              <span className="text-[10px] font-outfit text-white/60 uppercase tracking-widest">{t('photography.currentPhase')}</span>
               <div className="flex items-baseline gap-2 mt-1">
                 <span className="text-lg font-outfit font-bold text-white leading-tight">{activePhase}</span>
               </div>
@@ -82,7 +85,7 @@ export default function PhotographyWidget({ sunrise, sunset }: PhotographyWidget
            <div className="flex items-center justify-between">
              <div className="flex items-center gap-2 text-white/60">
                <Sunrise size={12} className="text-amber-400" />
-               <span className="text-[10px] font-inter">Mañana</span>
+               <span className="text-[10px] font-inter">{t('photography.morning')}</span>
              </div>
              <span className="text-[10px] font-outfit text-white/80">
                {formatTime(morningBlueHour)} - {formatTime(morningGoldenHourEnd)}
@@ -93,7 +96,7 @@ export default function PhotographyWidget({ sunrise, sunset }: PhotographyWidget
            <div className="flex items-center justify-between">
              <div className="flex items-center gap-2 text-white/60">
                <Sunset size={12} className="text-orange-400" />
-               <span className="text-[10px] font-inter">Tarde</span>
+               <span className="text-[10px] font-inter">{t('photography.evening')}</span>
              </div>
              <span className="text-[10px] font-outfit text-white/80">
                {formatTime(eveningGoldenHourStart)} - {formatTime(eveningBlueHourEnd)}
@@ -104,7 +107,7 @@ export default function PhotographyWidget({ sunrise, sunset }: PhotographyWidget
         <div className="flex justify-between items-center border-t border-white/5 pt-2 mt-auto">
            <div className="flex items-center gap-1.5 text-white/50">
               <Clock size={12} />
-              <span className="text-[9px] font-inter uppercase tracking-widest">Calculado por GPS</span>
+              <span className="text-[9px] font-inter uppercase tracking-widest">{t('photography.gps')}</span>
            </div>
         </div>
       </div>

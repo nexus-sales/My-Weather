@@ -1,6 +1,7 @@
 'use client';
 
 import { Droplets } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import WidgetWrapper from './WidgetWrapper';
 
 interface RainWidgetProps {
@@ -9,6 +10,7 @@ interface RainWidgetProps {
 }
 
 export default function RainWidget({ amount, title }: RainWidgetProps) {
+  const t = useTranslations('Widgets');
   // Visualization scale
   const maxAmount = 20; 
   const heightPercent = Math.min(100, (amount / maxAmount) * 100);
@@ -73,16 +75,16 @@ export default function RainWidget({ amount, title }: RainWidgetProps) {
           </div>
           
           <div className={`mt-4 p-2 rounded border transition-colors duration-500 ${amount > 0 ? 'bg-blue-400/10 border-blue-400/30' : 'bg-white/5 border-white/10'}`}>
-            <div className="text-[8px] font-outfit text-blue-400 uppercase tracking-wider mb-1">Estado de Precipitación:</div>
+            <div className="text-[8px] font-outfit text-blue-400 uppercase tracking-wider mb-1">{t('rain.status')}</div>
             <div className="text-[10px] text-white/80 font-medium">
-              {amount === 0 ? 'Sin lluvia detectada' : amount < 2 ? 'Llovizna ligera' : amount < 10 ? 'Lluvia moderada' : 'Lluvia intensa'}
+              {amount === 0 ? t('rain.none') : amount < 2 ? t('rain.light') : amount < 10 ? t('rain.moderate') : t('rain.heavy')}
             </div>
           </div>
           
           {amount > 0 && (
             <div className="mt-2 flex items-center gap-2 animate-pulse">
               <div className="w-1.5 h-1.5 rounded-full bg-blue-400" />
-              <span className="text-[7px] font-outfit text-blue-400 uppercase tracking-widest">Captando datos en tiempo real</span>
+              <span className="text-[7px] font-outfit text-blue-400 uppercase tracking-widest">{t('rain.live')}</span>
             </div>
           )}
         </div>

@@ -12,6 +12,7 @@ interface MoonWidgetProps {
 
 export default function MoonWidget({ data, title }: MoonWidgetProps) {
   const t = useTranslations('Intelligence');
+  const tw = useTranslations('Widgets');
   
   // Phase logic for SVG mask (0 = New Moon, 0.5 = Full Moon, 1 = New Moon)
   const p = data.phase; // 0 to 1
@@ -90,11 +91,11 @@ export default function MoonWidget({ data, title }: MoonWidgetProps) {
           
           <div className="mt-4 grid grid-cols-2 gap-2 w-full">
             <div className="flex flex-col items-end">
-              <span className="text-[7px] text-white/50 uppercase">Edad</span>
+              <span className="text-[7px] text-white/50 uppercase">{tw('moon.age')}</span>
               <span className="text-[10px] font-inter text-xs text-white/60">{data.ageDays.toFixed(1)}d</span>
             </div>
             <div className="flex flex-col items-end">
-              <span className="text-[7px] text-white/50 uppercase">Fase</span>
+              <span className="text-[7px] text-white/50 uppercase">{tw('moon.phase')}</span>
               <span className="text-[10px] font-inter text-xs text-white/60">{(data.phase * 100).toFixed(0)}%</span>
             </div>
           </div>

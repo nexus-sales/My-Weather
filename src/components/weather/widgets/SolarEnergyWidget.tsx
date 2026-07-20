@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { Sun, BatteryCharging, Zap } from 'lucide-react';
 import WidgetWrapper from './WidgetWrapper';
+import { useTranslations } from 'next-intl';
 
 interface SolarEnergyWidgetProps {
   cloudCover: number;
@@ -33,22 +34,24 @@ export default function SolarEnergyWidget({ cloudCover, uvIndex, sunrise, sunset
   const isNight = now < sunriseDate || now >= sunsetDate;
   if (isNight) efficiency = 0;
 
-  let statusText = 'Excelente';
+  const t = useTranslations('Widgets');
+
+  let statusText = t('solar.excellent');
   let color = '#fbbf24'; // amber-400
-  if (efficiency < 40) { statusText = 'Baja'; color = '#9ca3af'; }
-  else if (efficiency < 70) { statusText = 'Moderada'; color = '#60a5fa'; }
+  if (efficiency < 40) { statusText = t('solar.low'); color = '#9ca3af'; }
+  else if (efficiency < 70) { statusText = t('solar.moderate'); color = '#60a5fa'; }
   
   if (isNight) {
-    statusText = 'Inactiva (Noche)';
+    statusText = t('solar.inactiveNight');
     color = '#4b5563'; // zinc-600
   }
 
   return (
-    <WidgetWrapper title="Potencial Solar" icon={<Sun size={14} style={{ color }} />}>
+    <WidgetWrapper title={t('solar.title')} icon={<Sun size={14} style={{ color }} />}>
       <div className="w-full h-full flex flex-col justify-between p-2">
         <div className="flex justify-between items-start">
            <div className="flex flex-col">
-              <span className="text-[10px] font-outfit text-white/60 uppercase tracking-widest">Eficiencia Estimada</span>
+              <span className="text-[10px] font-outfit text-white/60 uppercase tracking-widest">{t('solar.efficiency')}</span>
               <div className="flex items-baseline gap-1 mt-1">
                 <span className="text-3xl font-outfit font-bold text-white">{Math.round(efficiency)}</span>
                 <span className="text-sm text-white/50 font-medium">%</span>
@@ -59,7 +62,7 @@ export default function SolarEnergyWidget({ cloudCover, uvIndex, sunrise, sunset
         {/* Efficiency Bar */}
         <div className="flex flex-col gap-2 my-4">
            <div className="flex items-center justify-between">
-             <span className="text-[10px] font-inter text-white/80">Generación de Energía</span>
+             <span className="text-[10px] font-inter text-white/80">{t('solar.generation')}</span>
              <span className="text-[10px] font-outfit font-semibold" style={{ color }}>{statusText}</span>
            </div>
            
@@ -74,11 +77,11 @@ export default function SolarEnergyWidget({ cloudCover, uvIndex, sunrise, sunset
         <div className="flex justify-between items-center border-t border-white/5 pt-2 mt-auto">
            <div className="flex items-center gap-1.5 text-white/60">
               <BatteryCharging size={12} />
-              <span className="text-[9px] font-inter uppercase">Baterías</span>
+              <span className="text-[9px] font-inter uppercase">{t('solar.batteries')}</span>
            </div>
            <div className="flex items-center gap-1.5" style={{ color: efficiency > 50 ? color : '#a1a1aa' }}>
               <Zap size={12} />
-              <span className="text-[9px] font-outfit uppercase font-semibold">{efficiency > 50 ? 'Cargando' : 'Mantenimiento'}</span>
+              <span className="text-[9px] font-outfit uppercase font-semibold">{efficiency > 50 ? t('solar.charging') : t('solar.maintenance')}</span>
            </div>
         </div>
       </div>

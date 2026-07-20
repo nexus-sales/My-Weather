@@ -4,6 +4,7 @@ import { ReactNode } from 'react';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { Maximize2 } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 
 function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -23,13 +24,13 @@ interface WidgetWrapperProps {
   onExpand?: () => void;
 }
 
-const qualityLabels = {
-  observed: 'Real',
-  estimated: 'Estimado',
-  static: 'Sistema',
-};
+// `static` maps to the `system` message key — the prop name is a reserved-ish
+// word kept for API compatibility, the label reads better as "system".
+const QUALITY_KEY = { observed: 'observed', estimated: 'estimated', static: 'system' } as const;
 
 export default function WidgetWrapper({ children, title, icon, className, dataQuality, source, onExpand }: WidgetWrapperProps) {
+  const t = useTranslations('Widgets');
+
   return (
     <div
       className={cn(
@@ -60,7 +61,7 @@ export default function WidgetWrapper({ children, title, icon, className, dataQu
               dataQuality === 'static' && "border-zinc-400/20 bg-zinc-400/10 text-zinc-300"
             )}
           >
-            {qualityLabels[dataQuality]}
+            {t(`quality.${QUALITY_KEY[dataQuality]}`)}
           </span>
         )}
       </div>

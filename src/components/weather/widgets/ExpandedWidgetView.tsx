@@ -3,6 +3,7 @@
 import { ReactNode, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { X } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 
 interface ExpandedWidgetViewProps {
   isOpen: boolean;
@@ -20,6 +21,7 @@ interface ExpandedWidgetViewProps {
 // needed: isOpen always starts false (nothing auto-expands), so document.body
 // is never touched during the SSR pass.
 export default function ExpandedWidgetView({ isOpen, onClose, title, icon, children }: ExpandedWidgetViewProps) {
+  const t = useTranslations('Widgets');
   useEffect(() => {
     if (!isOpen) return;
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -55,7 +57,7 @@ export default function ExpandedWidgetView({ isOpen, onClose, title, icon, child
           <button
             onClick={onClose}
             className="shrink-0 p-1.5 rounded-full text-white/45 hover:text-white hover:bg-white/10 transition-colors"
-            aria-label="Cerrar"
+            aria-label={t('expanded.close')}
           >
             <X size={18} />
           </button>

@@ -1,6 +1,7 @@
 'use client';
 
 import { ThermometerSnowflake } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import WidgetWrapper from './WidgetWrapper';
 import { calculateDewPoint } from '@/lib/weatherUtils';
 
@@ -11,14 +12,15 @@ interface DewPointWidgetProps {
 }
 
 export default function DewPointWidget({ temp, humidity, title }: DewPointWidgetProps) {
+  const t = useTranslations('Widgets');
   const dewPoint = calculateDewPoint(temp, humidity);
 
   // Comfort level
-  let comfort = 'Confortable';
+  let comfort = t('dewPoint.comfortable');
   let color = '#00ff88';
-  if (dewPoint > 18) { color = '#fbbf24'; comfort = 'Húmedo'; }
-  if (dewPoint > 21) { color = '#ff3e3e'; comfort = 'Opresivo'; }
-  if (dewPoint < 10) { color = '#0ea5e9'; comfort = 'Seco'; }
+  if (dewPoint > 18) { color = '#fbbf24'; comfort = t('dewPoint.humid'); }
+  if (dewPoint > 21) { color = '#ff3e3e'; comfort = t('dewPoint.oppressive'); }
+  if (dewPoint < 10) { color = '#0ea5e9'; comfort = t('dewPoint.dry'); }
 
   return (
     <WidgetWrapper title={title} icon={<ThermometerSnowflake size={14} style={{ color }} />}>
@@ -34,7 +36,7 @@ export default function DewPointWidget({ temp, humidity, title }: DewPointWidget
 
         <div className="mt-4 flex flex-col gap-2">
            <div className="flex justify-between items-center text-[7px] font-inter text-xs text-white/60 uppercase">
-              <span>Saturación de Aire</span>
+              <span>{t('dewPoint.airSaturation')}</span>
               <span>{humidity}%</span>
            </div>
            <div className="h-1.5 w-full bg-black/40 rounded-full border border-white/5 overflow-hidden">
@@ -44,7 +46,7 @@ export default function DewPointWidget({ temp, humidity, title }: DewPointWidget
               />
            </div>
            <p className="text-[6px] font-inter text-xs text-white/45 uppercase leading-tight">
-             Temperatura a la que el aire se satura y forma condensación.
+             {t('dewPoint.description')}
            </p>
         </div>
       </div>

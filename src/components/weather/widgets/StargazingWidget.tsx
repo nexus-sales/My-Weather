@@ -2,6 +2,7 @@
 
 import { Sparkles, Eye, Compass } from 'lucide-react';
 import WidgetWrapper from './WidgetWrapper';
+import { useTranslations } from 'next-intl';
 
 interface StargazingWidgetProps {
   cloudCover: number;
@@ -30,39 +31,41 @@ export default function StargazingWidget({ cloudCover, moonPhase, moonPhaseName,
   
   score = Math.max(0, Math.round(score));
 
-  let quality = 'Excelente';
+  const t = useTranslations('Widgets');
+
+  let quality = t('stargazing.excellent');
   let color = '#c084fc'; // purple-400
   
   if (score === 0) {
-    quality = 'Nulo (Lluvia)';
+    quality = t('stargazing.nullRain');
     color = '#f87171'; // red-400
   } else if (score < 30) {
-    quality = 'Muy Pobre';
+    quality = t('stargazing.veryPoor');
     color = '#9ca3af'; // gray-400
   } else if (score < 60) {
-    quality = 'Aceptable';
+    quality = t('stargazing.acceptable');
     color = '#60a5fa'; // blue-400
   } else if (score < 85) {
-    quality = 'Bueno';
+    quality = t('stargazing.good');
     color = '#34d399'; // emerald-400
   }
 
   // Determine atmospheric visibility / transparency
-  let transparency = 'Alta';
-  if (cloudCover > 60) transparency = 'Pobre';
-  else if (cloudCover > 30) transparency = 'Media';
+  let transparency = t('stargazing.high');
+  if (cloudCover > 60) transparency = t('stargazing.poor');
+  else if (cloudCover > 30) transparency = t('stargazing.medium');
 
   // Visible planetary highlights heuristic
   const highlights = score > 40 
-    ? 'Júpiter y Vía Láctea visibles'
-    : 'Solo objetos brillantes (Luna)';
+    ? t('stargazing.jupiter')
+    : t('stargazing.brightOnly');
 
   return (
-    <WidgetWrapper title="Observación Estelar" icon={<Sparkles size={14} style={{ color }} />}>
+    <WidgetWrapper title={t('stargazing.title')} icon={<Sparkles size={14} style={{ color }} />}>
       <div className="w-full h-full flex flex-col justify-between p-2">
         <div className="flex justify-between items-start">
            <div className="flex flex-col">
-              <span className="text-[10px] font-outfit text-white/60 uppercase tracking-widest">Aptitud del Cielo</span>
+              <span className="text-[10px] font-outfit text-white/60 uppercase tracking-widest">{t('stargazing.skyQuality')}</span>
               <div className="flex items-baseline gap-1 mt-1">
                 <span className="text-3xl font-outfit font-bold text-white">{score}</span>
                 <span className="text-sm text-white/50 font-medium">%</span>
@@ -76,19 +79,19 @@ export default function StargazingWidget({ cloudCover, moonPhase, moonPhaseName,
         {/* Info Grid */}
         <div className="flex flex-col gap-2.5 my-3.5">
            <div className="flex items-center justify-between text-[10px]">
-             <span className="text-white/60 font-inter">Transparencia</span>
+             <span className="text-white/60 font-inter">{t('stargazing.transparency')}</span>
              <span className="font-outfit text-white/90 font-medium">{transparency}</span>
            </div>
            
            <div className="flex items-center justify-between text-[10px]">
-             <span className="text-white/60 font-inter">Fase Lunar</span>
+             <span className="text-white/60 font-inter">{t('stargazing.moonPhase')}</span>
              <span className="font-outfit text-white/90 font-medium truncate max-w-[120px]" title={moonPhaseName}>
-               {moonPhaseName || 'Nueva'}
+               {moonPhaseName || t('stargazing.new')}
              </span>
            </div>
 
            <div className="flex items-center justify-between text-[10px]">
-             <span className="text-white/60 font-inter font-light">Nubosidad</span>
+             <span className="text-white/60 font-inter font-light">{t('stargazing.cloudiness')}</span>
              <span className="font-outfit text-white/90 font-medium">{Math.round(cloudCover)}%</span>
            </div>
         </div>
@@ -100,7 +103,7 @@ export default function StargazingWidget({ cloudCover, moonPhase, moonPhaseName,
           </div>
           <div className="flex items-center gap-1.5 text-white/50 text-[8px] font-inter">
              <Compass size={10} />
-             <span>Ventana óptima: 22:00 - 04:00</span>
+             <span>{t('stargazing.window')}</span>
           </div>
         </div>
       </div>

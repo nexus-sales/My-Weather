@@ -1,6 +1,7 @@
 'use client';
 
 import { Gauge } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import WidgetWrapper from './WidgetWrapper';
 
 interface PressureWidgetProps {
@@ -9,6 +10,7 @@ interface PressureWidgetProps {
 }
 
 export default function PressureWidget({ pressure, title }: PressureWidgetProps) {
+  const t = useTranslations('Widgets');
   // Pressure range: 960 to 1040 hPa
   const min = 960;
   const max = 1040;
@@ -73,8 +75,8 @@ export default function PressureWidget({ pressure, title }: PressureWidgetProps)
             })}
 
             {/* Center Label */}
-            <text x="50" y="65" fill="white" fillOpacity="0.1" fontSize="4" textAnchor="middle" fontFamily="Orbitron">BAROMETER</text>
-            <text x="50" y="70" fill="white" fillOpacity="0.1" fontSize="3" textAnchor="middle" fontFamily="Orbitron">HECTOPASCALS</text>
+            <text x="50" y="65" fill="white" fillOpacity="0.1" fontSize="4" textAnchor="middle" fontFamily="Orbitron">{t('pressure.barometer')}</text>
+            <text x="50" y="70" fill="white" fillOpacity="0.1" fontSize="3" textAnchor="middle" fontFamily="Orbitron">{t('pressure.hectopascals')}</text>
           </svg>
 
           {/* High-Precision Needle */}

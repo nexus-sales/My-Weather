@@ -1,6 +1,7 @@
 'use client';
 
 import { Activity, Wind } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import WidgetWrapper from './WidgetWrapper';
 
 interface AQIWidgetProps {
@@ -13,28 +14,30 @@ interface AQIWidgetProps {
 }
 
 export default function AQIWidget({ aqiValue = 42, dataQuality, source }: AQIWidgetProps) {
-  let status = 'BUENA';
+  const t = useTranslations('Widgets');
+
+  let status = t('aqi.good');
   let color = '#00ff88';
-  let message = 'Partículas PM2.5/PM10 en niveles bajos';
+  let message = t('aqi.messageGood');
 
   if (aqiValue > 50) {
-    status = 'MODERADA';
+    status = t('aqi.moderate');
     color = '#ffcc00';
-    message = 'Posible presencia de Calima ligera';
+    message = t('aqi.hazeLight');
   }
   if (aqiValue > 100) {
-    status = 'MALA';
+    status = t('aqi.bad');
     color = '#ff8c35';
-    message = 'Calima densa. Evitar ejercicio al aire libre';
+    message = t('aqi.hazeDense');
   }
   if (aqiValue > 150) {
-    status = 'TÓXICA';
+    status = t('aqi.toxic');
     color = '#ff3e3e';
-    message = 'Peligro respiratorio severo';
+    message = t('aqi.severe');
   }
 
   return (
-    <WidgetWrapper title="Calidad Aire / Calima" icon={<Wind size={14} style={{ color }} />} dataQuality={dataQuality} source={source}>
+    <WidgetWrapper title={t('aqi.title')} icon={<Wind size={14} style={{ color }} />} dataQuality={dataQuality} source={source}>
       <div className="relative w-full h-full flex flex-col p-2 overflow-hidden">
         
         {/* Animated Dust Particles (CSS) */}

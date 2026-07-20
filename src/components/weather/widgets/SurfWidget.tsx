@@ -1,6 +1,7 @@
 'use client';
 
 import { Waves, Star } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import WidgetWrapper from './WidgetWrapper';
 
 interface SurfWidgetProps {
@@ -12,30 +13,32 @@ interface SurfWidgetProps {
 }
 
 export default function SurfWidget({ waveHeight, period, windSpeed, windDir, title }: SurfWidgetProps) {
+  const t = useTranslations('Widgets');
+
   // Surf Rating Logic
   let rating = 0;
-  let condition = "Plato";
+  let condition = t('surf.flat');
   let color = "text-gray-400";
 
   if (waveHeight >= 1.5 && period >= 10) {
     rating = 5;
-    condition = "Épico";
+    condition = t('surf.epic');
     color = "text-purple-400";
   } else if (waveHeight >= 1.0 && period >= 8) {
     rating = 4;
-    condition = "Muy Bueno";
+    condition = t('surf.veryGood');
     color = "text-green-400";
   } else if (waveHeight >= 0.6 && period >= 6) {
     rating = 3;
-    condition = "Aceptable";
+    condition = t('surf.acceptable');
     color = "text-yellow-400";
   } else if (waveHeight >= 0.3 && period >= 4) {
     rating = 2;
-    condition = "Pobre";
+    condition = t('surf.poor');
     color = "text-orange-400";
   } else {
     rating = 1;
-    condition = "Plato";
+    condition = t('surf.flat');
     color = "text-gray-400";
   }
 
@@ -50,7 +53,7 @@ export default function SurfWidget({ waveHeight, period, windSpeed, windDir, tit
               <span className="text-2xl font-outfit font-black text-white leading-none">
                 {waveHeight.toFixed(1)}<span className="text-[10px] text-white/65 ml-1">m</span>
               </span>
-              <span className="text-[7px] font-inter text-xs text-white/60 uppercase tracking-widest mt-1">Olas</span>
+              <span className="text-[7px] font-inter text-xs text-white/60 uppercase tracking-widest mt-1">{t('surf.waves')}</span>
            </div>
            
            <div className="flex flex-col items-end">
@@ -87,11 +90,11 @@ export default function SurfWidget({ waveHeight, period, windSpeed, windDir, tit
 
         <div className="flex justify-between mt-4 border-t border-white/5 pt-2">
            <div className="flex flex-col">
-              <span className="text-[6px] font-outfit text-white/60 uppercase">Periodo</span>
+              <span className="text-[6px] font-outfit text-white/60 uppercase">{t('surf.period')}</span>
               <span className="text-[10px] font-inter text-xs text-white/80">{period}s</span>
            </div>
            <div className="flex flex-col text-center">
-              <span className="text-[6px] font-outfit text-white/60 uppercase">Energía</span>
+              <span className="text-[6px] font-outfit text-white/60 uppercase">{t('surf.energy')}</span>
               <span className="text-[10px] font-inter text-xs text-white/80">{energy}kJ</span>
            </div>
            <div className="flex flex-col text-right">
