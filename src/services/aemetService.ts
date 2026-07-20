@@ -26,6 +26,14 @@ export interface AemetCoastal {
   validez: string;
 }
 
+// AEMET only observes Spain (peninsula + Balearics + Canaries). Anything
+// outside this box has no AEMET coverage, so its stations/radar/coastal
+// products must not surface — otherwise Spanish stations (Elgeta, Gijón…)
+// leak onto a map centred on Ireland. Matches the bounds historically used
+// inline in useIntelligence.
+export const isSpainCoords = (lat: number, lon: number) =>
+  lat >= 27 && lat <= 44 && lon >= -19 && lon <= 5;
+
 const dmsToDecimal = (dms: string): number => {
   if (!dms) return 0;
   // Format: DDMMSS[NSEW]

@@ -3,7 +3,7 @@
 import { useEffect, useState, useRef, Fragment } from 'react';
 import { MapContainer, TileLayer, WMSTileLayer, Circle, ZoomControl, useMap, Marker, Popup } from 'react-leaflet';
 import { useLocationStore } from '@/store/useLocationStore';
-import { fetchAemetStations, AemetStation } from '@/services/aemetService';
+import { fetchAemetStations, isSpainCoords, AemetStation } from '@/services/aemetService';
 import { divIcon } from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 
@@ -161,6 +161,11 @@ export default function RadarMap({ height = 300, hideControls = false, externalL
   const [animationTime, setAnimationTime] = useState(() => Date.now());
   const [aemetStations, setAemetStations] = useState<AemetStation[]>([]);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
+
+  // AEMET's observation network only covers Spain. Outside it the stations are
+  // meaningless clutter (e.g. Spanish stations floating over an Irish map), so
+  // they're only fetched and drawn when the current location is inside Spain.
+  const isSpain = isSpainCoords(coords.lat, coords.lon);
 
 
   const isNativeMapLayer = ['radar', 'satellite', ...DARK_BASE_LAYERS].includes(layerType);
@@ -357,20 +362,33 @@ export default function RadarMap({ height = 300, hideControls = false, externalL
     fetchRainViewer();
     const rainViewerInterval = setInterval(fetchRainViewer, 5 * 60 * 1000);
 
-    // Fetch AEMET stations for the map
-    fetchAemetStations()
-      .then(stations => {
-        // Filter stations near the current location (optional, but good for performance)
-        // For now, show all to give a global view of the network
-        if (!cancelled) setAemetStations(stations);
-      })
-      .catch(() => {});
-
     return () => {
       cancelled = true;
       clearInterval(rainViewerInterval);
     };
   }, []);
+
+  // AEMET stations — only inside Spain. Re-runs whenever coverage changes so
+  // moving from a Spanish location to a foreign one clears the stations
+  // instead of leaving stale Spanish markers on the map.
+  useEffect(() => {
+    if (!isSpain) {
+      // Deferred a tick so this isn't a direct synchronous setState in the
+      // effect body (react-hooks/set-state-in-effect) — same convention the
+      // OWM-status effect below uses.
+      queueMicrotask(() => setAemetStations([]));
+      return;
+    }
+    let cancelled = false;
+    fetchAemetStations()
+      .then(stations => {
+        if (!cancelled) setAemetStations(stations);
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, [isSpain]);
 
   useEffect(() => {
     const frameCount = layerType === 'radar' ? radarFrames.length : 0;
@@ -678,8 +696,8 @@ export default function RadarMap({ height = 300, hideControls = false, externalL
                   opacity={layerType === 'satellite' ? 0.85 : DARK_BASE_LAYERS.includes(layerType) ? 0.95 : 0.75}
                 />
 
-                {/* AEMET stations stay subtle so they do not masquerade as radar returns. */}
-                {layerType === 'radar' && aemetStations.filter((station) => (station.prec ?? 0) > 0).map((station) => {
+                {/* AEMET stations stay subtle so they do not masquerade as radar returns. Spain-only. */}
+                {layerType === 'radar' && isSpain && aemetStations.filter((station) => (station.prec ?? 0) > 0).map((station) => {
                   const precipitation = station.prec ?? 0;
                   const temperature = station.ta ?? '--';
                   const hasRain = precipitation > 0;

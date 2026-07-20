@@ -102,9 +102,11 @@ export default function SearchBar() {
         </button>
       </div>
 
-      {/* Dropdown Results */}
+      {/* Dropdown Results — solid opaque surface. The meteorix-card token is only
+          40% alpha, which let the briefing behind the dropdown bleed through and
+          made the list unreadable. */}
       {isOpen && results.length > 0 && (
-        <div className="absolute top-full left-0 w-full mt-2 bg-meteorix-card border border-white/10 rounded-xl shadow-2xl backdrop-blur-xl overflow-hidden z-50 animate-fadein">
+        <div className="absolute top-full left-0 w-full mt-2 bg-[#0c2531] border border-white/15 rounded-xl shadow-2xl backdrop-blur-xl overflow-hidden z-50 animate-fadein">
           {results.map((city) => (
             <button
               key={city.id}

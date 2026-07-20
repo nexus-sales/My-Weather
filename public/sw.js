@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'solajero-v7';
+const CACHE_VERSION = 'solajero-v8';
 const APP_SHELL = [
   '/',
   '/es',

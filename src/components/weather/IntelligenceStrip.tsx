@@ -33,7 +33,7 @@ export default function IntelligenceStrip({ data }: IntelligenceStripProps) {
     { id: 'air', label: t('cards.air'), icon: Wind, color: 'text-meteorix-green', value: t('values.aqi', { aqi: data.air.aqi }) },
     { id: 'marine', label: t('cards.marine'), icon: Waves, color: 'text-blue-400', value: t('values.waveTrend', { wave: data.marine.waveHeight, trend: tideTrendLabel }) },
     { id: 'lunar', label: t('cards.lunar'), icon: Moon, color: 'text-indigo-300', value: t('values.moonLight', { illumination }) },
-    { id: 'aemet', label: t('cards.aemet'), icon: DatabaseZap, color: 'text-cyan-300', value: t('values.extraLayers') },
+    ...(data.isSpain ? [{ id: 'aemet', label: t('cards.aemet'), icon: DatabaseZap, color: 'text-cyan-300', value: t('values.extraLayers') }] : []),
     ...(data.metEireann.isAvailable ? [{ id: 'metEireann', label: t('cards.metEireann'), icon: CloudSun, color: 'text-emerald-300', value: t('values.officialForecast') }] : []),
     { id: 'confidence', label: t('cards.confidence'), icon: CheckCircle2, color: 'text-meteorix-highlight', value: t('values.highConfidence', { score: data.confidence.score }) },
   ];

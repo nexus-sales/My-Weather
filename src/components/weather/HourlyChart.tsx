@@ -96,8 +96,8 @@ export default function HourlyChart({ data }: HourlyChartProps) {
         </h3>
       </div>
 
-      <div className="h-auto min-h-[250px] w-full">
-        <ResponsiveContainer width="100%" height="100%" aspect={2.5}>
+      <div className="flex-1 min-h-[220px] w-full">
+        <ResponsiveContainer width="100%" height="100%">
           <AreaChart data={chartData} margin={{ top: 10, right: 30, left: -10, bottom: 0 }}>
             <defs>
               <linearGradient id="gradTemp" x1="0" y1="0" x2="0" y2="1">

@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { useLocale } from 'next-intl';
 import { useQuery } from '@tanstack/react-query';
 import { WeatherData, fetchAirQuality, fetchHistoricalAnomaly } from '@/services/weatherService';
-import { fetchAemetCoastalForecast, fetchAemetRadar, fetchAemetStations, AemetStation, AemetCoastal } from '@/services/aemetService';
+import { fetchAemetCoastalForecast, fetchAemetRadar, fetchAemetStations, isSpainCoords, AemetStation, AemetCoastal } from '@/services/aemetService';
 import { getLunarData, LunarData } from '@/services/astroService';
 import { fetchMarineData } from '@/services/marineService';
 import { fetchMetEireannForecast, isIrelandCoords, MetEireannForecast } from '@/services/metEireannService';
@@ -46,6 +46,8 @@ export interface IntelligenceData {
     source: string;
   };
   lunar: LunarData;
+  /** True only when the active coordinates fall inside AEMET's coverage (Spain). Gates every AEMET-sourced UI element. */
+  isSpain: boolean;
   aemet: {
     capabilities: string[];
     radar?: unknown[];
@@ -81,7 +83,7 @@ export const useIntelligence = (weather: WeatherData | undefined): IntelligenceD
   const { coords } = useLocationStore();
   const isIreland = isIrelandCoords(coords.lat, coords.lon);
 
-  const isSpain = coords.lat >= 27 && coords.lat <= 44 && coords.lon >= -19 && coords.lon <= 5;
+  const isSpain = isSpainCoords(coords.lat, coords.lon);
 
   // Official government alerts via Meteoalarm (redistributes AEMET's own warnings for
   // Spain, plus 6 more EU countries) — AEMET's own avisos_cap endpoint returns a gzipped
@@ -170,6 +172,7 @@ export const useIntelligence = (weather: WeatherData | undefined): IntelligenceD
         air: { aqi: 0, pm10: 0, pm25: 0, status: locale === 'en' ? 'Loading' : 'Cargando', source: 'N/A', pollen: null },
         marine: { waveHeight: 0, period: 0, temp: 0, seaLevel: 0, tideTrend: 'steady', source: 'Open-Meteo Marine' },
         lunar,
+        isSpain,
         aemet: { capabilities: [] },
         metEireann: { isAvailable: false, source: 'Met Eireann' },
         confidence: { score: 0, source: 'N/A', consistency: 'N/A' },
@@ -268,8 +271,11 @@ export const useIntelligence = (weather: WeatherData | undefined): IntelligenceD
         source: marineData ? 'Open-Meteo Marine' : locale === 'en' ? 'Local estimate' : 'Estimacion local',
       },
       lunar,
+      isSpain,
       aemet: {
-        capabilities: ['alerts', 'forecast', 'stations', 'radar', 'models'],
+        // AEMET is a Spain-only network — advertise no capabilities outside it,
+        // so the AEMET intelligence card and stations panel stay hidden abroad.
+        capabilities: isSpain ? ['alerts', 'forecast', 'stations', 'radar', 'models'] : [],
         radar: aemetRadar,
         stations: aemetStations,
         nearestStation,
