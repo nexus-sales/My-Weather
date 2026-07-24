@@ -306,7 +306,18 @@
       "gust": "Racha",
       "direction": "Dir.",
       "altitude": "Alt.",
-      "obs": "Obs."
+      "obs": "Obs.",
+      "metarTitle": "METAR de aeropuertos",
+      "metarSubtitle": "Observaciones oficiales de aerodromos (NOAA). Cobertura mundial.",
+      "metarError": "No se han podido recuperar los METAR ahora mismo.",
+      "metarEmpty": "No hay aerodromos con METAR en esta zona.",
+      "dewPoint": "P. rocio"
+    },
+    "official": {
+      "title": "Fuente oficial nacional: Met Eireann",
+      "disclaimer": "Prediccion puntual oficial para tus coordenadas (modelo HARMONIE). No es la medicion de una estacion: se muestra aparte para no confundirla con las observaciones de arriba.",
+      "validFor": "Valida para las",
+      "issued": "Emitida"
     }
   },
   "Widgets": {

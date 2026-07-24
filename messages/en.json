@@ -306,7 +306,18 @@
       "gust": "Gust",
       "direction": "Dir.",
       "altitude": "Alt.",
-      "obs": "Obs."
+      "obs": "Obs.",
+      "metarTitle": "Airport METAR",
+      "metarSubtitle": "Official aerodrome observations (NOAA). Worldwide coverage.",
+      "metarError": "Could not retrieve METAR reports right now.",
+      "metarEmpty": "No METAR aerodromes in this area.",
+      "dewPoint": "Dew pt."
+    },
+    "official": {
+      "title": "National official source: Met Eireann",
+      "disclaimer": "Official point forecast for your coordinates (HARMONIE model). This is not a station measurement: it is shown separately so it is not mistaken for the observations above.",
+      "validFor": "Valid for",
+      "issued": "Issued"
     }
   },
   "Widgets": {

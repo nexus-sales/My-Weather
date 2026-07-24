@@ -4,10 +4,11 @@ import React from 'react';
 import { useTranslations } from 'next-intl';
 import { useIntelligence } from '@/hooks/useIntelligence';
 import { usePWSNearby, WUNotConfiguredError } from '@/hooks/usePWS';
+import { useNearbyMetars } from '@/hooks/useMetar';
 import { useLocationStore } from '@/store/useLocationStore';
 import { WeatherData } from '@/services/weatherService';
 import { distanceKm } from '@/lib/weatherUtils';
-import { Satellite, Radio, Activity, MapPin, Gauge, Wifi } from 'lucide-react';
+import { Satellite, Radio, Activity, MapPin, Gauge, Wifi, Plane, CloudSun } from 'lucide-react';
 
 interface StationsViewProps {
   weather: WeatherData;
@@ -19,6 +20,7 @@ export default function StationsView({ weather }: StationsViewProps) {
   const intelligence = useIntelligence(weather);
   const { aemet } = intelligence;
   const pwsNearby = usePWSNearby(8);
+  const metarNearby = useNearbyMetars();
   const nearbyAemetStations = React.useMemo(() => {
     return [...(aemet.stations ?? [])]
       .map((station) => ({
@@ -105,7 +107,47 @@ export default function StationsView({ weather }: StationsViewProps) {
          </div>
       </div>
 
-      <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
+      {/* The national forecast provider, deliberately kept out of the station
+          lists below. What the app holds from Met Éireann is a point forecast
+          (HARMONIE), not an anemometer reading, so listing it beside AEMET and
+          METAR rows would present a model value as a measurement. Separate
+          block, explicit disclaimer. */}
+      {intelligence.metEireann.isAvailable && intelligence.metEireann.nextHour && (
+        <div className="glass-panel p-6 border-l-2 border-l-emerald-400/40">
+          <div className="flex items-start justify-between gap-4 mb-4">
+            <div>
+              <h3 className="text-sm font-outfit font-semibold text-white uppercase tracking-widest flex items-center gap-2">
+                <span className="text-emerald-300"><CloudSun size={16} /></span>
+                {t('official.title')}
+              </h3>
+              <p className="text-[10px] text-white/50 mt-1 font-inter max-w-2xl leading-relaxed">
+                {t('official.disclaimer')}
+              </p>
+            </div>
+            {intelligence.metEireann.updated && (
+              <div className="text-[9px] uppercase tracking-widest text-white/45 shrink-0 text-right">
+                {t('official.issued')}<br />
+                {new Date(intelligence.metEireann.updated).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+              </div>
+            )}
+          </div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2">
+            <ForecastMetric label={t('temp')} value={formatNumber(intelligence.metEireann.nextHour.temp, '°C')} />
+            {/* Met Éireann reports wind in m/s in the forecast XML. */}
+            <ForecastMetric label={t('wind')} value={formatWindFromMs(intelligence.metEireann.nextHour.windSpeed)} />
+            <ForecastMetric label={t('rain')} value={formatNumber(intelligence.metEireann.nextHour.precipitation, ' mm')} />
+            <ForecastMetric label={t('humidity')} value={formatNumber(intelligence.metEireann.nextHour.humidity, '%')} />
+            <ForecastMetric label={t('pressure')} value={formatNumber(intelligence.metEireann.nextHour.pressure, ' hPa')} />
+            <ForecastMetric label={t('panels.direction')} value={formatDirection(intelligence.metEireann.nextHour.windDirection)} />
+          </div>
+        </div>
+      )}
+
+      {/* Three networks now (AEMET, METAR, PWS), so the row splits at 2xl
+          instead of xl — at xl each column was too narrow for the metric grid
+          inside a station row. */}
+      <div className="grid grid-cols-1 2xl:grid-cols-2 gap-8">
         <StationListPanel
           title={t('panels.aemetTitle')}
           subtitle={t('panels.aemetSubtitle')}
@@ -131,6 +173,36 @@ export default function StationsView({ weather }: StationsViewProps) {
                 { label: t('panels.altitude'), value: formatNumber(station.alt, ' m') },
               ]}
               observedAt={station.fint}
+              obsLabel={t('panels.obs')}
+            />
+          ))}
+        </StationListPanel>
+
+        <StationListPanel
+          title={t('panels.metarTitle')}
+          subtitle={t('panels.metarSubtitle')}
+          icon={<Plane size={16} />}
+          isLoading={metarNearby.isLoading}
+          errorText={metarNearby.isError ? t('panels.metarError') : undefined}
+          emptyText={t('panels.metarEmpty')}
+          syncingText={t('panels.syncing')}
+        >
+          {(metarNearby.data ?? []).slice(0, 12).map((station) => (
+            <StationRow
+              key={station.stationId}
+              name={station.stationName}
+              source={`METAR · ${station.stationId}`}
+              distance={`${station.distanceKm.toFixed(1)} km`}
+              metrics={[
+                { label: t('temp'), value: formatNumber(station.temperature, '°C') },
+                { label: t('wind'), value: formatNumber(station.windSpeed, ' km/h') },
+                { label: t('panels.gust'), value: formatNumber(station.windGusts, ' km/h') },
+                { label: t('panels.dewPoint'), value: formatNumber(station.dewPoint, '°C') },
+                { label: t('pressure'), value: formatNumber(station.pressure, ' hPa') },
+                { label: t('panels.direction'), value: formatDirection(station.windDirection) },
+                { label: t('panels.altitude'), value: formatNumber(station.elevation, ' m') },
+              ]}
+              observedAt={station.observedAt}
               obsLabel={t('panels.obs')}
             />
           ))}
@@ -173,6 +245,15 @@ export default function StationsView({ weather }: StationsViewProps) {
           ))}
         </StationListPanel>
       </div>
+    </div>
+  );
+}
+
+function ForecastMetric({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="rounded-lg bg-white/[0.04] border border-white/5 px-3 py-2">
+      <div className="text-[8px] uppercase tracking-widest text-white/50">{label}</div>
+      <div className="text-xs font-bold text-white/95 mt-1">{value}</div>
     </div>
   );
 }

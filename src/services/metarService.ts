@@ -13,6 +13,14 @@ export interface MetarObservation {
   windGusts?: number;
   /** Degrees, or undefined when the report says VRB (variable). */
   windDirection?: number;
+  /** Celsius. */
+  temperature?: number;
+  /** Celsius — measured, not derived. */
+  dewPoint?: number;
+  /** Altimeter setting in hPa. */
+  pressure?: number;
+  /** Station elevation in metres. */
+  elevation?: number;
   /** ISO timestamp of the observation. */
   observedAt: string;
 }
@@ -29,6 +37,10 @@ interface MetarApiEntry {
   wgst?: number | null;
   // Can be the string "VRB" for variable wind, not just a number.
   wdir?: number | string | null;
+  temp?: number | null;
+  dewp?: number | null;
+  altim?: number | null;
+  elev?: number | null;
   /** Epoch seconds, UTC. */
   obsTime?: number;
 }
@@ -45,12 +57,30 @@ const toNumber = (value: unknown): number | undefined => {
 };
 
 /**
+ * Every airport METAR around the point that carries a usable wind reading,
+ * nearest first. The caller decides how many to show and how far is too far —
+ * distance travels on each entry so it can always be displayed.
+ */
+export const fetchNearbyMetars = async (lat: number, lon: number): Promise<MetarObservation[]> => {
+  const all = await fetchMetarsInBox(lat, lon);
+  return all.sort((a, b) => a.distanceKm - b.distanceKm);
+};
+
+/**
  * Nearest airport METAR with a usable wind reading, or null.
  *
  * Unlike AEMET this is global, so it is the fallback that gives the wind
  * widget a real measurement to show outside Spain.
  */
 export const fetchNearestMetar = async (lat: number, lon: number): Promise<MetarObservation | null> => {
+  const all = await fetchMetarsInBox(lat, lon);
+  if (all.length === 0) return null;
+  return all.reduce((nearest, entry) => (entry.distanceKm < nearest.distanceKm ? entry : nearest));
+};
+
+/** Shared fetch + parse, so the single-station and list callers can never
+ *  disagree about units, field handling or what counts as a usable report. */
+const fetchMetarsInBox = async (lat: number, lon: number): Promise<MetarObservation[]> => {
   // Longitude degrees shrink towards the poles; widening the box by 1/cos(lat)
   // keeps the search area roughly circular instead of a thin sliver up north.
   const latPadding = SEARCH_RADIUS_DEG;
@@ -63,12 +93,12 @@ export const fetchNearestMetar = async (lat: number, lon: number): Promise<Metar
 
   try {
     const res = await fetch(`/api/metar?bbox=${encodeURIComponent(bbox)}`);
-    if (!res.ok) return null;
+    if (!res.ok) return [];
 
     const data: MetarApiEntry[] = await res.json();
-    if (!Array.isArray(data) || data.length === 0) return null;
+    if (!Array.isArray(data)) return [];
 
-    let best: MetarObservation | null = null;
+    const results: MetarObservation[] = [];
 
     for (const entry of data) {
       const stationLat = toNumber(entry.lat);
@@ -80,29 +110,30 @@ export const fetchNearestMetar = async (lat: number, lon: number): Promise<Metar
       if (stationLat === undefined || stationLon === undefined) continue;
       if (windKnots === undefined || obsTime === undefined) continue;
 
-      const d = distanceKm(lat, lon, stationLat, stationLon);
-      if (best && d >= best.distanceKm) continue;
-
       const gustKnots = toNumber(entry.wgst);
       // "VRB" (variable) is a valid direction value and must not become NaN.
       const direction = toNumber(entry.wdir);
 
-      best = {
+      results.push({
         stationId: entry.icaoId ?? '',
         stationName: entry.name ?? entry.icaoId ?? '',
         lat: stationLat,
         lon: stationLon,
-        distanceKm: d,
+        distanceKm: distanceKm(lat, lon, stationLat, stationLon),
         windSpeed: windKnots * KNOTS_TO_KMH,
         windGusts: gustKnots !== undefined ? gustKnots * KNOTS_TO_KMH : undefined,
         windDirection: direction,
+        temperature: toNumber(entry.temp),
+        dewPoint: toNumber(entry.dewp),
+        pressure: toNumber(entry.altim),
+        elevation: toNumber(entry.elev),
         observedAt: new Date(obsTime * 1000).toISOString(),
-      };
+      });
     }
 
-    return best;
+    return results;
   } catch (err) {
     console.error('METAR fetch error:', err);
-    return null;
+    return [];
   }
 };
