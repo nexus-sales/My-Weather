@@ -49,10 +49,16 @@ export default function WindWidget({ speed, direction, gusts, title, daily, obse
       icon={<Wind size={14} className="animate-pulse text-blue-400" />}
       onExpand={daily ? () => setIsDetailOpen(true) : undefined}
     >
-      <div className="relative flex flex-col items-center w-full h-full">
-        {/* Compass & Telemetry Background */}
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-          <div className="w-28 h-28 rounded-full border border-white/5 bg-zinc-900/40 shadow-inner" />
+      <div className="relative flex flex-col items-center w-full h-full min-w-0">
+        {/* The rotor and its compass backdrop share one fixed-size box. The
+            backdrop used to be `absolute inset-0` across the whole card, so it
+            centred itself against the full content height rather than against
+            the rotor — anything added below (the observation block) pushed the
+            compass down on top of the readouts, which is what showed up as
+            overlapping text on narrow phone layouts. */}
+        <div className="relative w-28 h-28 shrink-0 flex items-center justify-center">
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+          <div className="w-full h-full rounded-full border border-white/5 bg-zinc-900/40 shadow-inner" />
 
           {/* Direction Markers */}
           <svg viewBox="0 0 100 100" className="absolute w-32 h-32 opacity-20">
@@ -127,9 +133,10 @@ export default function WindWidget({ speed, direction, gusts, title, daily, obse
             </div>
           </div>
         </div>
+        </div>
 
         {/* Data Overlay */}
-        <div className="mt-1 flex flex-col items-center">
+        <div className="mt-1 flex flex-col items-center w-full min-w-0">
           <div className="flex items-baseline gap-1.5">
             <span className="text-4xl font-outfit font-bold text-white tracking-tighter leading-none drop-shadow-glow">
               {speed.toFixed(1)}
@@ -137,10 +144,12 @@ export default function WindWidget({ speed, direction, gusts, title, daily, obse
             <span className="text-[10px] text-blue-400 font-outfit uppercase tracking-widest opacity-80">km/h</span>
           </div>
           
-          <div className="flex items-center gap-3 mt-1.5 px-3 py-0.5 rounded-full bg-white/5 border border-white/10">
+          {/* Wraps instead of overflowing: at the mobile two-column grid width
+              the direction and gust chips do not fit on one line. */}
+          <div className="flex flex-wrap items-center justify-center gap-x-2 gap-y-0.5 mt-1.5 px-2.5 py-0.5 rounded-full bg-white/5 border border-white/10 max-w-full">
             <div className="flex items-center gap-1">
-               <div className="w-1 h-1 rounded-full bg-orange-400 animate-ping" />
-               <span className="text-[10px] font-inter text-white/65">{direction}° {COMPASS_DIRECTIONS[Math.round(direction/45)%8]}</span>
+               <div className="w-1 h-1 rounded-full bg-orange-400 animate-ping shrink-0" />
+               <span className="text-[10px] font-inter text-white/65 whitespace-nowrap">{direction}° {COMPASS_DIRECTIONS[Math.round(direction/45)%8]}</span>
             </div>
             {typeof gusts === 'number' && (
               <>
@@ -159,20 +168,20 @@ export default function WindWidget({ speed, direction, gusts, title, daily, obse
               off-screen. Only rendered when it is close and recent enough to
               describe the same conditions — see WidgetGrid for the gating. */}
           {observation && (
-            <div className="mt-2 flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-lg bg-cyan-400/5 border border-cyan-400/15 max-w-full">
-              <div className="flex items-center gap-1.5 text-cyan-300/80">
-                <RadioTower size={9} />
-                <span className="text-[8px] font-outfit uppercase tracking-widest truncate max-w-[130px]">
+            <div className="mt-2 w-full min-w-0 flex flex-col items-center gap-0.5 px-2 py-1.5 rounded-lg bg-cyan-400/5 border border-cyan-400/15">
+              <div className="flex items-center gap-1 text-cyan-300/80 w-full min-w-0 justify-center">
+                <RadioTower size={9} className="shrink-0" />
+                <span className="text-[8px] font-outfit uppercase tracking-widest truncate min-w-0" title={observation.stationName}>
                   {observation.stationName}
                 </span>
               </div>
-              <div className="text-[10px] font-outfit text-white/90">
+              <div className="text-[10px] font-outfit text-white/90 text-center leading-tight">
                 {observation.speed.toFixed(0)} km/h
                 {typeof observation.gusts === 'number' && (
                   <span className="text-white/60"> · {t('wind.gustsShort', { value: observation.gusts.toFixed(0) })}</span>
                 )}
               </div>
-              <div className="text-[7px] font-inter text-white/40 uppercase tracking-wider">
+              <div className="text-[7px] font-inter text-white/40 uppercase tracking-wider text-center truncate w-full min-w-0">
                 {t('wind.observedFrom', {
                   network: observation.network,
                   distance: observation.distanceKm.toFixed(1),

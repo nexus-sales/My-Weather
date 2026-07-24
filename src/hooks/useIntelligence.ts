@@ -6,6 +6,7 @@ import { fetchAemetCoastalForecast, fetchAemetRadar, fetchAemetStations, isSpain
 import { getLunarData, LunarData } from '@/services/astroService';
 import { fetchMarineData } from '@/services/marineService';
 import { fetchMetEireannForecast, isIrelandCoords, MetEireannForecast } from '@/services/metEireannService';
+import { fetchNearestMetar, MetarObservation } from '@/services/metarService';
 import { distanceKm } from '@/lib/weatherUtils';
 import { useLocationStore } from '@/store/useLocationStore';
 import { useAlerts } from '@/hooks/useAlerts';
@@ -59,6 +60,9 @@ export interface IntelligenceData {
     coastal?: AemetCoastal;
   };
   metEireann: MetEireannForecast;
+  /** Nearest airport METAR wind observation. Global, so this is the observation
+   *  source everywhere AEMET does not reach. Null when none is in range. */
+  metar: MetarObservation | null;
   confidence: {
     score: number;
     source: string;
@@ -68,6 +72,7 @@ export interface IntelligenceData {
     alerts: boolean;
     marine: boolean;
     metEireann: boolean;
+    metar: boolean;
     radar: boolean;
     stations: boolean;
     coastal: boolean;
@@ -130,6 +135,16 @@ export const useIntelligence = (weather: WeatherData | undefined): IntelligenceD
     enabled: !!weather && isIreland,
   });
 
+  // Not gated by country: METAR is the global observation fallback, and is the
+  // only real measurement available outside AEMET's Spain-only network.
+  const { data: metarData, isLoading: isLoadingMetar } = useQuery({
+    queryKey: ['metar-nearest', coords.lat, coords.lon],
+    queryFn: () => fetchNearestMetar(coords.lat, coords.lon),
+    staleTime: 1000 * 60 * 10,
+    refetchInterval: 1000 * 60 * 15,
+    enabled: !!weather && !!coords.lat && !!coords.lon,
+  });
+
   const { data: airQuality, isLoading: isLoadingAir } = useQuery({
     queryKey: ['air-quality', coords.lat, coords.lon],
     queryFn: () => fetchAirQuality(coords.lat, coords.lon),
@@ -183,11 +198,13 @@ export const useIntelligence = (weather: WeatherData | undefined): IntelligenceD
         isSpain,
         aemet: { capabilities: [] },
         metEireann: { isAvailable: false, source: 'Met Eireann' },
+        metar: null,
         confidence: { score: 0, source: 'N/A', consistency: 'N/A' },
         loadStates: {
           alerts: true,
           marine: true,
           metEireann: true,
+          metar: true,
           radar: true,
           stations: true,
           coastal: true,
@@ -291,6 +308,7 @@ export const useIntelligence = (weather: WeatherData | undefined): IntelligenceD
         coastal: aemetCoastal ?? undefined,
       },
       metEireann: metEireannData ?? { isAvailable: false, source: 'Met Eireann' },
+      metar: metarData ?? null,
       confidence: {
         score: Math.round(dynamicConfidence),
         source: isIreland && metEireannData?.isAvailable ? 'Met Eireann / ECMWF' : 'ECMWF / IFS 0.1°',
@@ -302,6 +320,7 @@ export const useIntelligence = (weather: WeatherData | undefined): IntelligenceD
         alerts: isLoadingAlerts,
         marine: isLoadingMarine,
         metEireann: isLoadingMetEireann,
+        metar: isLoadingMetar,
         radar: isLoadingRadar,
         stations: isLoadingStations,
         coastal: isLoadingCoastal,

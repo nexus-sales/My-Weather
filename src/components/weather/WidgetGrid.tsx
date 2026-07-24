@@ -38,7 +38,13 @@ interface WidgetGridProps {
 // is both close and recent. Beyond these it is a different place or a different
 // hour, and presenting it next to the current forecast would mislead rather
 // than inform — so it is dropped entirely instead of shown with a caveat.
-const OBSERVATION_MAX_DISTANCE_KM = 25;
+//
+// The two caps differ because the networks do: AEMET has hundreds of stations
+// across Spain, so something genuinely local is usually available, while METAR
+// sites are airports and can be the only report for a whole region. The
+// distance is always displayed either way, so the reader can weigh it.
+const AEMET_MAX_DISTANCE_KM = 25;
+const METAR_MAX_DISTANCE_KM = 50;
 const OBSERVATION_MAX_AGE_MINUTES = 120;
 
 export default function WidgetGrid({ weather }: WidgetGridProps) {
@@ -58,35 +64,52 @@ export default function WidgetGrid({ weather }: WidgetGridProps) {
     return () => clearInterval(id);
   }, []);
 
-  // Real anemometer reading to show beside the modelled wind. Only AEMET is
-  // wired today, so this resolves to undefined outside Spain and the widget
-  // simply renders as before — no placeholder, no stand-in value.
+  // Real anemometer reading to show beside the modelled wind. AEMET first
+  // where it reaches (denser, so usually far closer), METAR everywhere else.
+  // Resolves to undefined when neither has anything in range, and the widget
+  // then renders exactly as before — no placeholder, no stand-in value.
   const windObservation = useMemo(() => {
-    const station = intelligence.aemet.nearestStation;
-    const distance = intelligence.aemet.nearestStationDistanceKm;
-    if (!station || distance === undefined || distance > OBSERVATION_MAX_DISTANCE_KM) return undefined;
-
-    // AEMET reports wind in m/s; the modelled value beside it is km/h. `vvm`
-    // comes back null on plenty of stations (Los Rodeos among them), so the
-    // `vv` fallback is what actually carries the reading most of the time.
-    const speedMs = station.vvm ?? station.vv;
-    if (typeof speedMs !== 'number' || !Number.isFinite(speedMs)) return undefined;
-
-    // `fint` carries an explicit UTC offset ("...T08:00:00+0000"), so this
-    // comparison is unambiguous regardless of the viewer's own timezone.
-    const observedAt = new Date(station.fint).getTime();
-    const ageMinutes = (now - observedAt) / 60000;
-    if (!Number.isFinite(ageMinutes) || ageMinutes < 0 || ageMinutes > OBSERVATION_MAX_AGE_MINUTES) return undefined;
-
-    return {
-      stationName: station.ubi,
-      network: 'AEMET',
-      distanceKm: distance,
-      speed: speedMs * 3.6,
-      gusts: typeof station.vmax === 'number' ? station.vmax * 3.6 : undefined,
-      observedAt: station.fint,
+    const isFresh = (observedAtMs: number) => {
+      const ageMinutes = (now - observedAtMs) / 60000;
+      return Number.isFinite(ageMinutes) && ageMinutes >= 0 && ageMinutes <= OBSERVATION_MAX_AGE_MINUTES;
     };
-  }, [intelligence.aemet.nearestStation, intelligence.aemet.nearestStationDistanceKm, now]);
+
+    const station = intelligence.aemet.nearestStation;
+    const aemetDistance = intelligence.aemet.nearestStationDistanceKm;
+    if (station && aemetDistance !== undefined && aemetDistance <= AEMET_MAX_DISTANCE_KM) {
+      // AEMET reports wind in m/s. `vvm` comes back null on plenty of stations
+      // (Los Rodeos among them), so the `vv` fallback is what actually carries
+      // the reading most of the time.
+      const speedMs = station.vvm ?? station.vv;
+      // `fint` carries an explicit UTC offset ("...T08:00:00+0000"), so this
+      // comparison is unambiguous regardless of the viewer's own timezone.
+      if (typeof speedMs === 'number' && Number.isFinite(speedMs) && isFresh(new Date(station.fint).getTime())) {
+        return {
+          stationName: station.ubi,
+          network: 'AEMET',
+          distanceKm: aemetDistance,
+          speed: speedMs * 3.6,
+          gusts: typeof station.vmax === 'number' ? station.vmax * 3.6 : undefined,
+          observedAt: station.fint,
+        };
+      }
+    }
+
+    // METAR speeds are already converted to km/h by the service.
+    const metar = intelligence.metar;
+    if (metar && metar.distanceKm <= METAR_MAX_DISTANCE_KM && isFresh(new Date(metar.observedAt).getTime())) {
+      return {
+        stationName: metar.stationName,
+        network: 'METAR',
+        distanceKm: metar.distanceKm,
+        speed: metar.windSpeed,
+        gusts: metar.windGusts,
+        observedAt: metar.observedAt,
+      };
+    }
+
+    return undefined;
+  }, [intelligence.aemet.nearestStation, intelligence.aemet.nearestStationDistanceKm, intelligence.metar, now]);
 
   return (
     <div className="flex flex-col gap-10">
