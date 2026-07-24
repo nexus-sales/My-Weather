@@ -6,6 +6,7 @@ import { fetchAemetCoastalForecast, fetchAemetRadar, fetchAemetStations, isSpain
 import { getLunarData, LunarData } from '@/services/astroService';
 import { fetchMarineData } from '@/services/marineService';
 import { fetchMetEireannForecast, isIrelandCoords, MetEireannForecast } from '@/services/metEireannService';
+import { distanceKm } from '@/lib/weatherUtils';
 import { useLocationStore } from '@/store/useLocationStore';
 import { useAlerts } from '@/hooks/useAlerts';
 
@@ -53,6 +54,8 @@ export interface IntelligenceData {
     radar?: unknown[];
     stations?: AemetStation[];
     nearestStation?: AemetStation;
+    /** Great-circle km from the active coords to `nearestStation`. Undefined when there is no station. */
+    nearestStationDistanceKm?: number;
     coastal?: AemetCoastal;
   };
   metEireann: MetEireannForecast;
@@ -141,19 +144,24 @@ export const useIntelligence = (weather: WeatherData | undefined): IntelligenceD
     enabled: !!weather,
   });
 
-  const nearestStation = useMemo(() => {
-    if (!aemetStations || aemetStations.length === 0) return undefined;
+  const { nearestStation, nearestStationDistanceKm } = useMemo(() => {
+    if (!aemetStations || aemetStations.length === 0) {
+      return { nearestStation: undefined, nearestStationDistanceKm: undefined };
+    }
     let nearest = aemetStations[0];
     let minDistance = Number.MAX_VALUE;
 
     aemetStations.forEach((station: AemetStation) => {
-      const d = Math.sqrt((station.lat - coords.lat) ** 2 + (station.lon - coords.lon) ** 2);
+      const d = distanceKm(coords.lat, coords.lon, station.lat, station.lon);
       if (d < minDistance) {
         minDistance = d;
         nearest = station;
       }
     });
-    return nearest;
+    // Distance travels with the station so consumers can judge whether the
+    // reading is actually local — "nearest" alone says nothing about that,
+    // and a station 80 km away must not be presented as local truth.
+    return { nearestStation: nearest, nearestStationDistanceKm: minDistance };
   }, [aemetStations, coords.lat, coords.lon]);
 
   // Stable date seed — only changes once per hour, safe for useMemo
@@ -279,6 +287,7 @@ export const useIntelligence = (weather: WeatherData | undefined): IntelligenceD
         radar: aemetRadar,
         stations: aemetStations,
         nearestStation,
+        nearestStationDistanceKm,
         coastal: aemetCoastal ?? undefined,
       },
       metEireann: metEireannData ?? { isAvailable: false, source: 'Met Eireann' },

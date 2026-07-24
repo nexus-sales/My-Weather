@@ -1,11 +1,21 @@
 'use client';
 
 import { useState } from 'react';
-import { Wind, Navigation } from 'lucide-react';
-import { useLocale } from 'next-intl';
+import { Wind, Navigation, RadioTower } from 'lucide-react';
+import { useLocale, useTranslations } from 'next-intl';
 import WidgetWrapper from './WidgetWrapper';
 import ExpandedWidgetView from './ExpandedWidgetView';
 import type { WeatherData } from '@/services/weatherService';
+
+/** A real anemometer reading from a nearby ground station, already converted to km/h. */
+export interface WindObservation {
+  stationName: string;
+  network: string;
+  distanceKm: number;
+  speed: number;
+  gusts?: number;
+  observedAt: string;
+}
 
 interface WindWidgetProps {
   speed: number;
@@ -13,12 +23,15 @@ interface WindWidgetProps {
   gusts?: number;
   title: string;
   daily?: Pick<WeatherData['daily'], 'time' | 'windMax' | 'windGustsMax' | 'windDirDominant'>;
+  /** Omitted when no trustworthy nearby observation exists (outside station coverage, too far, or stale). */
+  observation?: WindObservation;
 }
 
 const COMPASS_DIRECTIONS = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'];
 
-export default function WindWidget({ speed, direction, gusts, title, daily }: WindWidgetProps) {
+export default function WindWidget({ speed, direction, gusts, title, daily, observation }: WindWidgetProps) {
   const locale = useLocale();
+  const t = useTranslations('Widgets');
   const [isDetailOpen, setIsDetailOpen] = useState(false);
   // Rounded to the same precision already shown (speed.toFixed(1) below) so
   // trivial float jitter between re-renders doesn't produce a "new" duration
@@ -133,11 +146,41 @@ export default function WindWidget({ speed, direction, gusts, title, daily }: Wi
               <>
                 <div className="w-[1px] h-2 bg-white/10" />
                 <span className={`text-[10px] font-outfit uppercase tracking-tighter ${isGusty ? 'text-orange-400' : 'text-emerald-400'}`}>
-                  Rachas {gusts.toFixed(0)}
+                  {t('wind.gustsShort', { value: gusts.toFixed(0) })}
                 </span>
               </>
             )}
           </div>
+
+          {/* Nearby real observation. The dial above is a model forecast; in
+              complex terrain a model can read half the sustained wind an
+              anemometer a couple of km away is actually measuring, so the
+              measurement is shown alongside rather than silently disagreeing
+              off-screen. Only rendered when it is close and recent enough to
+              describe the same conditions — see WidgetGrid for the gating. */}
+          {observation && (
+            <div className="mt-2 flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-lg bg-cyan-400/5 border border-cyan-400/15 max-w-full">
+              <div className="flex items-center gap-1.5 text-cyan-300/80">
+                <RadioTower size={9} />
+                <span className="text-[8px] font-outfit uppercase tracking-widest truncate max-w-[130px]">
+                  {observation.stationName}
+                </span>
+              </div>
+              <div className="text-[10px] font-outfit text-white/90">
+                {observation.speed.toFixed(0)} km/h
+                {typeof observation.gusts === 'number' && (
+                  <span className="text-white/60"> · {t('wind.gustsShort', { value: observation.gusts.toFixed(0) })}</span>
+                )}
+              </div>
+              <div className="text-[7px] font-inter text-white/40 uppercase tracking-wider">
+                {t('wind.observedFrom', {
+                  network: observation.network,
+                  distance: observation.distanceKm.toFixed(1),
+                  time: new Date(observation.observedAt).toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' }),
+                })}
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </WidgetWrapper>
@@ -169,7 +212,7 @@ export default function WindWidget({ speed, direction, gusts, title, daily }: Wi
 
                 <div className="flex flex-col items-end min-w-[70px]">
                   <span className="text-sm font-bold text-white">{daily.windMax[i].toFixed(0)} km/h</span>
-                  <span className="text-[10px] text-white/50">racha {daily.windGustsMax[i].toFixed(0)}</span>
+                  <span className="text-[10px] text-white/50">{t('wind.gustsShort', { value: daily.windGustsMax[i].toFixed(0) })}</span>
                 </div>
               </div>
             );

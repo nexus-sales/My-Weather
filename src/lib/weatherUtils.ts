@@ -50,6 +50,21 @@ export const getWindDirection = (degree: number) => {
   return directions[Math.round(degree / 22.5) % 16];
 };
 
+// Great-circle distance in km. Single source of truth: the "nearest station"
+// pick used to compare raw lat/lon deltas with Pythagoras, which silently
+// over-weights longitude away from the equator (at 28°N a degree of longitude
+// is ~98 km against ~111 km for latitude), so it could rank a further station
+// as the closer one.
+export const distanceKm = (lat1: number, lon1: number, lat2: number, lon2: number) => {
+  const radius = 6371;
+  const dLat = ((lat2 - lat1) * Math.PI) / 180;
+  const dLon = ((lon2 - lon1) * Math.PI) / 180;
+  const a =
+    Math.sin(dLat / 2) ** 2 +
+    Math.cos((lat1 * Math.PI) / 180) * Math.cos((lat2 * Math.PI) / 180) * Math.sin(dLon / 2) ** 2;
+  return radius * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+};
+
 // Magnus formula. Single source of truth — DewPointWidget and HumidityWidget
 // used to each compute this independently with different formulas and
 // disagreed by several degrees for the same reading.

@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect, useMemo, useState } from 'react';
 import { WeatherData } from '@/services/weatherService';
 import { useTranslations } from 'next-intl';
 import WindWidget from './widgets/WindWidget';
@@ -33,12 +34,59 @@ interface WidgetGridProps {
   weather: WeatherData;
 }
 
+// A ground observation only describes the same air as the selected point if it
+// is both close and recent. Beyond these it is a different place or a different
+// hour, and presenting it next to the current forecast would mislead rather
+// than inform — so it is dropped entirely instead of shown with a caveat.
+const OBSERVATION_MAX_DISTANCE_KM = 25;
+const OBSERVATION_MAX_AGE_MINUTES = 120;
+
 export default function WidgetGrid({ weather }: WidgetGridProps) {
   const t = useTranslations('Dashboard');
   const tw = useTranslations('Widgets');
   const intelligence = useIntelligence(weather);
   const { coords } = useLocationStore();
   const { data: spaceWeather } = useSpaceWeather(coords.lat, coords.lon);
+
+  // Ticking reference instant for the staleness gate below. Reading Date.now()
+  // straight in the memo is impure (react-hooks/purity) and would also freeze
+  // the check at first render, so an observation could silently go stale on
+  // screen while still being presented as current.
+  const [now, setNow] = useState(() => Date.now());
+  useEffect(() => {
+    const id = setInterval(() => setNow(Date.now()), 60_000);
+    return () => clearInterval(id);
+  }, []);
+
+  // Real anemometer reading to show beside the modelled wind. Only AEMET is
+  // wired today, so this resolves to undefined outside Spain and the widget
+  // simply renders as before — no placeholder, no stand-in value.
+  const windObservation = useMemo(() => {
+    const station = intelligence.aemet.nearestStation;
+    const distance = intelligence.aemet.nearestStationDistanceKm;
+    if (!station || distance === undefined || distance > OBSERVATION_MAX_DISTANCE_KM) return undefined;
+
+    // AEMET reports wind in m/s; the modelled value beside it is km/h. `vvm`
+    // comes back null on plenty of stations (Los Rodeos among them), so the
+    // `vv` fallback is what actually carries the reading most of the time.
+    const speedMs = station.vvm ?? station.vv;
+    if (typeof speedMs !== 'number' || !Number.isFinite(speedMs)) return undefined;
+
+    // `fint` carries an explicit UTC offset ("...T08:00:00+0000"), so this
+    // comparison is unambiguous regardless of the viewer's own timezone.
+    const observedAt = new Date(station.fint).getTime();
+    const ageMinutes = (now - observedAt) / 60000;
+    if (!Number.isFinite(ageMinutes) || ageMinutes < 0 || ageMinutes > OBSERVATION_MAX_AGE_MINUTES) return undefined;
+
+    return {
+      stationName: station.ubi,
+      network: 'AEMET',
+      distanceKm: distance,
+      speed: speedMs * 3.6,
+      gusts: typeof station.vmax === 'number' ? station.vmax * 3.6 : undefined,
+      observedAt: station.fint,
+    };
+  }, [intelligence.aemet.nearestStation, intelligence.aemet.nearestStationDistanceKm, now]);
 
   return (
     <div className="flex flex-col gap-10">
@@ -49,7 +97,7 @@ export default function WidgetGrid({ weather }: WidgetGridProps) {
           <h4 className="text-[11px] font-outfit font-semibold tracking-widest text-white/60 uppercase">{t('groups.primary')}</h4>
         </div>
         <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <WindWidget speed={weather.current.windSpeed} direction={weather.current.windDir} gusts={weather.current.gusts} title={t('wind')} daily={weather.daily} />
+          <WindWidget speed={weather.current.windSpeed} direction={weather.current.windDir} gusts={weather.current.gusts} title={t('wind')} daily={weather.daily} observation={windObservation} />
           <SunWidget sunrise={weather.daily.sunrise[0]} sunset={weather.daily.sunset[0]} currentTime={weather.current.time} title={`${t('sunrise')} / ${t('sunset')}`} />
           <RainWidget amount={weather.current.precip} title={t('precipitation')} />
           <UVWidget index={weather.current.uvIndex} title={t('uv_index')} />

@@ -546,6 +546,10 @@
       "optimal": "Visibilidad Óptima",
       "moderate": "Visibilidad Moderada",
       "reduced": "Alcance Reducido"
+    },
+    "wind": {
+      "gustsShort": "Rachas {value}",
+      "observedFrom": "{network} · {distance} km · {time}"
     }
   }
 }
