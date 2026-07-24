@@ -311,7 +311,12 @@
       "metarSubtitle": "Observaciones oficiales de aerodromos (NOAA). Cobertura mundial.",
       "metarError": "No se han podido recuperar los METAR ahora mismo.",
       "metarEmpty": "No hay aerodromos con METAR en esta zona.",
-      "dewPoint": "P. rocio"
+      "dewPoint": "P. rocio",
+      "meTitle": "Met Eireann (estaciones)",
+      "meSubtitle": "Observaciones reales de la red sinoptica irlandesa.",
+      "meError": "No se han podido recuperar las observaciones de Met Eireann.",
+      "meEmpty": "No hay estaciones de Met Eireann en esta zona.",
+      "approxNote": "~ indica posicion aproximada de la estacion (nombre geocodificado), no la distancia medida."
     },
     "official": {
       "title": "Fuente oficial nacional: Met Eireann",

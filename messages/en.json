@@ -311,7 +311,12 @@
       "metarSubtitle": "Official aerodrome observations (NOAA). Worldwide coverage.",
       "metarError": "Could not retrieve METAR reports right now.",
       "metarEmpty": "No METAR aerodromes in this area.",
-      "dewPoint": "Dew pt."
+      "dewPoint": "Dew pt.",
+      "meTitle": "Met Eireann (stations)",
+      "meSubtitle": "Real observations from the Irish synoptic network.",
+      "meError": "Could not retrieve Met Eireann observations.",
+      "meEmpty": "No Met Eireann stations in this area.",
+      "approxNote": "~ marks an approximate station position (geocoded name), not a measured distance."
     },
     "official": {
       "title": "National official source: Met Eireann",

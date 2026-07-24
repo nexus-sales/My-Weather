@@ -15,6 +15,8 @@ export interface WindObservation {
   speed: number;
   gusts?: number;
   observedAt: string;
+  /** Station position is a geocoded place name, so the distance is indicative. */
+  positionIsApproximate?: boolean;
 }
 
 interface WindWidgetProps {
@@ -184,7 +186,7 @@ export default function WindWidget({ speed, direction, gusts, title, daily, obse
               <div className="text-[7px] font-inter text-white/40 uppercase tracking-wider text-center truncate w-full min-w-0">
                 {t('wind.observedFrom', {
                   network: observation.network,
-                  distance: observation.distanceKm.toFixed(1),
+                  distance: `${observation.positionIsApproximate ? '~' : ''}${observation.distanceKm.toFixed(1)}`,
                   time: new Date(observation.observedAt).toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' }),
                 })}
               </div>

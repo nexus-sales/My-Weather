@@ -5,6 +5,7 @@ import { useTranslations } from 'next-intl';
 import { useIntelligence } from '@/hooks/useIntelligence';
 import { usePWSNearby, WUNotConfiguredError } from '@/hooks/usePWS';
 import { useNearbyMetars } from '@/hooks/useMetar';
+import { useNearbyMetEireannObs } from '@/hooks/useMetEireannObs';
 import { useLocationStore } from '@/store/useLocationStore';
 import { WeatherData } from '@/services/weatherService';
 import { distanceKm } from '@/lib/weatherUtils';
@@ -21,6 +22,7 @@ export default function StationsView({ weather }: StationsViewProps) {
   const { aemet } = intelligence;
   const pwsNearby = usePWSNearby(8);
   const metarNearby = useNearbyMetars();
+  const metEireannObs = useNearbyMetEireannObs();
   const nearbyAemetStations = React.useMemo(() => {
     return [...(aemet.stations ?? [])]
       .map((station) => ({
@@ -178,6 +180,41 @@ export default function StationsView({ weather }: StationsViewProps) {
           ))}
         </StationListPanel>
 
+        {/* Only rendered in Ireland — the hook is disabled elsewhere, so an
+            empty panel never appears outside the network's coverage. */}
+        {metEireannObs.isEnabled && (
+          <StationListPanel
+            title={t('panels.meTitle')}
+            subtitle={t('panels.meSubtitle')}
+            icon={<CloudSun size={16} />}
+            isLoading={metEireannObs.isLoading}
+            errorText={metEireannObs.isError ? t('panels.meError') : undefined}
+            emptyText={t('panels.meEmpty')}
+            syncingText={t('panels.syncing')}
+            footnote={t('panels.approxNote')}
+          >
+            {(metEireannObs.data ?? []).map((station) => (
+              <StationRow
+                key={station.slug}
+                name={station.stationName}
+                source={`Met Éireann · ${station.slug}`}
+                distance={`${station.positionIsApproximate ? '~' : ''}${station.distanceKm.toFixed(1)} km`}
+                metrics={[
+                  { label: t('temp'), value: formatNumber(station.temperature, '°C') },
+                  { label: t('wind'), value: formatNumber(station.windSpeed, ' km/h') },
+                  { label: t('panels.gust'), value: formatNumber(station.windGusts, ' km/h') },
+                  { label: t('humidity'), value: formatNumber(station.humidity, '%') },
+                  { label: t('pressure'), value: formatNumber(station.pressure, ' hPa') },
+                  { label: t('rain'), value: formatNumber(station.rainfall, ' mm') },
+                  { label: t('panels.direction'), value: station.cardinalDirection ?? formatDirection(station.windDirection) },
+                ]}
+                observedAt={station.observedAt}
+                obsLabel={t('panels.obs')}
+              />
+            ))}
+          </StationListPanel>
+        )}
+
         <StationListPanel
           title={t('panels.metarTitle')}
           subtitle={t('panels.metarSubtitle')}
@@ -275,6 +312,7 @@ function StationListPanel({
   errorText,
   emptyText,
   syncingText,
+  footnote,
   children,
 }: {
   title: string;
@@ -284,6 +322,7 @@ function StationListPanel({
   errorText?: string;
   emptyText: string;
   syncingText: string;
+  footnote?: string;
   children: React.ReactNode;
 }) {
   const hasItems = React.Children.count(children) > 0;
@@ -309,6 +348,10 @@ function StationListPanel({
         <div className="divide-y divide-white/5 max-h-[620px] overflow-y-auto pr-2">{children}</div>
       ) : (
         <div className="rounded-xl border border-white/5 bg-white/[0.03] p-4 text-xs text-white/60">{emptyText}</div>
+      )}
+
+      {footnote && !isLoading && !errorText && (
+        <p className="mt-4 pt-3 border-t border-white/5 text-[9px] leading-relaxed text-white/40 font-inter">{footnote}</p>
       )}
     </div>
   );

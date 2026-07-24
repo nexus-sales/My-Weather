@@ -28,6 +28,7 @@ import ThermalComfortWidget from './widgets/ThermalComfortWidget';
 import StargazingWidget from './widgets/StargazingWidget';
 import { useIntelligence } from '@/hooks/useIntelligence';
 import { useSpaceWeather } from '@/hooks/useSpaceWeather';
+import { useNearbyMetEireannObs } from '@/hooks/useMetEireannObs';
 import { useLocationStore } from '@/store/useLocationStore';
 
 interface WidgetGridProps {
@@ -39,11 +40,11 @@ interface WidgetGridProps {
 // hour, and presenting it next to the current forecast would mislead rather
 // than inform — so it is dropped entirely instead of shown with a caveat.
 //
-// The two caps differ because the networks do: AEMET has hundreds of stations
-// across Spain, so something genuinely local is usually available, while METAR
-// sites are airports and can be the only report for a whole region. The
+// The caps differ because the networks do: AEMET and Met Éireann are national
+// synoptic networks of real anemometers with something usually close by, while
+// METAR sites are airports and can be the only report for a whole region. The
 // distance is always displayed either way, so the reader can weigh it.
-const AEMET_MAX_DISTANCE_KM = 25;
+const NATIONAL_NETWORK_MAX_DISTANCE_KM = 25;
 const METAR_MAX_DISTANCE_KM = 50;
 const OBSERVATION_MAX_AGE_MINUTES = 120;
 
@@ -53,6 +54,7 @@ export default function WidgetGrid({ weather }: WidgetGridProps) {
   const intelligence = useIntelligence(weather);
   const { coords } = useLocationStore();
   const { data: spaceWeather } = useSpaceWeather(coords.lat, coords.lon);
+  const { data: metEireannObs } = useNearbyMetEireannObs();
 
   // Ticking reference instant for the staleness gate below. Reading Date.now()
   // straight in the memo is impure (react-hooks/purity) and would also freeze
@@ -64,10 +66,11 @@ export default function WidgetGrid({ weather }: WidgetGridProps) {
     return () => clearInterval(id);
   }, []);
 
-  // Real anemometer reading to show beside the modelled wind. AEMET first
-  // where it reaches (denser, so usually far closer), METAR everywhere else.
-  // Resolves to undefined when neither has anything in range, and the widget
-  // then renders exactly as before — no placeholder, no stand-in value.
+  // Real anemometer reading to show beside the modelled wind. National networks
+  // first (AEMET in Spain, Met Éireann in Ireland — both usually far closer),
+  // then METAR anywhere else. Resolves to undefined when none has anything in
+  // range, and the widget then renders exactly as before: no placeholder, no
+  // stand-in value.
   const windObservation = useMemo(() => {
     const isFresh = (observedAtMs: number) => {
       const ageMinutes = (now - observedAtMs) / 60000;
@@ -76,7 +79,7 @@ export default function WidgetGrid({ weather }: WidgetGridProps) {
 
     const station = intelligence.aemet.nearestStation;
     const aemetDistance = intelligence.aemet.nearestStationDistanceKm;
-    if (station && aemetDistance !== undefined && aemetDistance <= AEMET_MAX_DISTANCE_KM) {
+    if (station && aemetDistance !== undefined && aemetDistance <= NATIONAL_NETWORK_MAX_DISTANCE_KM) {
       // AEMET reports wind in m/s. `vvm` comes back null on plenty of stations
       // (Los Rodeos among them), so the `vv` fallback is what actually carries
       // the reading most of the time.
@@ -95,6 +98,26 @@ export default function WidgetGrid({ weather }: WidgetGridProps) {
       }
     }
 
+    // Met Éireann's own network — same standing as AEMET, and in Ireland it is
+    // usually far closer than the nearest airport METAR.
+    const irish = metEireannObs?.[0];
+    if (
+      irish &&
+      typeof irish.windSpeed === 'number' &&
+      irish.distanceKm <= NATIONAL_NETWORK_MAX_DISTANCE_KM &&
+      isFresh(new Date(irish.observedAt).getTime())
+    ) {
+      return {
+        stationName: irish.stationName,
+        network: 'Met Éireann',
+        distanceKm: irish.distanceKm,
+        speed: irish.windSpeed,
+        gusts: irish.windGusts,
+        observedAt: irish.observedAt,
+        positionIsApproximate: irish.positionIsApproximate,
+      };
+    }
+
     // METAR speeds are already converted to km/h by the service.
     const metar = intelligence.metar;
     if (metar && metar.distanceKm <= METAR_MAX_DISTANCE_KM && isFresh(new Date(metar.observedAt).getTime())) {
@@ -109,7 +132,7 @@ export default function WidgetGrid({ weather }: WidgetGridProps) {
     }
 
     return undefined;
-  }, [intelligence.aemet.nearestStation, intelligence.aemet.nearestStationDistanceKm, intelligence.metar, now]);
+  }, [intelligence.aemet.nearestStation, intelligence.aemet.nearestStationDistanceKm, metEireannObs, intelligence.metar, now]);
 
   return (
     <div className="flex flex-col gap-10">
